@@ -2,13 +2,16 @@ package main
 
 import (
 	"log"
-	"net"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/rlimit"
+)
+
+const (
+	sharedLibraryPath = "/usr/lib/x86_64-linux-gnu/libssl.so.3"
+	symbol            = "SSL_write"
 )
 
 func main() {
@@ -24,38 +27,23 @@ func main() {
 	}
 	defer objs.Close()
 
-	ifname := "eno8303" // Change this to an interface on your machine.
-	iface, err := net.InterfaceByName(ifname)
+	ex, err := link.OpenExecutable(sharedLibraryPath)
 	if err != nil {
-		log.Fatalf("Getting interface %s: %s", ifname, err)
+		log.Fatalf("Opening %s: %s", sharedLibraryPath, err)
 	}
 
-	// Attach count_packets to the network interface.
-	link, err := link.AttachXDP(link.XDPOptions{
-		Program:   objs.CountPackets,
-		Interface: iface.Index,
-	})
+	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntrySSL_write, nil)
 	if err != nil {
-		log.Fatal("Attaching XDP:", err)
+		log.Fatalf("Uprobe %s: %s", symbol, err)
 	}
-	defer link.Close()
-
-	log.Printf("Counting incoming packets on %s..", ifname)
+	defer uprobe.Close()
 
 	// Periodically fetch the packet counter from PktCount,
 	// exit the program when interrupted.
-	tick := time.Tick(time.Second)
 	stop := make(chan os.Signal, 5)
 	signal.Notify(stop, os.Interrupt)
 	for {
 		select {
-		case <-tick:
-			var count uint64
-			err := objs.PktCount.Lookup(uint32(0), &count)
-			if err != nil {
-				log.Fatal("Map lookup:", err)
-			}
-			log.Printf("Received %d packets", count)
 		case <-stop:
 			log.Print("Received signal, exiting..")
 			return

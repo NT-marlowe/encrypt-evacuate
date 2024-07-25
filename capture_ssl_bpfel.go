@@ -53,14 +53,13 @@ type capture_sslSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_sslProgramSpecs struct {
-	CountPackets *ebpf.ProgramSpec `ebpf:"count_packets"`
+	ProbeEntrySSL_write *ebpf.ProgramSpec `ebpf:"probe_entry_SSL_write"`
 }
 
 // capture_sslMapSpecs contains maps before they are loaded into the kernel.
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_sslMapSpecs struct {
-	PktCount *ebpf.MapSpec `ebpf:"pkt_count"`
 }
 
 // capture_sslObjects contains all objects after they have been loaded into the kernel.
@@ -82,25 +81,22 @@ func (o *capture_sslObjects) Close() error {
 //
 // It can be passed to loadCapture_sslObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_sslMaps struct {
-	PktCount *ebpf.Map `ebpf:"pkt_count"`
 }
 
 func (m *capture_sslMaps) Close() error {
-	return _Capture_sslClose(
-		m.PktCount,
-	)
+	return _Capture_sslClose()
 }
 
 // capture_sslPrograms contains all programs after they have been loaded into the kernel.
 //
 // It can be passed to loadCapture_sslObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_sslPrograms struct {
-	CountPackets *ebpf.Program `ebpf:"count_packets"`
+	ProbeEntrySSL_write *ebpf.Program `ebpf:"probe_entry_SSL_write"`
 }
 
 func (p *capture_sslPrograms) Close() error {
 	return _Capture_sslClose(
-		p.CountPackets,
+		p.ProbeEntrySSL_write,
 	)
 }
 
