@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	sharedLibraryPath = "/usr/lib/x86_64-linux-gnu/libssl.so.3"
+	sharedLibraryPath = "/usr/lib/x86_64-linux-gnu/libssl.so"
 	symbol            = "SSL_write"
 )
 
