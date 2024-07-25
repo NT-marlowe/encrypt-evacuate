@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	sharedLibraryPath = "/usr/lib/x86_64-linux-gnu/libssl.so"
-	symbol            = "SSL_write"
+	sharedLibraryPath = "/lib/x86_64-linux-gnu/libssl.so"
+	// sharedLibraryPath = "/usr/lib/x86_64-linux-gnu/libssl.so"
+	// sharedLibraryPath = "/usr/lib/python3.10/lib-dynload/_ssl.cpython-310-x86_64-linux-gnu.so"
+	symbol = "SSL_write"
 )
 
 func main() {
