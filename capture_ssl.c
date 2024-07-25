@@ -23,9 +23,11 @@ int probe_entry_SSL_write(struct pt_regs *ctx) {
 	__u64 current_pid_gid = bpf_get_current_pid_tgid();
 	__u32 pid             = current_pid_gid >> 32;
 
-	const char *buf = (const char *)PT_REGS_PARM2(ctx);
+	char read_buffer[100] = {0};
+	const char *buf       = (const char *)PT_REGS_PARM2(ctx);
+	bpf_probe_read(read_buffer, sizeof(read_buffer), buf);
 
-	bpf_printk("Entry point of SSL_write, buf = %p\n", buf);
+	bpf_printk("Entry point of SSL_write, buf = %s\n", buf);
 
 	return 0;
 }
