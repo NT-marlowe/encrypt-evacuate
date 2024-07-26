@@ -15,7 +15,7 @@ struct ssl_data_event {
 	int data_len;
 };
 
-SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3/EVP_EncryptUpdate")
+SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3:EVP_EncryptUpdate")
 // SEC("uprobe/usr/lib/x86_64-linux-gnu/libssl.so")
 // SEC("uprobe/usr/lib/python3.10/lib-dynload/"
 // "_ssl.cpython-310-x86_64-linux-gnu.so")
@@ -26,9 +26,9 @@ int probe_entry_(struct pt_regs *ctx) {
 
 	char read_buffer[100] = {0};
 	const char *buf       = (const char *)PT_REGS_PARM4(ctx);
-	bpf_probe_read(read_buffer, sizeof(read_buffer), buf);
+	bpf_probe_read_user(read_buffer, sizeof(read_buffer), buf);
 
-	bpf_printk("Entry point of SSL_write, buf = %s\n", buf);
+	bpf_printk("Entry point of SSL_write, buf = %s\n", read_buffer);
 
 	return 0;
 }
