@@ -53,7 +53,7 @@ type capture_sslSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_sslProgramSpecs struct {
-	ProbeEntry *ebpf.ProgramSpec `ebpf:"probe_entry_"`
+	ProbeEntryEVP_EncryptUpdate *ebpf.ProgramSpec `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
 // capture_sslMapSpecs contains maps before they are loaded into the kernel.
@@ -91,12 +91,12 @@ func (m *capture_sslMaps) Close() error {
 //
 // It can be passed to loadCapture_sslObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_sslPrograms struct {
-	ProbeEntry *ebpf.Program `ebpf:"probe_entry_"`
+	ProbeEntryEVP_EncryptUpdate *ebpf.Program `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
 func (p *capture_sslPrograms) Close() error {
 	return _Capture_sslClose(
-		p.ProbeEntry,
+		p.ProbeEntryEVP_EncryptUpdate,
 	)
 }
 
