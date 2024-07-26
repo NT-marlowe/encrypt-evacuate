@@ -45,11 +45,6 @@ func main() {
 	// exit the program when interrupted.
 	stop := make(chan os.Signal, 5)
 	signal.Notify(stop, os.Interrupt)
-	for {
-		select {
-		case <-stop:
-			log.Print("Received signal, exiting..")
-			return
-		}
-	}
+	<-stop
+	log.Print("Received signal, exiting..")
 }
