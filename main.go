@@ -35,7 +35,7 @@ func main() {
 		log.Fatalf("Opening %s: %s", sharedLibraryPath, err)
 	}
 
-	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntrySSL_write, nil)
+	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntry, nil)
 	if err != nil {
 		log.Fatalf("Uprobe %s: %s", symbol, err)
 	}

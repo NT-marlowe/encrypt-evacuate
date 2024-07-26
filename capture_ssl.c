@@ -15,11 +15,12 @@ struct ssl_data_event {
 	int data_len;
 };
 
-SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3")
+SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3/EVP_EncryptUpdate")
 // SEC("uprobe/usr/lib/x86_64-linux-gnu/libssl.so")
 // SEC("uprobe/usr/lib/python3.10/lib-dynload/"
 // "_ssl.cpython-310-x86_64-linux-gnu.so")
-int probe_entry_SSL_write(struct pt_regs *ctx) {
+int probe_entry_(struct pt_regs *ctx) {
+	bpf_printk("Entry point of SSL_write\n");
 	__u64 current_pid_gid = bpf_get_current_pid_tgid();
 	__u32 pid             = current_pid_gid >> 32;
 
