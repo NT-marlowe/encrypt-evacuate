@@ -15,6 +15,7 @@ const (
 	// sharedLibraryPath = "/usr/lib/python3.10/lib-dynload/_ssl.cpython-310-x86_64-linux-gnu.so"
 	// symbol = "SSL_write"
 	symbol = "EVP_EncryptUpdate"
+	// symbol = "EVP_EncryptInit_ex"
 )
 
 func main() {

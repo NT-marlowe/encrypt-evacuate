@@ -60,6 +60,7 @@ type capture_sslProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_sslMapSpecs struct {
+	StackTraceMap *ebpf.MapSpec `ebpf:"stack_trace_map"`
 }
 
 // capture_sslObjects contains all objects after they have been loaded into the kernel.
@@ -81,10 +82,13 @@ func (o *capture_sslObjects) Close() error {
 //
 // It can be passed to loadCapture_sslObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_sslMaps struct {
+	StackTraceMap *ebpf.Map `ebpf:"stack_trace_map"`
 }
 
 func (m *capture_sslMaps) Close() error {
-	return _Capture_sslClose()
+	return _Capture_sslClose(
+		m.StackTraceMap,
+	)
 }
 
 // capture_sslPrograms contains all programs after they have been loaded into the kernel.

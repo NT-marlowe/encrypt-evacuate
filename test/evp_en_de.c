@@ -77,10 +77,10 @@ int main(void) {
 	unsigned char iv[16];
 
 	// 鍵とIVを生成
-	if (!RAND_bytes(key, sizeof(key)) || !RAND_bytes(iv, sizeof(iv))) {
-		fprintf(stderr, "RAND_bytes error\n");
-		return 1;
-	}
+	// if (!RAND_bytes(key, sizeof(key)) || !RAND_bytes(iv, sizeof(iv))) {
+	// 	fprintf(stderr, "RAND_bytes error\n");
+	// 	return 1;
+	// }
 
 	// 暗号化
 	int ciphertext_len =
