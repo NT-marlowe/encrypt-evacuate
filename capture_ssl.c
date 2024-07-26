@@ -15,7 +15,7 @@ struct ssl_data_event {
 	int data_len;
 };
 
-SEC("uprobe/lib/x86_64-linux-gnu/libssl.so")
+SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3")
 // SEC("uprobe/usr/lib/x86_64-linux-gnu/libssl.so")
 // SEC("uprobe/usr/lib/python3.10/lib-dynload/"
 // "_ssl.cpython-310-x86_64-linux-gnu.so")
@@ -24,7 +24,7 @@ int probe_entry_SSL_write(struct pt_regs *ctx) {
 	__u32 pid             = current_pid_gid >> 32;
 
 	char read_buffer[100] = {0};
-	const char *buf       = (const char *)PT_REGS_PARM2(ctx);
+	const char *buf       = (const char *)PT_REGS_PARM4(ctx);
 	bpf_probe_read(read_buffer, sizeof(read_buffer), buf);
 
 	bpf_printk("Entry point of SSL_write, buf = %s\n", buf);
