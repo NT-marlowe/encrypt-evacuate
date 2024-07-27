@@ -12,9 +12,10 @@ struct enc_data_event_t {
 	__u64 timestamp_ns;
 	__u32 pid;
 	__u32 tid;
-	char data[MAX_DATA_LEN];
+	unsigned char data[MAX_DATA_LEN];
 	int data_len;
 };
+struct enc_data_event_t *unused __attribute__((unused));
 
 struct bpf_map_def SEC("maps") data_buffer_heap = {
 	.type        = BPF_MAP_TYPE_PERCPU_ARRAY,
@@ -22,6 +23,11 @@ struct bpf_map_def SEC("maps") data_buffer_heap = {
 	.value_size  = sizeof(struct enc_data_event_t),
 	.max_entries = 1,
 };
+
+struct {
+	__uint(type, BPF_MAP_TYPE_RINGBUF);
+	__uint(max_entries, 1024 * 1024);
+} events_ringbuf SEC(".maps");
 
 static __always_inline struct enc_data_event_t *create_enc_data_event(
 	const __u64 current_pid_tgid) {
@@ -50,8 +56,10 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	__u64 current_pid_tgid         = bpf_get_current_pid_tgid();
-	struct enc_data_event_t *event = create_enc_data_event(current_pid_tgid);
+	__u64 current_pid_tgid = bpf_get_current_pid_tgid();
+	// struct enc_data_event_t *event = create_enc_data_event(current_pid_tgid);
+	struct enc_data_event_t *event;
+	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
 	if (event == NULL) {
 		return 0;
 	}
@@ -59,15 +67,15 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
 	//   int *outl, const unsigned char *in, int inl);
 	const char *plaintext_buf = (const char *)PT_REGS_PARM4(ctx);
-	const int plaintext_len   = PT_REGS_PARM5(ctx);
+	const int len             = PT_REGS_PARM5(ctx);
+	event->data_len =
+		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
 
-	char read_buffer[100] = {0};
-	__builtin_memset(read_buffer, 0, sizeof(read_buffer));
+	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
+	// event->data_len = plaintext_len - 1;
 
-	bpf_probe_read_user(read_buffer, sizeof(read_buffer), plaintext_buf);
-	const int plain_len = PT_REGS_PARM5(ctx);
-
-	bpf_printk("data = %s\n", read_buffer);
+	// bpf_printk("data = %s\n", event->data);
+	bpf_ringbuf_submit(event, 0);
 
 	return 0;
 }
