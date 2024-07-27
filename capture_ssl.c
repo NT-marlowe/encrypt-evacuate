@@ -12,9 +12,10 @@ struct enc_data_event_t {
 	__u64 timestamp_ns;
 	__u32 pid;
 	__u32 tid;
-	char data[MAX_DATA_LEN];
+	unsigned char data[MAX_DATA_LEN];
 	int data_len;
 };
+struct enc_data_event_t *unused __attribute__((unused));
 
 struct bpf_map_def SEC("maps") data_buffer_heap = {
 	.type        = BPF_MAP_TYPE_PERCPU_ARRAY,
@@ -22,6 +23,11 @@ struct bpf_map_def SEC("maps") data_buffer_heap = {
 	.value_size  = sizeof(struct enc_data_event_t),
 	.max_entries = 1,
 };
+
+struct {
+	__uint(type, BPF_MAP_TYPE_RINGBUF);
+	__uint(max_entries, 1024 * 1024);
+} events_ringbuf SEC(".maps");
 
 static __always_inline struct enc_data_event_t *create_enc_data_event(
 	const __u64 current_pid_tgid) {
@@ -66,7 +72,8 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	bpf_probe_read_user(event->data, plaintext_len - 1, plaintext_buf);
 	event->data_len = plaintext_len - 1;
 
-	bpf_printk("data = %s\n", event->data);
+	// bpf_printk("data = %s\n", event->data);
+	bpf_ringbuf_output(&events_ringbuf, event, sizeof(*event), 0);
 
 	return 0;
 }

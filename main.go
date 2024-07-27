@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bytes"
+	"encoding/binary"
+	"errors"
 	"log"
 	"os"
 	"os/signal"
 
 	"github.com/cilium/ebpf/link"
+	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
 )
 
@@ -42,10 +46,44 @@ func main() {
 	}
 	defer uprobe.Close()
 
-	// Periodically fetch the packet counter from PktCount,
-	// exit the program when interrupted.
-	stop := make(chan os.Signal, 5)
-	signal.Notify(stop, os.Interrupt)
-	<-stop
-	log.Print("Received signal, exiting..")
+	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
+	if err != nil {
+		log.Fatal("Creating ringbuf reader:", err)
+	}
+	defer rd.Close()
+
+	stopper := make(chan os.Signal, 5)
+	signal.Notify(stopper, os.Interrupt)
+
+	go func() {
+		<-stopper
+
+		if err := rd.Close(); err != nil {
+			log.Fatalf("Closing ringbuf reader: %v", err)
+		}
+
+	}()
+
+	var event capture_sslEncDataEventT
+	for {
+		record, err := rd.Read()
+		if err != nil {
+			if errors.Is(err, ringbuf.ErrClosed) {
+				log.Println("Ringbuf closed, exiting..")
+				return
+			}
+			log.Printf("Reading record: %s", err)
+			continue
+		}
+
+		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
+			log.Printf("parsing ringbuf event: %s", err)
+			continue
+		}
+
+		log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
+
+	}
+
+	// log.Print("Received signal, exiting..")
 }
