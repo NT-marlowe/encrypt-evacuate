@@ -56,8 +56,10 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	__u64 current_pid_tgid         = bpf_get_current_pid_tgid();
-	struct enc_data_event_t *event = create_enc_data_event(current_pid_tgid);
+	__u64 current_pid_tgid = bpf_get_current_pid_tgid();
+	// struct enc_data_event_t *event = create_enc_data_event(current_pid_tgid);
+	struct enc_data_event_t *event;
+	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
 	if (event == NULL) {
 		return 0;
 	}
@@ -73,7 +75,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	event->data_len = plaintext_len - 1;
 
 	// bpf_printk("data = %s\n", event->data);
-	bpf_ringbuf_output(&events_ringbuf, event, sizeof(*event), 0);
+	bpf_ringbuf_submit(event, 0);
 
 	return 0;
 }
