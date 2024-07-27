@@ -26,7 +26,6 @@ struct bpf_map_def SEC("maps") stack_trace_map = {
 
 SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3:EVP_EncryptUpdate")
 int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
-	bpf_printk("probe_entry_EVP_EncryptUpdate\n");
 	char comm[16] = {0};
 	bpf_get_current_comm(&comm, sizeof(comm));
 	// ToDo: filter with pid
