@@ -59,15 +59,14 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
 	//   int *outl, const unsigned char *in, int inl);
 	const char *plaintext_buf = (const char *)PT_REGS_PARM4(ctx);
-	const int plaintext_len   = PT_REGS_PARM5(ctx);
+	const int plaintext_len =
+		(plaintext_len < MAX_DATA_LEN ? (plaintext_len & (MAX_DATA_LEN - 1))
+									  : MAX_DATA_LEN);
 
-	char read_buffer[100] = {0};
-	__builtin_memset(read_buffer, 0, sizeof(read_buffer));
+	bpf_probe_read_user(event->data, plaintext_len - 1, plaintext_buf);
+	event->data_len = plaintext_len - 1;
 
-	bpf_probe_read_user(read_buffer, sizeof(read_buffer), plaintext_buf);
-	const int plain_len = PT_REGS_PARM5(ctx);
-
-	bpf_printk("data = %s\n", read_buffer);
+	bpf_printk("data = %s\n", event->data);
 
 	return 0;
 }
