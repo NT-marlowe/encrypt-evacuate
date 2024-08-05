@@ -29,22 +29,6 @@ struct {
 	__uint(max_entries, 1024 * 1024);
 } events_ringbuf SEC(".maps");
 
-static __always_inline struct enc_data_event_t *create_enc_data_event(
-	const __u64 current_pid_tgid) {
-	__u32 zero = 0;
-	struct enc_data_event_t *event =
-		bpf_map_lookup_elem(&data_buffer_heap, &zero);
-	if (!event) {
-		return NULL;
-	}
-
-	event->timestamp_ns = bpf_ktime_get_ns();
-	event->pid          = current_pid_tgid >> 32;
-	event->tid          = current_pid_tgid;
-
-	return event;
-}
-
 SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
 	"EncryptUpdate")
@@ -57,7 +41,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	}
 
 	__u64 current_pid_tgid = bpf_get_current_pid_tgid();
-	// struct enc_data_event_t *event = create_enc_data_event(current_pid_tgid);
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
 	if (event == NULL) {
