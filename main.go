@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -65,12 +66,15 @@ func main() {
 	var event capture_sslEncDataEventT
 
 	// create a file in dataShelterPath
-	file, err := os.Create(dataShelterPath + "/data")
+	err = os.MkdirAll(dataShelterPath, 0766)
+	if err != nil {
+		log.Fatal("Creating data shelter path:", err)
+	}
+	file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
 	if err != nil {
 		log.Fatal("Creating file in data shelter path:", err)
 	}
 	defer file.Close()
-	file.WriteString("Data shelter file\n")
 
 	for {
 		record, err := rd.Read()
@@ -88,11 +92,12 @@ func main() {
 			continue
 		}
 
+		file.Write(event.Data[:event.DataLen])
+
 		log.Println("---------------------------------------")
 		log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
 		log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
 
 	}
 
-	// log.Print("Received signal, exiting..")
 }
