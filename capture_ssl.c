@@ -29,6 +29,12 @@ struct {
 	__uint(max_entries, 1024 * 1024);
 } events_ringbuf SEC(".maps");
 
+SEC("fentry/ksys_read")
+int BPF_PROG(fentry_read, const unsigned int fd, const char *buf) {
+	bpf_printk("read: %d\n", fd);
+	return 0;
+}
+
 SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
 	"EncryptUpdate")

@@ -45,6 +45,13 @@ func main() {
 	}
 	defer uprobe.Close()
 
+	// load fentry_read
+	link, err := link.AttachTracing(link.TracingOptions{Program: objs.FentryRead})
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link.Close()
+
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {
 		log.Fatal("Creating ringbuf reader:", err)
