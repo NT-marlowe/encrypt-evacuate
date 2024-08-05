@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -73,11 +72,7 @@ func main() {
 	var event capture_sslEncDataEventT
 
 	// create a file in dataShelterPath
-	err = os.MkdirAll(dataShelterPath, 0766)
-	if err != nil {
-		log.Fatal("Creating data shelter path:", err)
-	}
-	file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
+	file, err := initDataShelter()
 	if err != nil {
 		log.Fatal("Creating file in data shelter path:", err)
 	}
