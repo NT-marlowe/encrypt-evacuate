@@ -15,11 +15,9 @@ import (
 
 const (
 	sharedLibraryPath = "/lib/x86_64-linux-gnu/libcrypto.so.3"
-	// sharedLibraryPath = "/usr/lib/x86_64-linux-gnu/libssl.so"
-	// sharedLibraryPath = "/usr/lib/python3.10/lib-dynload/_ssl.cpython-310-x86_64-linux-gnu.so"
-	// symbol = "SSL_write"
-	symbol = "EVP_EncryptUpdate"
+	symbol            = "EVP_EncryptUpdate"
 	// symbol = "EVP_EncryptInit_ex"
+	dataShelterPath = "/usr/tmp/data_shelter"
 )
 
 func main() {
@@ -65,6 +63,15 @@ func main() {
 	}()
 
 	var event capture_sslEncDataEventT
+
+	// create a file in dataShelterPath
+	file, err := os.Create(dataShelterPath + "/data")
+	if err != nil {
+		log.Fatal("Creating file in data shelter path:", err)
+	}
+	defer file.Close()
+	file.WriteString("Data shelter file\n")
+
 	for {
 		record, err := rd.Read()
 		if err != nil {
