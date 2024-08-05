@@ -17,13 +17,6 @@ struct enc_data_event_t {
 };
 struct enc_data_event_t *unused __attribute__((unused));
 
-struct bpf_map_def SEC("maps") data_buffer_heap = {
-	.type        = BPF_MAP_TYPE_PERCPU_ARRAY,
-	.key_size    = sizeof(__u32),
-	.value_size  = sizeof(struct enc_data_event_t),
-	.max_entries = 1,
-};
-
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
 	__uint(max_entries, 1024 * 1024);

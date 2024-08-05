@@ -70,8 +70,7 @@ type capture_sslProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_sslMapSpecs struct {
-	DataBufferHeap *ebpf.MapSpec `ebpf:"data_buffer_heap"`
-	EventsRingbuf  *ebpf.MapSpec `ebpf:"events_ringbuf"`
+	EventsRingbuf *ebpf.MapSpec `ebpf:"events_ringbuf"`
 }
 
 // capture_sslObjects contains all objects after they have been loaded into the kernel.
@@ -93,13 +92,11 @@ func (o *capture_sslObjects) Close() error {
 //
 // It can be passed to loadCapture_sslObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_sslMaps struct {
-	DataBufferHeap *ebpf.Map `ebpf:"data_buffer_heap"`
-	EventsRingbuf  *ebpf.Map `ebpf:"events_ringbuf"`
+	EventsRingbuf *ebpf.Map `ebpf:"events_ringbuf"`
 }
 
 func (m *capture_sslMaps) Close() error {
 	return _Capture_sslClose(
-		m.DataBufferHeap,
 		m.EventsRingbuf,
 	)
 }
