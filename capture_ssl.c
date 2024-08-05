@@ -22,9 +22,20 @@ struct {
 	__uint(max_entries, 1024 * 1024);
 } events_ringbuf SEC(".maps");
 
+struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(key_size, sizeof(const void *));
+	__uint(value_size, sizeof(int));
+	__uint(max_entries, 1024);
+} ptr_to_fd SEC(".maps");
+
 SEC("fentry/ksys_read")
 int BPF_PROG(fentry_read, const unsigned int fd, const char *buf) {
+	if (fd < 0) {
+		return 0;
+	}
 	bpf_printk("read: %d\n", fd);
+	bpf_map_update_elem(&ptr_to_fd, &buf, &fd, BPF_ANY);
 	return 0;
 }
 
