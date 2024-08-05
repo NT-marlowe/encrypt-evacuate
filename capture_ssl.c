@@ -72,9 +72,9 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
 
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
-	// event->data_len = plaintext_len - 1;
+	event->pid = current_pid_tgid >> 32;
+	event->tid = current_pid_tgid;
 
-	// bpf_printk("data = %s\n", event->data);
 	bpf_ringbuf_submit(event, 0);
 
 	return 0;
