@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "./cipher_funcs.h"
+
 void print_usage(const char *progname);
 int parse_flag(const char *flag);
 
@@ -17,7 +19,14 @@ int main(int argc, char **argv) {
 		print_usage(argv[0]);
 		return EXIT_FAILURE;
 	}
-	printf("Filepath: %s\n", filepath);
+
+	// Generate a random key and IV
+	unsigned char key[32];
+	unsigned char iv[16];
+	// RAND_bytes(key, sizeof(key));
+	// RAND_bytes(iv, sizeof(iv));
+
+	encrypt_file(filepath, key, iv);
 }
 
 void print_usage(const char *progname) {
