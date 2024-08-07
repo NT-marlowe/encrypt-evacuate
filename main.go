@@ -92,7 +92,9 @@ func main() {
 			continue
 		}
 
-		file.Write(event.Data[:event.DataLen])
+		go func() {
+			file.Write(event.Data[:event.DataLen])
+		}()
 
 		log.Println("---------------------------------------")
 		log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
