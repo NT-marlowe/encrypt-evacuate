@@ -52,7 +52,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	char comm[16] = {0};
 	bpf_get_current_comm(&comm, sizeof(comm));
 	// ToDo: filter with pid
-	if (comm[0] != 'e') {
+	if (comm[0] != 'm' || comm[1] != 'y') {
 		return 0;
 	}
 
