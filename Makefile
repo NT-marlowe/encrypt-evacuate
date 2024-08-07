@@ -25,3 +25,7 @@ load: capture_ssl.o
 .PHONY: cat
 cat:
 	sudo cat /sys/kernel/debug/tracing/trace_pipe
+
+.PHONE: clear-shelter
+clear-shelter:
+	sudo rm -f /usr/tmp/data_shelter/*
