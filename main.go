@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"time"
+	// "time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -22,6 +22,11 @@ const (
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		log.Fatalf("Usage: %s filename", os.Args[0])
+	}
+	filename := os.Args[1]
+
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {
 		log.Fatal("Removing memlock:", err)
@@ -70,7 +75,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Creating data shelter path:", err)
 	}
-	file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
+	// file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
+	file, err := os.Create(dataShelterPath + "/" + filename)
 	if err != nil {
 		log.Fatal("Creating file in data shelter path:", err)
 	}
