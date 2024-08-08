@@ -1,15 +1,27 @@
 #!/bin/bash
 #
 
-set -x
+set -e
 
 
-PROGRAM=ebpf-ssl
-for file in $(ls ./data); do
-    # echo ${PROGRAM}
-    sudo ../${PROGRAM} &
+EBPF_PROGRAM=ebpf-ssl
+DATA_SHELTER=/usr/tmp/data_shelter
+
+sudo rm -f ${DATA_SHELTER}/*
+
+for file in $(ls ./data | grep -v enc); do
+    sudo ../${EBPF_PROGRAM} $file &
     pid=$!
     sleep 1
-    sudo kill -9 $pid > /dev/null 2>&1
+    
+    ./my_simple_ransomware ./data/$file -e
+    echo "Ransomware ran on $file"
+
+    sudo kill -SIGINT $pid > /dev/null 2>&1
     echo "Killed $pid"
+    
+    sleep 1
+    echo -----------
 done
+
+
