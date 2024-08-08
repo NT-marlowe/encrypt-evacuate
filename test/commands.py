@@ -14,12 +14,13 @@ def generate_random_file(filepath: str, byte_size: int):
         print("openssl command not found. Please make sure it is installed.")
 
 
-def write_lolem(filepath: str, byte_size: int):
-    string = "Lorem ipsum odor amet, consectetuer adipiscing elit.\nLorem ipsum odor amet, consectetuer adipiscing"
-    with open(filepath, "wb") as f:
-        for _ in range(byte_size // len(string)):
-            f.write(string.encode("utf-8"))
-        f.write(string[: byte_size % len(string)].encode("utf-8"))
+def write_lorem(filepath: str, byte_size: int):
+    with open("lorem_all.txt", "r") as f_lorem:
+        string = f_lorem.read()
+        with open(filepath, "wb") as f:
+            for _ in range(byte_size // len(string)):
+                f.write(string.encode("utf-8"))
+            f.write(string[: byte_size % len(string)].encode("utf-8"))
 
 
 def get_suffix(byte_size: int) -> tuple[int, str]:
@@ -41,9 +42,9 @@ def get_filename(byte_size: int):
 def generate_files(init_size: int = K):
     filesize = init_size
     idx = 0
-    while filesize < G:
+    while filesize <= M:
         # generate_random_file(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
-        write_lolem(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
+        write_lorem(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
         filesize *= 10
         idx += 1
 
@@ -67,9 +68,10 @@ def calculate_recovery_rate(original_file_path, recovered_file_path):
 
 
 from rapidfuzz import fuzz
+import Levenshtein
 
 
-def calculate_leven_dist(original_file_path, recovered_file_path):
+def calculate_dist_and_ratio(original_file_path, recovered_file_path):
     with open(original_file_path, "r") as f:
         original_content = f.read()
 
@@ -77,14 +79,15 @@ def calculate_leven_dist(original_file_path, recovered_file_path):
         recovered_content = f.read()
 
     # Calculate Levenshtein distance
-    # distance = f.distance(original_content, recovered_content)
+    distance = Levenshtein.distance(original_content, recovered_content)
 
-    # # Calculate the similarity
-    # similarity = 1 - (distance / max(len(original_content), len(recovered_content)))
+    # Calculate the similarity
+    similarity = 1 - (distance / max(len(original_content), len(recovered_content)))
 
     # Calculate recovery rate as a percentage
-    # recovery_rate = similarity * 100
-    return fuzz.partial_ratio(original_content, recovered_content)
+    recovery_rate = similarity * 100
+    partial_ratio = fuzz.partial_ratio(original_content, recovered_content)
+    return recovery_rate, partial_ratio
 
 
 if __name__ == "__main__":
@@ -95,8 +98,11 @@ if __name__ == "__main__":
     elif subcommand == "calc":
         original_file_path = sys.argv[2]
         recovered_file_path = sys.argv[3]
+
         # recovery_rate = calculate_recovery_rate(original_file_path, recovered_file_path)
-        recovery_rate = calculate_leven_dist(original_file_path, recovered_file_path)
-        print(f"復元率: {recovery_rate:.2f}%")
+        recovery_rate, partial_ratio = calculate_dist_and_ratio(
+            original_file_path, recovered_file_path
+        )
+        print(f"{recovery_rate:.2f}, {partial_ratio}")
 
 # generate_files()
