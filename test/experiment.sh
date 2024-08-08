@@ -20,7 +20,7 @@ for file in $(ls ./data | grep -v enc); do
     sudo kill -SIGINT $pid > /dev/null 2>&1
     echo "Killed $pid"
     
-    sleep 1
+    sleep 3
     echo -----------
 done
 
