@@ -9,7 +9,7 @@ for file in $(ls ./data | grep -v enc); do
 
     original=./data/$file
     recovered=/usr/tmp/data_shelter/$file
-    python3 commands.py calc ${original} ${recovered}
+    python3 commands.py rate ${original} ${recovered}
 done
 
 

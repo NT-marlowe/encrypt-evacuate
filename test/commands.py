@@ -42,7 +42,7 @@ def get_filename(byte_size: int):
 def generate_files(init_size: int = K):
     filesize = init_size
     idx = 0
-    while filesize <= M:
+    while filesize < G:
         # generate_random_file(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
         write_lorem(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
         filesize *= 10
@@ -104,5 +104,12 @@ if __name__ == "__main__":
             original_file_path, recovered_file_path
         )
         print(f"{recovery_rate:.2f}, {partial_ratio}")
+
+    elif subcommand == "rate":
+        original_file_path = sys.argv[2]
+        recovered_file_path = sys.argv[3]
+
+        recovery_rate = calculate_recovery_rate(original_file_path, recovered_file_path)
+        print(f"{recovery_rate:.2f}")
 
 # generate_files()

@@ -98,9 +98,10 @@ func main() {
 			continue
 		}
 
-		go func() {
-			file.Write(event.Data[:event.DataLen])
-		}()
+		// go func() {
+		// If multiple goroutines write to the same file, the data might be mixed up.
+		file.Write(event.Data[:event.DataLen])
+		// }()
 
 		// log.Println("---------------------------------------")
 		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
