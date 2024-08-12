@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 
 K = 1000
 M = K**2
@@ -90,26 +91,36 @@ def calculate_dist_and_ratio(original_file_path, recovered_file_path):
     return recovery_rate, partial_ratio
 
 
+def calculate_retention_rate(original_file_path, recovered_file_path):
+    original_size = os.path.getsize(original_file_path)
+    recovered_size = os.path.getsize(recovered_file_path)
+    return recovered_size / original_size
+
+
 if __name__ == "__main__":
     subcommand = sys.argv[1]
     if subcommand == "gen":
         generate_files()
         sys.exit(0)
-    elif subcommand == "calc":
-        original_file_path = sys.argv[2]
-        recovered_file_path = sys.argv[3]
 
+    original_file_path = sys.argv[2]
+    recovered_file_path = sys.argv[3]
+
+    if subcommand == "dist":
         # recovery_rate = calculate_recovery_rate(original_file_path, recovered_file_path)
         recovery_rate, partial_ratio = calculate_dist_and_ratio(
             original_file_path, recovered_file_path
         )
         print(f"{recovery_rate:.2f}, {partial_ratio}")
 
-    elif subcommand == "rate":
-        original_file_path = sys.argv[2]
-        recovered_file_path = sys.argv[3]
-
+    elif subcommand == "match":
         recovery_rate = calculate_recovery_rate(original_file_path, recovered_file_path)
         print(f"{recovery_rate:.2f}")
+
+    elif subcommand == "reten":
+        retention_rate = calculate_retention_rate(
+            original_file_path, recovered_file_path
+        )
+        print(f"{retention_rate:.3f}")
 
 # generate_files()
