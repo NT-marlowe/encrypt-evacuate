@@ -14,8 +14,8 @@ set -e
 # file system Output
 
 echo "cpu usage, max RSS (kB), averate total memory, file system output" > ./result/stats.txt
-# /usr/bin/time -f "%P, \t%M, \t%K, \t%O" -o ./result/stats.txt ../ebpf-ssl tmp &
-/usr/bin/time -a -o ./result/stats.txt -v ../ebpf-ssl tmp &
+/usr/bin/time -f "%P, \t%M, \t%K, \t%O" -a -o ./result/stats.txt ../ebpf-ssl tmp &
+# /usr/bin/time -a -o ./result/stats.txt -v ../ebpf-ssl tmp &
 time_pid=$!
 
 ebpf_pid=$(pgrep -P $time_pid) 
