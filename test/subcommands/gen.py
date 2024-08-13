@@ -45,3 +45,13 @@ def generate_random_files(init_size: int = K):
         # write_lorem(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
         filesize *= 10
         idx += 1
+
+
+"""create a file that contains the byte of 1, 2, ..., file_size"""
+
+
+def generate_sequential_file(file_size: int):
+    with open(f"./data/sequential_{get_filename(file_size)}", "wb") as f:
+        for i in range(file_size // 4):
+            val = i + 1
+            f.write(val.to_bytes(length=4, byteorder="little"))

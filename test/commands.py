@@ -1,7 +1,5 @@
 import sys
-import os
-from rapidfuzz import fuzz
-from subcommands.gen import generate_random_files
+from subcommands.gen import generate_random_files, generate_sequential_file
 from subcommands.calc import (
     calculate_dist_and_ratio,
     calculate_recovery_rate,
@@ -17,6 +15,8 @@ if __name__ == "__main__":
 
     if subcommand == "gen-seq":
         byte_size = int(sys.argv[2])
+        generate_sequential_file(byte_size)
+        sys.exit(0)
 
     original_file_path = sys.argv[2]
     recovered_file_path = sys.argv[3]
