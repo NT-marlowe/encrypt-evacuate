@@ -9,7 +9,9 @@ DATA_SHELTER=/usr/tmp/data_shelter
 
 sudo rm -f ${DATA_SHELTER}/*
 
-for file in $(ls ./data | grep -v enc); do
+# for file in $(ls ./data | grep -v enc); do
+for file in $(ls ./data/1* | grep -v enc); do
+    file=$(basename $file)
     sudo ../${EBPF_PROGRAM} $file &
     pid=$!
     sleep 1
