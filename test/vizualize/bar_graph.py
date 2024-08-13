@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import re
-import sys
+import numpy as np
 
 data_dir_exp = "../result/exponential"
 data_dir_inc = "../result/incremental"
@@ -42,6 +42,54 @@ def read_csv(filepath: str) -> tuple[list[int], list[float]]:
         return filesize_list, ratio_list
 
 
-data_path = sys.argv[1]
-filesize_list, ratio_list = read_csv(f"{data_path}")
-print(filesize_list, ratio_list)
+def plot_graph_exp():
+    filesize_list, retention_list = read_csv(f"{data_dir_exp}/retention.csv")
+    filesize_list, match_list = read_csv(f"{data_dir_exp}/match.csv")
+
+    labels = ["1K", "10K", "100K", "1M", "10M", "100M"]
+    x = np.arange(len(labels))
+    width = 0.2
+
+    fig, ax = plt.subplots()
+    ax.bar(x - width / 2, retention_list, width, label="Retention Rate")
+    ax.bar(x + width / 2, match_list, width, label="Match Rate")
+
+    ax.set_title("Retention and Match Rates by File Size")
+
+    ax.set_xlabel("Size of Original File [Byte]")
+    ax.set_ylabel("Rate")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+    # plot these two lists
+    plt.savefig(f"./img/retention_match_exp.png")
+
+
+def plot_graph_incremental():
+    filesize_list, retention_list = read_csv(f"{data_dir_inc}/retention.csv")
+    filesize_list, match_list = read_csv(f"{data_dir_inc}/match.csv")
+
+    labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
+    x = np.arange(len(labels))
+    width = 0.2
+
+    fig, ax = plt.subplots()
+    ax.bar(x - width / 2, retention_list, width, label="Retention Rate")
+    ax.bar(x + width / 2, match_list, width, label="Match Rate")
+
+    ax.set_title("Retention and Match Rates by File Size")
+
+    ax.set_xlabel("Size of Original File [Byte]")
+    ax.set_ylabel("Rate")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+    # plot these two lists
+    plt.savefig(f"./img/retention_match_inc.png")
+
+
+plot_graph_exp()
+
+plot_graph_incremental()
