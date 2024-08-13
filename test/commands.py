@@ -1,53 +1,8 @@
-import subprocess
 import sys
 import os
-
-K = 1000
-M = K**2
-G = K**3
-
-
-def generate_random_file(filepath: str, byte_size: int):
-    try:
-        subprocess.run(["openssl", "rand", "-out", filepath, str(byte_size)])
-        print(f"Random file '{filepath}' generated successfully.")
-    except FileNotFoundError:
-        print("openssl command not found. Please make sure it is installed.")
-
-
-def write_lorem(filepath: str, byte_size: int):
-    with open("lorem_all.txt", "r") as f_lorem:
-        string = f_lorem.read()
-        with open(filepath, "wb") as f:
-            for _ in range(byte_size // len(string)):
-                f.write(string.encode("utf-8"))
-            f.write(string[: byte_size % len(string)].encode("utf-8"))
-
-
-def get_suffix(byte_size: int) -> tuple[int, str]:
-    if byte_size < K:
-        return 1, "B"
-    if byte_size < M:
-        return K, "KB"
-    if byte_size < G:
-        return M, "MB"
-    return G, "GB"
-
-
-def get_filename(byte_size: int):
-    base, suffix = get_suffix(byte_size)
-    return f"{byte_size // base}{suffix}.data"
-
-
-# 使用例
-def generate_files(init_size: int = K):
-    filesize = init_size
-    idx = 0
-    while filesize < G:
-        generate_random_file(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
-        # write_lorem(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
-        filesize *= 10
-        idx += 1
+from rapidfuzz import fuzz
+from subcommands.gen import generate_files
+import Levenshtein
 
 
 def calculate_recovery_rate(original_file_path, recovered_file_path):
@@ -66,10 +21,6 @@ def calculate_recovery_rate(original_file_path, recovered_file_path):
     # Calculate recovery rate
     recovery_rate = (match_count / len(original_content)) * 100
     return recovery_rate
-
-
-from rapidfuzz import fuzz
-import Levenshtein
 
 
 def calculate_dist_and_ratio(original_file_path, recovered_file_path):
@@ -99,9 +50,12 @@ def calculate_retention_rate(original_file_path, recovered_file_path):
 
 if __name__ == "__main__":
     subcommand = sys.argv[1]
-    if subcommand == "gen":
+    if subcommand == "gen-rand":
         generate_files()
         sys.exit(0)
+
+    if subcommand == "gen-seq":
+        byte_size = int(sys.argv[2])
 
     original_file_path = sys.argv[2]
     recovered_file_path = sys.argv[3]
@@ -123,4 +77,6 @@ if __name__ == "__main__":
         )
         print(f"{retention_rate:.3f}")
 
-# generate_files()
+    else:
+        print("Invalid subcommand.")
+        sys.exit(1)
