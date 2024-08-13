@@ -19,16 +19,20 @@ def find_missing_bytes(recovered_file_path: str, byte_size: int) -> list[bool]:
 
 def viz_boolean_array(arr: list[bool]):
     length = len(arr)
-    tate_length = 1000
-    yoko_length = length // tate_length
+    yoko_length = 1000
+    tate_length = length // yoko_length
+    # yoko_length = length // tate_length
     arr_2d = np.array(arr).reshape(tate_length, yoko_length)
+    # plt.figure(figsize=(20, 20))
     plt.imshow(arr_2d, cmap="gray_r", aspect="auto")
 
     plt.xticks(
-        ticks=np.arange(0, yoko_length, 500),
-        labels=np.arange(1, yoko_length + 1, 500),
+        ticks=np.arange(0, yoko_length, 100),
+        labels=np.arange(1, yoko_length + 1, 100),
     )
-    plt.yticks(ticks=np.arange(0, 1000, 100), labels=np.arange(0, 1000, 100))
+    plt.yticks(
+        ticks=np.arange(0, tate_length, 250), labels=np.arange(0, tate_length, 250)
+    )
 
     # plt.title("Captured Bytes")
     plt.savefig("captured_bytes.png")
