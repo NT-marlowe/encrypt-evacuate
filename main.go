@@ -94,13 +94,13 @@ func main() {
 			continue
 		}
 
+		// go func() {
+		// If multiple goroutines write to the same file, the data might be mixed up.
 		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
-		// go func() {
-		// If multiple goroutines write to the same file, the data might be mixed up.
 		file.Write(event.Data[:event.DataLen])
 		// }()
 
