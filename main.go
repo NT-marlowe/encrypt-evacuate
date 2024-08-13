@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	// "time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -49,6 +48,8 @@ func main() {
 		log.Fatalf("Uprobe %s: %s", symbol, err)
 	}
 	defer uprobe.Close()
+
+	// log.Default().Println("Uprobe attached to", sharedLibraryPath, symbol)
 
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {

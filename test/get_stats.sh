@@ -7,26 +7,37 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 set -e
+set -u
 # cpu usafe, memory usage, max memory usage
 # percent of cpu
 # maximum RSS
 # averate RSS
 # file system Output
 
-echo "cpu usage, max RSS (kB), averate total memory, file system output" > ./result/stats.txt
-/usr/bin/time -f "%P, \t%M, \t%K, \t%O" -a -o ./result/stats.txt ../ebpf-ssl tmp &
-# /usr/bin/time -a -o ./result/stats.txt -v ../ebpf-ssl tmp &
+datafile=$1
+statsfile=./result/stats_$(basename $datafile .data).txt
+
+# echo "cpu usage, max RSS (kB), averate total memory, file system output" > ${statsfile}
+# /usr/bin/time -f "%P, \t%M, \t%K, \t%O" -a -o ${statsfile} ../ebpf-ssl tmp &
+/usr/bin/time -a -o ${statsfile} -v ../ebpf-ssl tmp &
 time_pid=$!
 
 ebpf_pid=$(pgrep -P $time_pid) 
-echo $ebpf_pid
+ps auxww | grep ebpf | grep -v grep
 
-./my_simple_ransomware ./data/04_10MB.data -e
+sleep 1
 
+./my_simple_ransomware ${datafile} -e
+
+
+echo "killing ebpf: $ebpf_pid"
 kill -SIGINT $ebpf_pid 
 
-if ps -p $ebpf_pid > /dev/null; then
-    kill -SIGKILL $ebpf_pid
-fi
+sleep 1
+
+# if ps -p $ebpf_pid > /dev/null; then
+    # kill -SIGKILL $ebpf_pid
+# fi
+ps auxww | grep ebpf | grep -v grep
 
 wait $time_pid
