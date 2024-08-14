@@ -1,0 +1,500 @@
+           <...>-2687157 [059] ...11 9129547.485591: bpf_trace_printk: time: 5661
+
+           <...>-2687157 [059] ...11 9129547.485652: bpf_trace_printk: time: 2600
+
+           <...>-2687157 [059] ...11 9129547.485664: bpf_trace_printk: time: 625
+
+           <...>-2687157 [059] ...11 9129547.485692: bpf_trace_printk: time: 894
+
+           <...>-2687157 [059] ...11 9129547.485703: bpf_trace_printk: time: 1004
+
+           <...>-2687157 [059] ...11 9129547.485726: bpf_trace_printk: time: 1009
+
+           <...>-2687157 [059] ...11 9129547.485737: bpf_trace_printk: time: 576
+
+           <...>-2687157 [059] ...11 9129547.485760: bpf_trace_printk: time: 587
+
+           <...>-2687157 [059] ...11 9129547.485770: bpf_trace_printk: time: 649
+
+           <...>-2687157 [059] ...11 9129547.485795: bpf_trace_printk: time: 837
+
+           <...>-2687157 [059] ...11 9129547.485807: bpf_trace_printk: time: 621
+
+           <...>-2687157 [059] ...11 9129547.485833: bpf_trace_printk: time: 578
+
+           <...>-2687157 [059] ...11 9129547.485844: bpf_trace_printk: time: 1169
+
+           <...>-2687157 [059] ...11 9129547.485872: bpf_trace_printk: time: 633
+
+           <...>-2687157 [059] ...11 9129547.485883: bpf_trace_printk: time: 674
+
+           <...>-2687157 [059] ...11 9129547.485907: bpf_trace_printk: time: 683
+
+           <...>-2687157 [059] ...11 9129547.485918: bpf_trace_printk: time: 576
+
+           <...>-2687157 [059] ...11 9129547.485942: bpf_trace_printk: time: 634
+
+           <...>-2687157 [059] ...11 9129547.485958: bpf_trace_printk: time: 621
+
+           <...>-2687157 [059] ...11 9129547.485986: bpf_trace_printk: time: 986
+
+           <...>-2687157 [059] ...11 9129547.485998: bpf_trace_printk: time: 910
+
+ my_simple_ranso-2687157 [059] ...11 9129547.486025: bpf_trace_printk: time: 850
+
+ my_simple_ranso-2687157 [059] ...11 9129547.486038: bpf_trace_printk: time: 659
+
+ my_simple_ranso-2687157 [059] ...11 9129547.486065: bpf_trace_printk: time: 694
+
+ my_simple_ranso-2687157 [059] ...11 9129547.486079: bpf_trace_printk: time: 517
+
+           <...>-2687159 [057] ...11 9129547.993563: bpf_trace_printk: time: 5961
+
+           <...>-2687159 [057] ...11 9129547.993612: bpf_trace_printk: time: 2632
+
+           <...>-2687159 [057] ...11 9129547.993626: bpf_trace_printk: time: 845
+
+           <...>-2687159 [057] ...11 9129547.993657: bpf_trace_printk: time: 761
+
+           <...>-2687159 [057] ...11 9129547.993671: bpf_trace_printk: time: 661
+
+           <...>-2687159 [057] ...11 9129547.993698: bpf_trace_printk: time: 925
+
+           <...>-2687159 [057] ...11 9129547.993713: bpf_trace_printk: time: 672
+
+           <...>-2687159 [057] ...11 9129547.993741: bpf_trace_printk: time: 642
+
+           <...>-2687159 [057] ...11 9129547.993755: bpf_trace_printk: time: 861
+
+           <...>-2687159 [057] ...11 9129547.993782: bpf_trace_printk: time: 920
+
+           <...>-2687159 [057] ...11 9129547.993796: bpf_trace_printk: time: 849
+
+           <...>-2687159 [057] ...11 9129547.993909: bpf_trace_printk: time: 722
+
+           <...>-2687159 [057] ...11 9129547.993923: bpf_trace_printk: time: 681
+
+           <...>-2687159 [057] ...11 9129547.993954: bpf_trace_printk: time: 1240
+
+           <...>-2687159 [057] ...11 9129547.993968: bpf_trace_printk: time: 580
+
+           <...>-2687159 [057] ...11 9129547.993994: bpf_trace_printk: time: 625
+
+           <...>-2687159 [057] ...11 9129547.994008: bpf_trace_printk: time: 655
+
+           <...>-2687159 [057] ...11 9129547.994035: bpf_trace_printk: time: 911
+
+           <...>-2687159 [057] ...11 9129547.994048: bpf_trace_printk: time: 654
+
+           <...>-2687159 [057] ...11 9129547.994076: bpf_trace_printk: time: 792
+
+           <...>-2687159 [057] ...11 9129547.994090: bpf_trace_printk: time: 1167
+
+           <...>-2687159 [057] ...11 9129547.994118: bpf_trace_printk: time: 667
+
+           <...>-2687159 [057] ...11 9129547.994132: bpf_trace_printk: time: 644
+
+           <...>-2687159 [057] ...11 9129547.994158: bpf_trace_printk: time: 778
+
+           <...>-2687159 [057] ...11 9129547.994173: bpf_trace_printk: time: 538
+
+           <...>-2687176 [025] ...11 9129548.501538: bpf_trace_printk: time: 6629
+
+           <...>-2687176 [025] ...11 9129548.501588: bpf_trace_printk: time: 2287
+
+           <...>-2687176 [025] ...11 9129548.501599: bpf_trace_printk: time: 564
+
+           <...>-2687176 [025] ...11 9129548.501620: bpf_trace_printk: time: 567
+
+           <...>-2687176 [025] ...11 9129548.501631: bpf_trace_printk: time: 518
+
+           <...>-2687176 [025] ...11 9129548.501651: bpf_trace_printk: time: 630
+
+           <...>-2687176 [025] ...11 9129548.501662: bpf_trace_printk: time: 498
+
+           <...>-2687176 [025] ...11 9129548.501682: bpf_trace_printk: time: 901
+
+           <...>-2687176 [025] ...11 9129548.501692: bpf_trace_printk: time: 550
+
+           <...>-2687176 [025] ...11 9129548.501714: bpf_trace_printk: time: 698
+
+           <...>-2687176 [025] ...11 9129548.501725: bpf_trace_printk: time: 477
+
+           <...>-2687176 [025] ...11 9129548.501744: bpf_trace_printk: time: 499
+
+           <...>-2687176 [025] ...11 9129548.501755: bpf_trace_printk: time: 827
+
+           <...>-2687176 [025] ...11 9129548.501776: bpf_trace_printk: time: 810
+
+           <...>-2687176 [025] ...11 9129548.501787: bpf_trace_printk: time: 474
+
+           <...>-2687176 [025] ...11 9129548.501806: bpf_trace_printk: time: 476
+
+           <...>-2687176 [025] ...11 9129548.501817: bpf_trace_printk: time: 501
+
+           <...>-2687176 [025] ...11 9129548.501835: bpf_trace_printk: time: 532
+
+           <...>-2687176 [025] ...11 9129548.501846: bpf_trace_printk: time: 478
+
+           <...>-2687176 [025] ...11 9129548.501866: bpf_trace_printk: time: 640
+
+           <...>-2687176 [025] ...11 9129548.501877: bpf_trace_printk: time: 565
+
+           <...>-2687176 [025] ...11 9129548.501900: bpf_trace_printk: time: 911
+
+           <...>-2687176 [025] ...11 9129548.501911: bpf_trace_printk: time: 527
+
+           <...>-2687176 [025] ...11 9129548.501930: bpf_trace_printk: time: 940
+
+           <...>-2687176 [025] ...11 9129548.501941: bpf_trace_printk: time: 323
+
+           <...>-2687178 [025] ...11 9129549.009408: bpf_trace_printk: time: 5695
+
+           <...>-2687178 [025] ...11 9129549.009451: bpf_trace_printk: time: 2203
+
+           <...>-2687178 [025] ...11 9129549.009462: bpf_trace_printk: time: 672
+
+           <...>-2687178 [025] ...11 9129549.009555: bpf_trace_printk: time: 814
+
+           <...>-2687178 [025] ...11 9129549.009566: bpf_trace_printk: time: 572
+
+           <...>-2687178 [025] ...11 9129549.009585: bpf_trace_printk: time: 578
+
+           <...>-2687178 [025] ...11 9129549.009596: bpf_trace_printk: time: 573
+
+           <...>-2687178 [025] ...11 9129549.009615: bpf_trace_printk: time: 743
+
+           <...>-2687178 [025] ...11 9129549.009626: bpf_trace_printk: time: 899
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009645: bpf_trace_printk: time: 563
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009657: bpf_trace_printk: time: 569
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009675: bpf_trace_printk: time: 565
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009687: bpf_trace_printk: time: 576
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009707: bpf_trace_printk: time: 594
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009718: bpf_trace_printk: time: 570
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009739: bpf_trace_printk: time: 778
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009750: bpf_trace_printk: time: 567
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009769: bpf_trace_printk: time: 788
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009780: bpf_trace_printk: time: 551
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009798: bpf_trace_printk: time: 783
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009809: bpf_trace_printk: time: 582
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009829: bpf_trace_printk: time: 560
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009839: bpf_trace_printk: time: 557
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009858: bpf_trace_printk: time: 562
+
+ my_simple_ranso-2687178 [025] ...11 9129549.009870: bpf_trace_printk: time: 477
+
+           <...>-2687194 [057] ...11 9129549.514875: bpf_trace_printk: time: 6174
+
+           <...>-2687194 [057] ...11 9129549.514917: bpf_trace_printk: time: 869
+
+           <...>-2687194 [057] ...11 9129549.514928: bpf_trace_printk: time: 629
+
+           <...>-2687194 [057] ...11 9129549.514950: bpf_trace_printk: time: 992
+
+           <...>-2687194 [057] ...11 9129549.514961: bpf_trace_printk: time: 611
+
+           <...>-2687194 [057] ...11 9129549.514981: bpf_trace_printk: time: 601
+
+           <...>-2687194 [057] ...11 9129549.514992: bpf_trace_printk: time: 583
+
+           <...>-2687194 [057] ...11 9129549.515011: bpf_trace_printk: time: 586
+
+           <...>-2687194 [057] ...11 9129549.515022: bpf_trace_printk: time: 719
+
+           <...>-2687194 [057] ...11 9129549.515041: bpf_trace_printk: time: 677
+
+           <...>-2687194 [057] ...11 9129549.515052: bpf_trace_printk: time: 594
+
+           <...>-2687194 [057] ...11 9129549.515070: bpf_trace_printk: time: 679
+
+           <...>-2687194 [057] ...11 9129549.515081: bpf_trace_printk: time: 586
+
+           <...>-2687194 [057] ...11 9129549.515102: bpf_trace_printk: time: 613
+
+           <...>-2687194 [057] ...11 9129549.515113: bpf_trace_printk: time: 1029
+
+           <...>-2687194 [057] ...11 9129549.515132: bpf_trace_printk: time: 591
+
+           <...>-2687194 [057] ...11 9129549.515143: bpf_trace_printk: time: 822
+
+           <...>-2687194 [057] ...11 9129549.515163: bpf_trace_printk: time: 1018
+
+           <...>-2687194 [057] ...11 9129549.515174: bpf_trace_printk: time: 1091
+
+           <...>-2687194 [057] ...11 9129549.515334: bpf_trace_printk: time: 922
+
+           <...>-2687194 [057] ...11 9129549.515345: bpf_trace_printk: time: 894
+
+           <...>-2687194 [057] ...11 9129549.515365: bpf_trace_printk: time: 707
+
+           <...>-2687194 [057] ...11 9129549.515376: bpf_trace_printk: time: 676
+
+           <...>-2687194 [057] ...11 9129549.515396: bpf_trace_printk: time: 665
+
+           <...>-2687194 [057] ...11 9129549.515407: bpf_trace_printk: time: 647
+
+           <...>-2687196 [057] ...11 9129550.020235: bpf_trace_printk: time: 5130
+
+           <...>-2687196 [057] ...11 9129550.020276: bpf_trace_printk: time: 1097
+
+           <...>-2687196 [057] ...11 9129550.020288: bpf_trace_printk: time: 880
+
+           <...>-2687196 [057] ...11 9129550.020308: bpf_trace_printk: time: 1187
+
+           <...>-2687196 [057] ...11 9129550.020317: bpf_trace_printk: time: 726
+
+           <...>-2687196 [057] ...11 9129550.020335: bpf_trace_printk: time: 772
+
+           <...>-2687196 [057] ...11 9129550.020345: bpf_trace_printk: time: 613
+
+           <...>-2687196 [057] ...11 9129550.020363: bpf_trace_printk: time: 669
+
+           <...>-2687196 [057] ...11 9129550.020373: bpf_trace_printk: time: 965
+
+           <...>-2687196 [057] ...11 9129550.020391: bpf_trace_printk: time: 961
+
+           <...>-2687196 [057] ...11 9129550.020400: bpf_trace_printk: time: 1028
+
+           <...>-2687196 [057] ...11 9129550.020419: bpf_trace_printk: time: 759
+
+           <...>-2687196 [057] ...11 9129550.020428: bpf_trace_printk: time: 622
+
+           <...>-2687196 [057] ...11 9129550.020446: bpf_trace_printk: time: 630
+
+           <...>-2687196 [057] ...11 9129550.020455: bpf_trace_printk: time: 650
+
+           <...>-2687196 [057] ...11 9129550.020473: bpf_trace_printk: time: 964
+
+           <...>-2687196 [057] ...11 9129550.020483: bpf_trace_printk: time: 1032
+
+           <...>-2687196 [057] ...11 9129550.020500: bpf_trace_printk: time: 662
+
+           <...>-2687196 [057] ...11 9129550.020510: bpf_trace_printk: time: 647
+
+           <...>-2687196 [057] ...11 9129550.020527: bpf_trace_printk: time: 897
+
+           <...>-2687196 [057] ...11 9129550.020536: bpf_trace_printk: time: 639
+
+           <...>-2687196 [057] ...11 9129550.020554: bpf_trace_printk: time: 797
+
+           <...>-2687196 [057] ...11 9129550.020563: bpf_trace_printk: time: 628
+
+           <...>-2687196 [057] ...11 9129550.020580: bpf_trace_printk: time: 614
+
+           <...>-2687196 [057] ...11 9129550.020590: bpf_trace_printk: time: 385
+
+           <...>-2687198 [057] ...11 9129550.526560: bpf_trace_printk: time: 5177
+
+           <...>-2687198 [057] ...11 9129550.526601: bpf_trace_printk: time: 1086
+
+           <...>-2687198 [057] ...11 9129550.526612: bpf_trace_printk: time: 680
+
+           <...>-2687198 [057] ...11 9129550.526632: bpf_trace_printk: time: 787
+
+           <...>-2687198 [057] ...11 9129550.526643: bpf_trace_printk: time: 630
+
+           <...>-2687198 [057] ...11 9129550.526662: bpf_trace_printk: time: 548
+
+           <...>-2687198 [057] ...11 9129550.526672: bpf_trace_printk: time: 661
+
+           <...>-2687198 [057] ...11 9129550.526691: bpf_trace_printk: time: 668
+
+           <...>-2687198 [057] ...11 9129550.526702: bpf_trace_printk: time: 553
+
+           <...>-2687198 [057] ...11 9129550.526721: bpf_trace_printk: time: 549
+
+           <...>-2687198 [057] ...11 9129550.526731: bpf_trace_printk: time: 613
+
+           <...>-2687198 [057] ...11 9129550.526750: bpf_trace_printk: time: 542
+
+           <...>-2687198 [057] ...11 9129550.526761: bpf_trace_printk: time: 538
+
+           <...>-2687198 [057] ...11 9129550.526781: bpf_trace_printk: time: 693
+
+           <...>-2687198 [057] ...11 9129550.526792: bpf_trace_printk: time: 1153
+
+           <...>-2687198 [057] ...11 9129550.526811: bpf_trace_printk: time: 675
+
+           <...>-2687198 [057] ...11 9129550.526822: bpf_trace_printk: time: 551
+
+           <...>-2687198 [057] ...11 9129550.526840: bpf_trace_printk: time: 546
+
+           <...>-2687198 [057] ...11 9129550.526851: bpf_trace_printk: time: 548
+
+           <...>-2687198 [057] ...11 9129550.526871: bpf_trace_printk: time: 768
+
+           <...>-2687198 [057] ...11 9129550.526882: bpf_trace_printk: time: 539
+
+           <...>-2687198 [057] ...11 9129550.526900: bpf_trace_printk: time: 729
+
+           <...>-2687198 [057] ...11 9129550.526911: bpf_trace_printk: time: 555
+
+           <...>-2687198 [057] ...11 9129550.526929: bpf_trace_printk: time: 786
+
+           <...>-2687198 [057] ...11 9129550.526940: bpf_trace_printk: time: 394
+
+           <...>-2687200 [057] ...11 9129551.031801: bpf_trace_printk: time: 4913
+
+           <...>-2687200 [057] ...11 9129551.031842: bpf_trace_printk: time: 2728
+
+           <...>-2687200 [057] ...11 9129551.031853: bpf_trace_printk: time: 625
+
+           <...>-2687200 [057] ...11 9129551.031872: bpf_trace_printk: time: 972
+
+           <...>-2687200 [057] ...11 9129551.031881: bpf_trace_printk: time: 630
+
+           <...>-2687200 [057] ...11 9129551.031898: bpf_trace_printk: time: 534
+
+           <...>-2687200 [057] ...11 9129551.031907: bpf_trace_printk: time: 535
+
+ my_simple_ranso-2687200 [057] ...11 9129551.031991: bpf_trace_printk: time: 903
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032001: bpf_trace_printk: time: 645
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032021: bpf_trace_printk: time: 630
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032030: bpf_trace_printk: time: 955
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032047: bpf_trace_printk: time: 697
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032056: bpf_trace_printk: time: 631
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032074: bpf_trace_printk: time: 546
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032083: bpf_trace_printk: time: 1279
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032100: bpf_trace_printk: time: 540
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032109: bpf_trace_printk: time: 543
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032126: bpf_trace_printk: time: 549
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032135: bpf_trace_printk: time: 528
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032152: bpf_trace_printk: time: 516
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032161: bpf_trace_printk: time: 780
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032177: bpf_trace_printk: time: 548
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032186: bpf_trace_printk: time: 873
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032203: bpf_trace_printk: time: 558
+
+ my_simple_ranso-2687200 [057] ...11 9129551.032212: bpf_trace_printk: time: 368
+
+           <...>-2687202 [057] ...11 9129551.537877: bpf_trace_printk: time: 5317
+
+           <...>-2687202 [057] ...11 9129551.537919: bpf_trace_printk: time: 2195
+
+           <...>-2687202 [057] ...11 9129551.537929: bpf_trace_printk: time: 616
+
+           <...>-2687202 [057] ...11 9129551.537949: bpf_trace_printk: time: 623
+
+           <...>-2687202 [057] ...11 9129551.537959: bpf_trace_printk: time: 546
+
+           <...>-2687202 [057] ...11 9129551.537978: bpf_trace_printk: time: 587
+
+           <...>-2687202 [057] ...11 9129551.537988: bpf_trace_printk: time: 577
+
+           <...>-2687202 [057] ...11 9129551.538007: bpf_trace_printk: time: 610
+
+           <...>-2687202 [057] ...11 9129551.538017: bpf_trace_printk: time: 620
+
+           <...>-2687202 [057] ...11 9129551.538036: bpf_trace_printk: time: 840
+
+           <...>-2687202 [057] ...11 9129551.538047: bpf_trace_printk: time: 573
+
+           <...>-2687202 [057] ...11 9129551.538066: bpf_trace_printk: time: 576
+
+           <...>-2687202 [057] ...11 9129551.538077: bpf_trace_printk: time: 844
+
+           <...>-2687202 [057] ...11 9129551.538097: bpf_trace_printk: time: 577
+
+           <...>-2687202 [057] ...11 9129551.538108: bpf_trace_printk: time: 1133
+
+           <...>-2687202 [057] ...11 9129551.538227: bpf_trace_printk: time: 635
+
+           <...>-2687202 [057] ...11 9129551.538238: bpf_trace_printk: time: 578
+
+           <...>-2687202 [057] ...11 9129551.538257: bpf_trace_printk: time: 799
+
+           <...>-2687202 [057] ...11 9129551.538268: bpf_trace_printk: time: 882
+
+           <...>-2687202 [057] ...11 9129551.538286: bpf_trace_printk: time: 595
+
+           <...>-2687202 [057] ...11 9129551.538296: bpf_trace_printk: time: 578
+
+           <...>-2687202 [057] ...11 9129551.538315: bpf_trace_printk: time: 831
+
+           <...>-2687202 [057] ...11 9129551.538326: bpf_trace_printk: time: 832
+
+           <...>-2687202 [057] ...11 9129551.538344: bpf_trace_printk: time: 578
+
+           <...>-2687202 [057] ...11 9129551.538355: bpf_trace_printk: time: 438
+
+           <...>-2687204 [057] ...11 9129552.043189: bpf_trace_printk: time: 5164
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043232: bpf_trace_printk: time: 2681
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043243: bpf_trace_printk: time: 571
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043263: bpf_trace_printk: time: 661
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043274: bpf_trace_printk: time: 655
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043293: bpf_trace_printk: time: 1066
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043304: bpf_trace_printk: time: 674
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043322: bpf_trace_printk: time: 664
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043333: bpf_trace_printk: time: 650
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043353: bpf_trace_printk: time: 580
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043363: bpf_trace_printk: time: 580
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043382: bpf_trace_printk: time: 677
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043393: bpf_trace_printk: time: 822
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043413: bpf_trace_printk: time: 804
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043424: bpf_trace_printk: time: 985
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043442: bpf_trace_printk: time: 577
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043453: bpf_trace_printk: time: 586
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043471: bpf_trace_printk: time: 648
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043482: bpf_trace_printk: time: 586
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043502: bpf_trace_printk: time: 667
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043513: bpf_trace_printk: time: 592
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043622: bpf_trace_printk: time: 938
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043633: bpf_trace_printk: time: 674
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043654: bpf_trace_printk: time: 666
+
+ my_simple_ranso-2687204 [057] ...11 9129552.043665: bpf_trace_printk: time: 607
+
