@@ -49,7 +49,8 @@ SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
 	"EncryptUpdate")
 int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
-	char comm[16] = {0};
+	const __u64 start_time = bpf_ktime_get_ns();
+	char comm[16]          = {0};
 	bpf_get_current_comm(&comm, sizeof(comm));
 	// ToDo: filter with pid
 	if (comm[0] != 'm' || comm[1] != 'y') {
@@ -76,7 +77,9 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	event->tid = current_pid_tgid;
 
 	bpf_ringbuf_submit(event, 0);
+	const __u64 end_time = bpf_ktime_get_ns();
 
+	bpf_printk("time: %llu\n", end_time - start_time);
 	return 0;
 }
 
