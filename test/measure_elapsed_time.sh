@@ -21,7 +21,7 @@ function run_measure() {
     data_filename=$1
     base_filename=$(basename $data_filename .data)
     cat /sys/kernel/debug/tracing/trace_pipe \
-        > ./result/elapsed_time_${base_filename}.txt 2>/dev/null &
+        > ./result/ebpf_time/elapsed_time_${base_filename}.txt 2>/dev/null &
     cat_pid=$!
 
     echo "Start to measure elapsed time: ${cat_pid}"
@@ -30,7 +30,7 @@ function run_measure() {
 
     for i in {1..10}; do
         ./my_simple_ransomware $data_filename -e
-        sleep 0.5
+        sleep 1
     done
 
     kill $cat_pid
@@ -46,9 +46,12 @@ function run_measure() {
 }
 
 for file in $(ls ./data | grep -v enc | egrep '^0'); do
+# file=$1
     echo "Start to measure elapsed time: $file"
     run_measure ./data/$file
+    # run_measure $file
     
+    sleep 3
     echo "------------"
 done
 
