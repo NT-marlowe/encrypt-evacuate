@@ -55,6 +55,8 @@ def viz_boolean_array_4096(arr: list[bool]):
     plt.yticks(
         ticks=np.arange(0, tate_length, 250), labels=np.arange(0, tate_length, 250)
     )
+    plt.xlabel("x")
+    plt.ylabel("y")
 
     # plt.title("Captured Bytes")
     byte_size = length * BYTES_PER_VALUE
