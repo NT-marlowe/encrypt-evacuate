@@ -26,7 +26,7 @@ struct bpf_map_def SEC("maps") data_buffer_heap = {
 
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
-	__uint(max_entries, 1024 * 1024);
+	__uint(max_entries, 32 * 1024 * 1024);
 } events_ringbuf SEC(".maps");
 
 static __always_inline struct enc_data_event_t *create_enc_data_event(
