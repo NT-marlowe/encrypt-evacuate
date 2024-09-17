@@ -1,0 +1,7 @@
+elapsed_time_00_1KB.txt, 	10, 	4933.20, 	816.61
+elapsed_time_01_10KB.txt, 	30, 	2786.10, 	1738.59
+elapsed_time_02_100KB.txt, 	250, 	889.37, 	961.74
+elapsed_time_03_1MB.txt, 	2450, 	660.03, 	399.80
+elapsed_time_04_10MB.txt, 	6039, 	896.39, 	386.02
+elapsed_time_05_100MB.txt, 	23929, 	1108.11, 	433.13
+

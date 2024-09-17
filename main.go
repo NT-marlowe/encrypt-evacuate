@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -22,6 +21,11 @@ const (
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		log.Fatalf("Usage: %s filename", os.Args[0])
+	}
+	filename := os.Args[1]
+
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {
 		log.Fatal("Removing memlock:", err)
@@ -70,7 +74,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Creating data shelter path:", err)
 	}
-	file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
+	// file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
+	file, err := os.Create(dataShelterPath + "/" + filename)
 	if err != nil {
 		log.Fatal("Creating file in data shelter path:", err)
 	}
@@ -87,18 +92,19 @@ func main() {
 			continue
 		}
 
+		// go func() {
+		// If multiple goroutines write to the same file, the data might be mixed up.
 		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
-		go func() {
-			file.Write(event.Data[:event.DataLen])
-		}()
+		file.Write(event.Data[:event.DataLen])
+		// }()
 
-		log.Println("---------------------------------------")
-		log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
-		log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
+		// log.Println("---------------------------------------")
+		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
+		// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
 
 	}
 
