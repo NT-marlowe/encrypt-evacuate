@@ -12,7 +12,7 @@ capture_ssl.o: capture_ssl.c
 
 .PHONY: run
 run: all
-	sudo ./${BIN}
+	sudo ./${BIN} tmp
 
 .PHONY: dump
 dump: capture_ssl.o
