@@ -26,7 +26,7 @@ struct bpf_map_def SEC("maps") data_buffer_heap = {
 
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
-	__uint(max_entries, 32 * 1024 * 1024);
+	__uint(max_entries, 1024 * 1024);
 } events_ringbuf SEC(".maps");
 
 static __always_inline struct enc_data_event_t *create_enc_data_event(
@@ -49,8 +49,7 @@ SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
 	"EncryptUpdate")
 int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
-	const __u64 start_time = bpf_ktime_get_ns();
-	char comm[16]          = {0};
+	char comm[16] = {0};
 	bpf_get_current_comm(&comm, sizeof(comm));
 	// ToDo: filter with pid
 	if (comm[0] != 'm' || comm[1] != 'y') {
@@ -77,9 +76,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	event->tid = current_pid_tgid;
 
 	bpf_ringbuf_submit(event, 0);
-	const __u64 end_time = bpf_ktime_get_ns();
 
-	bpf_printk("time: %llu\n", end_time - start_time);
 	return 0;
 }
 

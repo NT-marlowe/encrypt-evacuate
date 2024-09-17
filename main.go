@@ -49,8 +49,6 @@ func main() {
 	}
 	defer uprobe.Close()
 
-	// log.Default().Println("Uprobe attached to", sharedLibraryPath, symbol)
-
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {
 		log.Fatal("Creating ringbuf reader:", err)
