@@ -1,0 +1,7 @@
+filesize,recovery_rate
+00_1KB.data,1.0
+01_10KB.data,1.0
+02_100KB.data,1.0
+03_1MB.data,1.0
+04_10MB.data,0.118
+05_100MB.data,0.016

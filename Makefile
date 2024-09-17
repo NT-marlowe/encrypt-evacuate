@@ -12,7 +12,7 @@ capture_ssl.o: capture_ssl.c
 
 .PHONY: run
 run: all
-	sudo ./${BIN}
+	sudo ./${BIN} tmp
 
 .PHONY: dump
 dump: capture_ssl.o
@@ -25,3 +25,7 @@ load: capture_ssl.o
 .PHONY: cat
 cat:
 	sudo cat /sys/kernel/debug/tracing/trace_pipe
+
+.PHONE: clear-shelter
+clear-shelter:
+	sudo rm -f /usr/tmp/data_shelter/*

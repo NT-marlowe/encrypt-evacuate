@@ -1,1 +1,5 @@
 *.enc
+venv
+*.out
+__pycache__/
+
