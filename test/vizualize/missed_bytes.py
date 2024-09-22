@@ -49,14 +49,17 @@ def viz_boolean_array_4096(arr: list[bool]):
     plt.imshow(arr_2d, cmap="Blues", aspect="auto")
 
     plt.xticks(
-        ticks=np.arange(0, yoko_length, 128),
-        labels=np.arange(0, yoko_length, 128),
+        ticks=np.arange(0, yoko_length + 1, 256),
+        labels=np.arange(0, yoko_length * 4 + 1, 1024),
+        fontsize=14,
     )
     plt.yticks(
-        ticks=np.arange(0, tate_length, 250), labels=np.arange(0, tate_length, 250)
+        ticks=np.arange(0, tate_length, 250),
+        labels=np.arange(0, tate_length, 250),
+        fontsize=14,
     )
-    plt.xlabel("x")
-    plt.ylabel("y")
+    plt.xlabel("Byte Offset within a Block", fontsize=14)
+    plt.ylabel("Cumularive Block Number (4kiB / Block)", fontsize=14)
 
     # plt.title("Captured Bytes")
     byte_size = length * BYTES_PER_VALUE
