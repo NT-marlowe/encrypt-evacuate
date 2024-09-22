@@ -46,7 +46,7 @@ def viz_boolean_array_4096(arr: list[bool]):
     print(f"tate_length: {tate_length}, yoko_length: {yoko_length}")
     arr_2d = np.array(arr).reshape(tate_length, yoko_length)
     # plt.figure(figsize=(20, 20))
-    plt.imshow(arr_2d, cmap="gray_r", aspect="auto")
+    plt.imshow(arr_2d, cmap="Blues", aspect="auto")
 
     plt.xticks(
         ticks=np.arange(0, yoko_length, 128),
