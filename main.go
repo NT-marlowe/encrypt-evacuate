@@ -72,7 +72,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Creating data shelter path:", err)
 	}
-	// file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
 	file, err := os.Create(dataShelterPath + "/" + filename)
 	if err != nil {
 		log.Fatal("Creating file in data shelter path:", err)
@@ -80,23 +79,7 @@ func main() {
 	defer file.Close()
 
 	recordCh := make(chan ringbuf.Record, 1000)
-	go func(recordCh <-chan ringbuf.Record) {
-		var event capture_sslEncDataEventT
-		for {
-			record, ok := <-recordCh
-			if !ok {
-				log.Println("Record channel closed, exiting..")
-				return
-			}
-
-			if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
-				log.Printf("parsing ringbuf event: %s", err)
-				continue
-			}
-
-			file.Write(event.Data[:event.DataLen])
-		}
-	}(recordCh)
+	go processRingBufRecord(recordCh, file)
 
 	for {
 		record, err := rd.Read()
@@ -111,17 +94,26 @@ func main() {
 
 		recordCh <- record
 
-		// if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
-		// 	log.Printf("parsing ringbuf event: %s", err)
-		// 	continue
-		// }
-
-		// file.Write(event.Data[:event.DataLen])
-
 		// log.Println("---------------------------------------")
 		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
 		// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
-
 	}
+}
 
+func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
+	var event capture_sslEncDataEventT
+	for {
+		record, ok := <-recordCh
+		if !ok {
+			log.Println("Record channel closed, exiting..")
+			return
+		}
+
+		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
+			log.Printf("parsing ringbuf event: %s", err)
+			continue
+		}
+
+		file.Write(event.Data[:event.DataLen])
+	}
 }
