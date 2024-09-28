@@ -3,7 +3,7 @@ from rapidfuzz import fuzz
 import os
 
 
-def calculate_recovery_rate(original_file_path, recovered_file_path):
+def calculate_match_rate(original_file_path, recovered_file_path):
     with open(original_file_path, "rb") as f:
         original_content = f.read()
 

@@ -2,7 +2,7 @@ import sys
 from subcommands.gen import generate_random_files, generate_sequential_file
 from subcommands.calc import (
     calculate_dist_and_ratio,
-    calculate_recovery_rate,
+    calculate_match_rate,
     calculate_retention_rate,
 )
 
@@ -22,14 +22,14 @@ if __name__ == "__main__":
     recovered_file_path = sys.argv[3]
 
     if subcommand == "dist":
-        # recovery_rate = calculate_recovery_rate(original_file_path, recovered_file_path)
+        # recovery_rate = calculate_match_rate(original_file_path, recovered_file_path)
         recovery_rate, partial_ratio = calculate_dist_and_ratio(
             original_file_path, recovered_file_path
         )
         print(f"{recovery_rate:.3f}, {partial_ratio}")
 
     elif subcommand == "match":
-        recovery_rate = calculate_recovery_rate(original_file_path, recovered_file_path)
+        recovery_rate = calculate_match_rate(original_file_path, recovered_file_path)
         print(f"{recovery_rate:.3f}")
 
     elif subcommand == "reten":
