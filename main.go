@@ -67,8 +67,6 @@ func main() {
 
 	}()
 
-	var event capture_sslEncDataEventT
-
 	// create a file in dataShelterPath
 	err = os.MkdirAll(dataShelterPath, 0766)
 	if err != nil {
@@ -81,6 +79,25 @@ func main() {
 	}
 	defer file.Close()
 
+	recordCh := make(chan ringbuf.Record, 1000)
+	go func(recordCh <-chan ringbuf.Record) {
+		var event capture_sslEncDataEventT
+		for {
+			record, ok := <-recordCh
+			if !ok {
+				log.Println("Record channel closed, exiting..")
+				return
+			}
+
+			if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
+				log.Printf("parsing ringbuf event: %s", err)
+				continue
+			}
+
+			file.Write(event.Data[:event.DataLen])
+		}
+	}(recordCh)
+
 	for {
 		record, err := rd.Read()
 		if err != nil {
@@ -92,15 +109,14 @@ func main() {
 			continue
 		}
 
-		// go func() {
-		// If multiple goroutines write to the same file, the data might be mixed up.
-		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
-			log.Printf("parsing ringbuf event: %s", err)
-			continue
-		}
+		recordCh <- record
 
-		file.Write(event.Data[:event.DataLen])
-		// }()
+		// if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
+		// 	log.Printf("parsing ringbuf event: %s", err)
+		// 	continue
+		// }
+
+		// file.Write(event.Data[:event.DataLen])
 
 		// log.Println("---------------------------------------")
 		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
