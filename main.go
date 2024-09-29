@@ -18,6 +18,8 @@ const (
 	symbol            = "EVP_EncryptUpdate"
 	// symbol = "EVP_EncryptInit_ex"
 	dataShelterPath = "/usr/tmp/data_shelter"
+
+	ChannelBufferSize = 1
 )
 
 func main() {
@@ -78,7 +80,7 @@ func main() {
 	}
 	defer file.Close()
 
-	recordCh := make(chan ringbuf.Record, 1000)
+	recordCh := make(chan ringbuf.Record, ChannelBufferSize)
 	defer close(recordCh)
 	go processRingBufRecord(recordCh, file)
 
