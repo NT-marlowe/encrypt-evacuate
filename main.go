@@ -79,6 +79,7 @@ func main() {
 	defer file.Close()
 
 	recordCh := make(chan ringbuf.Record, 1000)
+	defer close(recordCh)
 	go processRingBufRecord(recordCh, file)
 
 	for {
