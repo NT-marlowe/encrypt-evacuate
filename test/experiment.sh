@@ -5,7 +5,7 @@ set -e
 
 
 EBPF_PROGRAM=ebpf-ssl
-DATA_SHELTER=/usr/tmp/data_shelter
+DATA_SHELTER=/data_shelter
 
 sudo rm -f ${DATA_SHELTER}/*
 
@@ -26,6 +26,8 @@ for file in $(ls ./data/1* | grep -v enc); do
     
     sleep 1
     echo -----------
+    
+    rm ./data/{$file}.enc
 done
 
 

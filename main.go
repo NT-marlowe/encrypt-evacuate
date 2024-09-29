@@ -16,8 +16,9 @@ import (
 const (
 	sharedLibraryPath = "/lib/x86_64-linux-gnu/libcrypto.so.3"
 	symbol            = "EVP_EncryptUpdate"
-	// symbol = "EVP_EncryptInit_ex"
-	dataShelterPath = "/usr/tmp/data_shelter"
+	dataShelterPath   = "/data_shelter"
+
+	ChannelBufferSize = 1
 )
 
 func main() {
@@ -67,19 +68,20 @@ func main() {
 
 	}()
 
-	var event capture_sslEncDataEventT
-
 	// create a file in dataShelterPath
 	err = os.MkdirAll(dataShelterPath, 0766)
 	if err != nil {
 		log.Fatal("Creating data shelter path:", err)
 	}
-	// file, err := os.CreateTemp(dataShelterPath, time.Now().Format(time.RFC3339)+"_")
 	file, err := os.Create(dataShelterPath + "/" + filename)
 	if err != nil {
 		log.Fatal("Creating file in data shelter path:", err)
 	}
 	defer file.Close()
+
+	recordCh := make(chan ringbuf.Record, ChannelBufferSize)
+	defer close(recordCh)
+	go processRingBufRecord(recordCh, file)
 
 	for {
 		record, err := rd.Read()
@@ -92,20 +94,28 @@ func main() {
 			continue
 		}
 
-		// go func() {
-		// If multiple goroutines write to the same file, the data might be mixed up.
+		recordCh <- record
+
+		// log.Println("---------------------------------------")
+		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
+		// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
+	}
+}
+
+func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
+	var event capture_sslEncDataEventT
+	for {
+		record, ok := <-recordCh
+		if !ok {
+			log.Println("Record channel closed, exiting..")
+			return
+		}
+
 		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
 		file.Write(event.Data[:event.DataLen])
-		// }()
-
-		// log.Println("---------------------------------------")
-		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
-		// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
-
 	}
-
 }

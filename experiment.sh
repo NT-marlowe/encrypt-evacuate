@@ -6,7 +6,7 @@ set -u
 
 
 EBPF_PROGRAM=ebpf-ssl
-DATA_SHELTER=/usr/tmp/data_shelter
+DATA_SHELTER=/data_shelter
 
 # sudo rm -f ${DATA_SHELTER}/*
 ringbuf_size=$1
@@ -15,7 +15,7 @@ make all
 
 cd test
 # for file in $(ls ./data | grep -v enc); do
-for file in $(ls ./data/2* | grep -v enc); do
+for file in $(ls ./data/1* | grep -v enc); do
     file=$(basename $file)
     sudo ../${EBPF_PROGRAM} ${ringbuf_size}MiB_$file &
     pid=$!

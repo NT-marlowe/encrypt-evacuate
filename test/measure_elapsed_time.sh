@@ -41,7 +41,7 @@ function run_measure() {
 
     sleep 1
 
-    rm /usr/tmp/data_shelter/tmp
+    rm /data_shelter/tmp
     ps auxww | grep ebpf 
 }
 

@@ -5,10 +5,10 @@ import numpy as np
 BYTES_PER_VALUE = 4
 
 
-def find_missing_bytes(recovered_file_path: str, byte_size: int) -> list[bool]:
+def find_missing_bytes(sheltered_file_path: str, byte_size: int) -> list[bool]:
     N = byte_size // BYTES_PER_VALUE
     result = [False] * N
-    with open(recovered_file_path, "rb") as f:
+    with open(sheltered_file_path, "rb") as f:
         for i in range(1, N + 1):
             # f.seek((i - 1) * BYTES_PER_VALUE)
             val = int.from_bytes(f.read(BYTES_PER_VALUE), byteorder="little")
@@ -66,8 +66,8 @@ def viz_boolean_array_4096(arr: list[bool]):
     plt.savefig(f"./img/captured_bytes_{byte_size}.png")
 
 
-recovered_file_path = sys.argv[1]
+sheltered_file_path = sys.argv[1]
 byte_size = int(sys.argv[2])
 
-# viz_boolean_array(find_missing_bytes(recovered_file_path, byte_size))
-viz_boolean_array_4096(find_missing_bytes(recovered_file_path, byte_size))
+# viz_boolean_array(find_missing_bytes(sheltered_file_path, byte_size))
+viz_boolean_array_4096(find_missing_bytes(sheltered_file_path, byte_size))
