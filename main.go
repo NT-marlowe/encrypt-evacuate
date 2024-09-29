@@ -16,8 +16,7 @@ import (
 const (
 	sharedLibraryPath = "/lib/x86_64-linux-gnu/libcrypto.so.3"
 	symbol            = "EVP_EncryptUpdate"
-	// symbol = "EVP_EncryptInit_ex"
-	dataShelterPath = "/usr/tmp/data_shelter"
+	dataShelterPath   = "/data_shelter"
 
 	ChannelBufferSize = 1
 )

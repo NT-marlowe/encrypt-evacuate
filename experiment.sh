@@ -6,7 +6,7 @@ set -u
 
 
 EBPF_PROGRAM=ebpf-ssl
-DATA_SHELTER=/usr/tmp/data_shelter
+DATA_SHELTER=/data_shelter
 
 # sudo rm -f ${DATA_SHELTER}/*
 ringbuf_size=$1

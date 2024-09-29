@@ -17,8 +17,8 @@ for file in $(ls ./data/1* | grep -v enc); do
     echo -n "$file, "
 
     original=./data/$file
-    # recovered=/usr/tmp/data_shelter/${ringbuf_filesize}MiB_$file
-    recovered=/usr/tmp/data_shelter/$file
+    # recovered=/data_shelter/${ringbuf_filesize}MiB_$file
+    recovered=/data_shelter/$file
     python3 commands.py ${subcom} ${original} ${recovered}
 done
 

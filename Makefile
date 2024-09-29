@@ -28,4 +28,4 @@ cat:
 
 .PHONE: clear-shelter
 clear-shelter:
-	sudo rm -f /usr/tmp/data_shelter/*
+	sudo rm -f /data_shelter/*
