@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"fmt"
+	// "fmt"
 	"log"
 	"os"
 	"os/signal"
-	"time"
+	// "time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -86,10 +86,10 @@ func main() {
 	go processRingBufRecord(recordCh, file)
 
 	for {
-		startTime := time.Now()
+		// startTime := time.Now()
 		record, err := rd.Read()
-		readTime := time.Since(startTime)
-		fmt.Printf("rd.Read: %s\n", readTime)
+		// readTime := time.Since(startTime)
+		// fmt.Printf("rd.Read: %s\n", readTime)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
@@ -101,15 +101,16 @@ func main() {
 		}
 
 		recordCh <- record
-
-		// log.Println("---------------------------------------")
-		// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
-		// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
 	}
 }
 
 func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 	var event capture_sslEncDataEventT
+	dataCh := make(chan []byte)
+	defer close(dataCh)
+
+	// go writeFileData(dataCh, file)
+
 	for {
 		record, ok := <-recordCh
 		if !ok {
@@ -117,22 +118,41 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 			return
 		}
 
-		startTime := time.Now()
+		// startTime := time.Now()
 
 		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
-		readTime := time.Since(startTime)
-
-		startTime = time.Now()
-
+		// dataCh <- event.Data[:event.DataLen]
 		file.Write(event.Data[:event.DataLen])
 
-		writeTime := time.Since(startTime)
+		// readTime := time.Since(startTime)
 
-		fmt.Printf("binary.Read: %s\n", readTime)
-		fmt.Printf("file.Write: %s\n", writeTime)
+		// startTime = time.Now()
+
+		// writeTime := time.Since(startTime)
+
+		// fmt.Printf("binary.Read: %s\n", readTime)
+		// fmt.Printf("file.Write: %s\n", writeTime)
 	}
 }
+
+// func writeFileData(dataCh <-chan []byte, file *os.File) {
+// 	var data []byte
+// 	var ok bool
+// 	for {
+// 		data, ok = <-dataCh
+// 		if !ok {
+// 			log.Println("Data channel closed, exiting..")
+// 			return
+// 		}
+
+// 		file.Write(data)
+// 	}
+// }
+
+// log.Println("---------------------------------------")
+// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
+// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
