@@ -20,7 +20,7 @@ const (
 	symbol            = "EVP_EncryptUpdate"
 	dataShelterPath   = "/data_shelter"
 
-	ChannelBufferSize = 1
+	ChannelBufferSize = 1000
 )
 
 func main() {
