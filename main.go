@@ -89,7 +89,7 @@ func main() {
 		startTime := time.Now()
 		record, err := rd.Read()
 		readTime := time.Since(startTime)
-		fmt.Printf("Elapsed time of rd.Read: %s\n", readTime)
+		fmt.Printf("rd.Read: %s\n", readTime)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
@@ -132,7 +132,7 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 
 		writeTime := time.Since(startTime)
 
-		fmt.Printf("Elapsed time of binary.Read: %s\n", readTime)
-		fmt.Printf("Elapsed time of file.Write: %s\n", writeTime)
+		fmt.Printf("binary.Read: %s\n", readTime)
+		fmt.Printf("file.Write: %s\n", writeTime)
 	}
 }
