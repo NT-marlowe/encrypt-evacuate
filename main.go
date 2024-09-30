@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -84,7 +86,11 @@ func main() {
 	go processRingBufRecord(recordCh, file)
 
 	for {
+		startTime := time.Now()
 		record, err := rd.Read()
+		readTime := time.Since(startTime)
+		fmt.Printf("Elapsed time of rd.Read: %s\n", readTime)
+
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
 				log.Println("Ringbuf closed, exiting..")
@@ -111,11 +117,22 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 			return
 		}
 
+		startTime := time.Now()
+
 		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
+		readTime := time.Since(startTime)
+
+		startTime = time.Now()
+
 		file.Write(event.Data[:event.DataLen])
+
+		writeTime := time.Since(startTime)
+
+		fmt.Printf("Elapsed time of binary.Read: %s\n", readTime)
+		fmt.Printf("Elapsed time of file.Write: %s\n", writeTime)
 	}
 }
