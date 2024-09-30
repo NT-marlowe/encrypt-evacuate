@@ -27,7 +27,7 @@ for file in $(ls ./data/1* | grep -v enc); do
     sleep 1
     echo -----------
     
-    rm ./data/{$file}.enc
+    # rm ./data/{$file}.enc
 done
 
 

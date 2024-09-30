@@ -106,8 +106,8 @@ func main() {
 
 func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 	var event capture_sslEncDataEventT
-	dataCh := make(chan []byte)
-	defer close(dataCh)
+	// dataCh := make(chan []byte)
+	// defer close(dataCh)
 
 	// go writeFileData(dataCh, file)
 
@@ -118,8 +118,6 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 			return
 		}
 
-		// startTime := time.Now()
-
 		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
@@ -128,14 +126,6 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 		// dataCh <- event.Data[:event.DataLen]
 		file.Write(event.Data[:event.DataLen])
 
-		// readTime := time.Since(startTime)
-
-		// startTime = time.Now()
-
-		// writeTime := time.Since(startTime)
-
-		// fmt.Printf("binary.Read: %s\n", readTime)
-		// fmt.Printf("file.Write: %s\n", writeTime)
 	}
 }
 
