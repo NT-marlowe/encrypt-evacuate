@@ -106,10 +106,10 @@ func main() {
 
 func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 	var event capture_sslEncDataEventT
-	// dataCh := make(chan []byte)
-	// defer close(dataCh)
+	dataCh := make(chan []byte)
+	defer close(dataCh)
 
-	// go writeFileData(dataCh, file)
+	go writeFileData(dataCh, file)
 
 	for {
 		record, ok := <-recordCh
@@ -123,25 +123,25 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 			continue
 		}
 
-		// dataCh <- event.Data[:event.DataLen]
-		file.Write(event.Data[:event.DataLen])
+		dataCh <- event.Data[:event.DataLen]
+		// file.Write(event.Data[:event.DataLen])
 
 	}
 }
 
-// func writeFileData(dataCh <-chan []byte, file *os.File) {
-// 	var data []byte
-// 	var ok bool
-// 	for {
-// 		data, ok = <-dataCh
-// 		if !ok {
-// 			log.Println("Data channel closed, exiting..")
-// 			return
-// 		}
+func writeFileData(dataCh <-chan []byte, file *os.File) {
+	var data []byte
+	var ok bool
+	for {
+		data, ok = <-dataCh
+		if !ok {
+			log.Println("Data channel closed, exiting..")
+			return
+		}
 
-// 		file.Write(data)
-// 	}
-// }
+		file.Write(data)
+	}
+}
 
 // log.Println("---------------------------------------")
 // log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
