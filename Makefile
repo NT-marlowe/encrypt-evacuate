@@ -1,15 +1,23 @@
-BIN=ebpf-ssl
-TMP_FILE_NAME=tmp
+BIN := ebpf-ssl
+TMP_FILE_NAME := tmp
+
+GO_SRCS := $(shell find . -name '*.go')
+
 
 .PHONY: all
-all: bpf_bpfel.go
+all: ${GO_SRCS} gen
 	go build
 
-bpf_bpfel.go: ebpf_src/capture_ssl.c
+# bpf_bpfel.go: ebpf_src/capture_ssl.c
+# 	go generate
+
+.PHONY: gen
+gen: ebpf_src/capture_ssl.c
 	go generate
 
-capture_ssl.o: capture_ssl.c
-	clang -O2 -g -target bpf -c -o capture_ssl.o capture_ssl.c
+# capture_ssl.o: capture_ssl.c
+# 	clang -O2 -g -target bpf -c -o capture_ssl.o capture_ssl.c
+
 
 .PHONY: run
 run: all
