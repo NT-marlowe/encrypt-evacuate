@@ -5,7 +5,7 @@ TMP_FILE_NAME=tmp
 all: bpf_bpfel.go
 	go build
 
-bpf_bpfel.go: capture_ssl.c
+bpf_bpfel.go: ebpf_src/capture_ssl.c
 	go generate
 
 capture_ssl.o: capture_ssl.c
