@@ -1,14 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/binary"
 	"errors"
-	// "fmt"
 	"log"
 	"os"
 	"os/signal"
-	// "time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -86,10 +82,7 @@ func main() {
 	go processRingBufRecord(recordCh, file)
 
 	for {
-		// startTime := time.Now()
 		record, err := rd.Read()
-		// readTime := time.Since(startTime)
-		// fmt.Printf("rd.Read: %s\n", readTime)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
@@ -103,46 +96,3 @@ func main() {
 		recordCh <- record
 	}
 }
-
-func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
-	var event capture_sslEncDataEventT
-	dataCh := make(chan []byte)
-	defer close(dataCh)
-
-	go writeFileData(dataCh, file)
-
-	for {
-		record, ok := <-recordCh
-		if !ok {
-			log.Println("Record channel closed, exiting..")
-			return
-		}
-
-		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
-			log.Printf("parsing ringbuf event: %s", err)
-			continue
-		}
-
-		dataCh <- event.Data[:event.DataLen]
-		// file.Write(event.Data[:event.DataLen])
-
-	}
-}
-
-func writeFileData(dataCh <-chan []byte, file *os.File) {
-	var data []byte
-	var ok bool
-	for {
-		data, ok = <-dataCh
-		if !ok {
-			log.Println("Data channel closed, exiting..")
-			return
-		}
-
-		file.Write(data)
-	}
-}
-
-// log.Println("---------------------------------------")
-// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
-// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
