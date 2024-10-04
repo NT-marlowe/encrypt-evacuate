@@ -1,4 +1,5 @@
 BIN=ebpf-ssl
+TMP_FILE_NAME=tmp
 
 .PHONY: all
 all: bpf_bpfel.go
@@ -12,7 +13,11 @@ capture_ssl.o: capture_ssl.c
 
 .PHONY: run
 run: all
-	sudo ./${BIN} tmp
+	if [ -f /data_shelter/${TMP_FILE_NAME} ]; then \
+		sudo rm /data_shelter/${TMP_FILE_NAME}; \
+		echo "Remove old file"; \
+	fi
+	sudo ./${BIN} ${TMP_FILE_NAME}
 
 .PHONY: dump
 dump: capture_ssl.o
