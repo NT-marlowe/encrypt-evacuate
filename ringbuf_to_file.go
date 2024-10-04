@@ -9,9 +9,14 @@ import (
 	"github.com/cilium/ebpf/ringbuf"
 )
 
+type tmp_data struct {
+	data [4096]uint8
+	len  uint32
+}
+
 func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 	var event capture_sslEncDataEventT
-	dataCh := make(chan []byte)
+	dataCh := make(chan tmp_data)
 	defer close(dataCh)
 
 	go writeFileData(dataCh, file)
@@ -28,14 +33,16 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 			continue
 		}
 
-		dataCh <- event.Data[:event.DataLen]
+		dataCh <- tmp_data{data: event.Data, len: uint32(event.DataLen)}
 		// file.Write(event.Data[:event.DataLen])
 
 	}
 }
 
-func writeFileData(dataCh <-chan []byte, file *os.File) {
-	var data []byte
+// func writeFileData(dataCh <-chan []byte, file *os.File) {
+func writeFileData(dataCh <-chan tmp_data, file *os.File) {
+	// var data []byte
+	var data tmp_data
 	var ok bool
 	for {
 		data, ok = <-dataCh
@@ -44,6 +51,6 @@ func writeFileData(dataCh <-chan []byte, file *os.File) {
 			return
 		}
 
-		file.Write(data)
+		file.Write(data.data[:data.len])
 	}
 }
