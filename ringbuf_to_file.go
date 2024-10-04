@@ -9,17 +9,17 @@ import (
 	"github.com/cilium/ebpf/ringbuf"
 )
 
-type tmp_data struct {
+type dataBlock struct {
 	data [4096]uint8
 	len  uint32
 }
 
 func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 	var event capture_sslEncDataEventT
-	dataCh := make(chan tmp_data)
-	defer close(dataCh)
+	dataBlockCh := make(chan dataBlock)
+	defer close(dataBlockCh)
 
-	go writeFileData(dataCh, file)
+	go writeFileData(dataBlockCh, file)
 
 	for {
 		record, ok := <-recordCh
@@ -33,19 +33,17 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 			continue
 		}
 
-		dataCh <- tmp_data{data: event.Data, len: uint32(event.DataLen)}
+		dataBlockCh <- dataBlock{data: event.Data, len: uint32(event.DataLen)}
 		// file.Write(event.Data[:event.DataLen])
 
 	}
 }
 
-// func writeFileData(dataCh <-chan []byte, file *os.File) {
-func writeFileData(dataCh <-chan tmp_data, file *os.File) {
-	// var data []byte
-	var data tmp_data
+func writeFileData(dataBlockCh <-chan dataBlock, file *os.File) {
+	var data dataBlock
 	var ok bool
 	for {
-		data, ok = <-dataCh
+		data, ok = <-dataBlockCh
 		if !ok {
 			log.Println("Data channel closed, exiting..")
 			return
