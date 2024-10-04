@@ -4,11 +4,9 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	// "fmt"
 	"log"
 	"os"
 	"os/signal"
-	// "time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -86,10 +84,7 @@ func main() {
 	go processRingBufRecord(recordCh, file)
 
 	for {
-		// startTime := time.Now()
 		record, err := rd.Read()
-		// readTime := time.Since(startTime)
-		// fmt.Printf("rd.Read: %s\n", readTime)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
@@ -142,7 +137,3 @@ func writeFileData(dataCh <-chan []byte, file *os.File) {
 		file.Write(data)
 	}
 }
-
-// log.Println("---------------------------------------")
-// log.Printf("pid = %d, tid = %d, length = %d\n", event.Pid, event.Tid, event.DataLen)
-// log.Printf("data: %s\n", string(event.Data[:event.DataLen]))
