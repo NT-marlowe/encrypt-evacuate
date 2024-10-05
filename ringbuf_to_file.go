@@ -11,6 +11,15 @@ const (
 	Parallelism = 4
 )
 
+func processRingBufRecord(indexedRecordCh <-chan indexedRecord, indexedDataBlockCh chan dataBlock, file *os.File) {
+	go writeFileData(indexedDataBlockCh, file)
+
+	for i := 0; i < Parallelism; i++ {
+		go decodeIndexedRecord(indexedRecordCh, indexedDataBlockCh)
+	}
+
+}
+
 func decodeIndexedRecord(irdCh <-chan indexedRecord, indexedDataBlockCh chan<- dataBlock) {
 	var event capture_sslEncDataEventT
 
@@ -28,15 +37,6 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, indexedDataBlockCh chan<- d
 
 		indexedDataBlockCh <- dataBlock{data: event.Data, len: uint32(event.DataLen)}
 	}
-}
-
-func processRingBufRecord(indexedRecordCh <-chan indexedRecord, indexedDataBlockCh chan dataBlock, file *os.File) {
-	go writeFileData(indexedDataBlockCh, file)
-
-	for i := 0; i < Parallelism; i++ {
-		go decodeIndexedRecord(indexedRecordCh, indexedDataBlockCh)
-	}
-
 }
 
 func writeFileData(indexedDataBlockCh <-chan dataBlock, file *os.File) {
