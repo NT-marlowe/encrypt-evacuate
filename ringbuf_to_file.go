@@ -7,10 +7,9 @@ import (
 	"os"
 )
 
-type dataBlock struct {
-	data [4096]uint8
-	len  uint32
-}
+const (
+	Parallelism = 4
+)
 
 func decodeIndexedRecord(irdCh <-chan indexedRecord, dataBlockCh chan<- dataBlock) {
 	var event capture_sslEncDataEventT
@@ -31,18 +30,13 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, dataBlockCh chan<- dataBloc
 	}
 }
 
-func processRingBufRecord(indexedRecordCh <-chan indexedRecord, file *os.File) {
-	if _, ok := <-indexedRecordCh; !ok {
-		log.Println("Record channel closed, exiting..")
-		return
-	}
-
-	dataBlockCh := make(chan dataBlock)
-	defer close(dataBlockCh)
-
+func processRingBufRecord(indexedRecordCh <-chan indexedRecord, dataBlockCh chan dataBlock, file *os.File) {
 	go writeFileData(dataBlockCh, file)
 
-	decodeIndexedRecord(indexedRecordCh, dataBlockCh)
+	for i := 0; i < Parallelism; i++ {
+		go decodeIndexedRecord(indexedRecordCh, dataBlockCh)
+	}
+
 }
 
 func writeFileData(dataBlockCh <-chan dataBlock, file *os.File) {
