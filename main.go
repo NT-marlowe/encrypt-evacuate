@@ -83,6 +83,9 @@ func main() {
 	indexedDataBlockCh := make(chan indexedDataBlock)
 	defer close(indexedDataBlockCh)
 
+	// main goroutine: processRingBufRecord
+	//		--> decodeIndexedRecord (multi goroutines)
+	//		--> writeFileData (single goroutine)
 	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file)
 
 	var index int
