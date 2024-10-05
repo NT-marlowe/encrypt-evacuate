@@ -80,7 +80,7 @@ func main() {
 	indexedRecordCh := make(chan indexedRecord, ChannelBufferSize)
 	defer close(indexedRecordCh)
 
-	dataBlockCh := make(chan dataBlock)
+	dataBlockCh := make(chan indexedDataBlock)
 	defer close(dataBlockCh)
 
 	processRingBufRecord(indexedRecordCh, dataBlockCh, file)

@@ -11,7 +11,7 @@ const (
 	Parallelism = 4
 )
 
-func processRingBufRecord(indexedRecordCh <-chan indexedRecord, indexedDataBlockCh chan dataBlock, file *os.File) {
+func processRingBufRecord(indexedRecordCh <-chan indexedRecord, indexedDataBlockCh chan indexedDataBlock, file *os.File) {
 	go writeFileData(indexedDataBlockCh, file)
 
 	for i := 0; i < Parallelism; i++ {
@@ -20,7 +20,7 @@ func processRingBufRecord(indexedRecordCh <-chan indexedRecord, indexedDataBlock
 
 }
 
-func decodeIndexedRecord(irdCh <-chan indexedRecord, indexedDataBlockCh chan<- dataBlock) {
+func decodeIndexedRecord(irdCh <-chan indexedRecord, indexedDataBlockCh chan<- indexedDataBlock) {
 	var event capture_sslEncDataEventT
 
 	for {
@@ -35,20 +35,21 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, indexedDataBlockCh chan<- d
 			continue
 		}
 
-		indexedDataBlockCh <- dataBlock{data: event.Data, len: uint32(event.DataLen)}
+		indexedDataBlockCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 	}
 }
 
-func writeFileData(indexedDataBlockCh <-chan dataBlock, file *os.File) {
-	var data dataBlock
+func writeFileData(indexedDataBlockCh <-chan indexedDataBlock, file *os.File) {
+	var idb indexedDataBlock
 	var ok bool
 	for {
-		data, ok = <-indexedDataBlockCh
+		idb, ok = <-indexedDataBlockCh
 		if !ok {
 			log.Println("Data channel closed, exiting..")
 			return
 		}
 
-		file.Write(data.data[:data.len])
+		log.Printf("idx: %d\n", idb.index)
+		file.Write(idb.data.data[:idb.data.len])
 	}
 }
