@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 	"log"
 	"os"
-
-	"github.com/cilium/ebpf/ringbuf"
 )
 
 type dataBlock struct {
@@ -14,7 +12,7 @@ type dataBlock struct {
 	len  uint32
 }
 
-func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
+func processRingBufRecord(indexedRecordCh <-chan indexedRecord, file *os.File) {
 	var event capture_sslEncDataEventT
 	dataBlockCh := make(chan dataBlock)
 	defer close(dataBlockCh)
@@ -22,16 +20,18 @@ func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
 	go writeFileData(dataBlockCh, file)
 
 	for {
-		record, ok := <-recordCh
+		val, ok := <-indexedRecordCh
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
 		}
 
-		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
+		if err := binary.Read(bytes.NewBuffer(val.record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
+
+		log.Printf("%d ", val.index)
 
 		dataBlockCh <- dataBlock{data: event.Data, len: uint32(event.DataLen)}
 		// file.Write(event.Data[:event.DataLen])

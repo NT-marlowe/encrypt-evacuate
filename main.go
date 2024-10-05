@@ -77,10 +77,11 @@ func main() {
 	}
 	defer file.Close()
 
-	recordCh := make(chan ringbuf.Record, ChannelBufferSize)
-	defer close(recordCh)
-	go processRingBufRecord(recordCh, file)
+	indexedRecordCh := make(chan indexedRecord, ChannelBufferSize)
+	defer close(indexedRecordCh)
+	go processRingBufRecord(indexedRecordCh, file)
 
+	var index int
 	for {
 		record, err := rd.Read()
 
@@ -93,6 +94,7 @@ func main() {
 			continue
 		}
 
-		recordCh <- record
+		indexedRecordCh <- indexedRecord{index: index, record: record}
+		index++
 	}
 }
