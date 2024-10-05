@@ -5,50 +5,51 @@ import (
 	"encoding/binary"
 	"log"
 	"os"
-
-	"github.com/cilium/ebpf/ringbuf"
 )
 
-type dataBlock struct {
-	data [4096]uint8
-	len  uint32
+const (
+	Parallelism = 4
+)
+
+func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File) {
+	go writeFileData(idbCh, file)
+
+	for i := 0; i < Parallelism; i++ {
+		go decodeIndexedRecord(irdCh, idbCh)
+	}
+
 }
 
-func processRingBufRecord(recordCh <-chan ringbuf.Record, file *os.File) {
+func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlock) {
 	var event capture_sslEncDataEventT
-	dataBlockCh := make(chan dataBlock)
-	defer close(dataBlockCh)
-
-	go writeFileData(dataBlockCh, file)
 
 	for {
-		record, ok := <-recordCh
+		ird, ok := <-irdCh
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
 		}
 
-		if err := binary.Read(bytes.NewBuffer(record.RawSample), binary.LittleEndian, &event); err != nil {
+		if err := binary.Read(bytes.NewBuffer(ird.record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
-		dataBlockCh <- dataBlock{data: event.Data, len: uint32(event.DataLen)}
-		// file.Write(event.Data[:event.DataLen])
-
+		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 	}
 }
 
-func writeFileData(dataBlockCh <-chan dataBlock, file *os.File) {
-	var data dataBlock
+func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
+	var idb indexedDataBlock
 	var ok bool
 	for {
-		data, ok = <-dataBlockCh
+		idb, ok = <-idbCh
 		if !ok {
 			log.Println("Data channel closed, exiting..")
 			return
 		}
 
-		file.Write(data.data[:data.len])
+		// log.Printf("idx: %d\n", idb.index)
+		file.Write(idb.dataBlock[:idb.dataLen])
 	}
 }
