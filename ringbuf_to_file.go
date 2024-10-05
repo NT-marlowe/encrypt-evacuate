@@ -12,31 +12,37 @@ type dataBlock struct {
 	len  uint32
 }
 
-func processRingBufRecord(indexedRecordCh <-chan indexedRecord, file *os.File) {
+func decodeIndexedRecord(irdCh <-chan indexedRecord, dataBlockCh chan<- dataBlock) {
 	var event capture_sslEncDataEventT
-	dataBlockCh := make(chan dataBlock)
-	defer close(dataBlockCh)
-
-	go writeFileData(dataBlockCh, file)
 
 	for {
-		val, ok := <-indexedRecordCh
+		ird, ok := <-irdCh
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
 		}
 
-		if err := binary.Read(bytes.NewBuffer(val.record.RawSample), binary.LittleEndian, &event); err != nil {
+		if err := binary.Read(bytes.NewBuffer(ird.record.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
 
-		log.Printf("%d ", val.index)
-
 		dataBlockCh <- dataBlock{data: event.Data, len: uint32(event.DataLen)}
-		// file.Write(event.Data[:event.DataLen])
-
 	}
+}
+
+func processRingBufRecord(indexedRecordCh <-chan indexedRecord, file *os.File) {
+	if _, ok := <-indexedRecordCh; !ok {
+		log.Println("Record channel closed, exiting..")
+		return
+	}
+
+	dataBlockCh := make(chan dataBlock)
+	defer close(dataBlockCh)
+
+	go writeFileData(dataBlockCh, file)
+
+	decodeIndexedRecord(indexedRecordCh, dataBlockCh)
 }
 
 func writeFileData(dataBlockCh <-chan dataBlock, file *os.File) {
