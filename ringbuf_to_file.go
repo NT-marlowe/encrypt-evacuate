@@ -49,7 +49,7 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 			return
 		}
 
-		log.Printf("idx: %d\n", idb.index)
-		file.Write(idb.data.data[:idb.data.len])
+		// log.Printf("idx: %d\n", idb.index)
+		file.Write(idb.dataBlock[:idb.dataLen])
 	}
 }
