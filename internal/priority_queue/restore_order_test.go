@@ -1,8 +1,9 @@
 package priority_queue
 
 import (
-	"log"
+	// "log"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -21,7 +22,6 @@ func TestRestoreOrder(t *testing.T) {
 		// }()
 		tmpItem := Item{index: value, value: value}
 		inputCh <- tmpItem
-		log.Printf("%v was written to inputCh", tmpItem)
 	}
 
 	outputCh := RestoreOrder(inputCh)
@@ -33,13 +33,20 @@ func TestRestoreOrder(t *testing.T) {
 		restoredValues = append(restoredValues, item.value.(int))
 
 		i++
-		log.Printf("i: %d, value: %d", i, item.value.(int))
 		if i == len(values) {
 			close(inputCh)
 		}
 	}
 
-	if !reflect.DeepEqual(restoredValues, values) {
+	sortedValues := assendingSortIntSlice(values)
+	if !reflect.DeepEqual(restoredValues, sortedValues) {
 		t.Errorf("Priority queue restore order is incorrect: Expected %v, got %v", values, restoredValues)
 	}
+}
+
+func assendingSortIntSlice(input []int) []int {
+	sortedValues := make([]int, len(input))
+	copy(sortedValues, input)
+	sort.Ints(sortedValues)
+	return sortedValues
 }

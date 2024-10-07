@@ -1,0 +1,75 @@
+2024/10/07 16:23:57 {0 0} was written to inputCh
+2024/10/07 16:23:57 {9 9} was written to inputCh
+2024/10/07 16:23:57 {4 4} was written to inputCh
+2024/10/07 16:23:57 {5 5} was written to inputCh
+2024/10/07 16:23:57 {6 6} was written to inputCh
+2024/10/07 16:23:57 {3 3} was written to inputCh
+2024/10/07 16:23:57 {8 8} was written to inputCh
+2024/10/07 16:23:57 {1 1} was written to inputCh
+2024/10/07 16:23:57 {7 7} was written to inputCh
+2024/10/07 16:23:57 {2 2} was written to inputCh
+2024/10/07 16:23:57 copyItem: {0 0}
+2024/10/07 16:23:57 chan, copy: {0 0} was written to outputChan, minIndex = 0
+2024/10/07 16:23:57 copyItem: {9 9}
+2024/10/07 16:23:57 copyItem: {4 4}
+2024/10/07 16:23:57 minItem.index: 9, currentMinIndex: 1
+2024/10/07 16:23:57 copyItem: {5 5}
+2024/10/07 16:23:57 minItem.index: 4, currentMinIndex: 1
+2024/10/07 16:23:57 copyItem: {6 6}
+2024/10/07 16:23:57 minItem.index: 4, currentMinIndex: 1
+2024/10/07 16:23:57 copyItem: {3 3}
+2024/10/07 16:23:57 minItem.index: 4, currentMinIndex: 1
+2024/10/07 16:23:57 copyItem: {8 8}
+2024/10/07 16:23:57 minItem.index: 3, currentMinIndex: 1
+2024/10/07 16:23:57 copyItem: {1 1}
+2024/10/07 16:23:57 i: 0, value: 0
+2024/10/07 16:23:57 i: 1, value: 1
+2024/10/07 16:23:57 chan, copy: {1 1} was written to outputChan, minIndex = 1
+2024/10/07 16:23:57 copyItem: {7 7}
+2024/10/07 16:23:57 minItem.index: 3, currentMinIndex: 2
+2024/10/07 16:23:57 copyItem: {2 2}
+2024/10/07 16:23:57 chan, copy: {2 2} was written to outputChan, minIndex = 2
+2024/10/07 16:23:57 minItemDefault.index: 3, currentMinIndex: 3
+2024/10/07 16:23:57 i: 2, value: 2
+2024/10/07 16:23:57 i: 3, value: 3
+2024/10/07 16:23:57 default: &{3 3} was written to outputChan, minIndex = 3
+2024/10/07 16:23:57 minItemDefault.index: 8, currentMinIndex: 4
+2024/10/07 16:23:57 minItemDefault.index: 4, currentMinIndex: 4
+2024/10/07 16:23:57 default: &{4 4} was written to outputChan, minIndex = 4
+2024/10/07 16:23:57 minItemDefault.index: 6, currentMinIndex: 5
+2024/10/07 16:23:57 minItemDefault.index: 8, currentMinIndex: 5
+2024/10/07 16:23:57 minItemDefault.index: 5, currentMinIndex: 5
+2024/10/07 16:23:57 i: 4, value: 4
+2024/10/07 16:23:57 i: 5, value: 5
+2024/10/07 16:23:57 default: &{5 5} was written to outputChan, minIndex = 5
+2024/10/07 16:23:57 minItemDefault.index: 7, currentMinIndex: 6
+2024/10/07 16:23:57 minItemDefault.index: 9, currentMinIndex: 6
+2024/10/07 16:23:57 minItemDefault.index: 6, currentMinIndex: 6
+2024/10/07 16:23:57 default: &{6 6} was written to outputChan, minIndex = 6
+2024/10/07 16:23:57 minItemDefault.index: 8, currentMinIndex: 7
+2024/10/07 16:23:57 minItemDefault.index: 7, currentMinIndex: 7
+2024/10/07 16:23:57 i: 6, value: 6
+2024/10/07 16:23:57 i: 7, value: 7
+2024/10/07 16:23:57 default: &{7 7} was written to outputChan, minIndex = 7
+2024/10/07 16:23:57 minItemDefault.index: 9, currentMinIndex: 8
+2024/10/07 16:23:57 minItemDefault.index: 8, currentMinIndex: 8
+2024/10/07 16:23:57 default: &{8 8} was written to outputChan, minIndex = 8
+2024/10/07 16:23:57 minItemDefault.index: 9, currentMinIndex: 9
+2024/10/07 16:23:57 i: 8, value: 8
+2024/10/07 16:23:57 i: 9, value: 9
+2024/10/07 16:23:57 default: &{9 9} was written to outputChan, minIndex = 9
+--- FAIL: TestRestoreOrder (0.00s)
+    restore_order_test.go:32: Restored value: 0
+    restore_order_test.go:32: Restored value: 1
+    restore_order_test.go:32: Restored value: 2
+    restore_order_test.go:32: Restored value: 3
+    restore_order_test.go:32: Restored value: 4
+    restore_order_test.go:32: Restored value: 5
+    restore_order_test.go:32: Restored value: 6
+    restore_order_test.go:32: Restored value: 7
+    restore_order_test.go:32: Restored value: 8
+    restore_order_test.go:32: Restored value: 9
+    restore_order_test.go:43: Priority queue restore order is incorrect: Expected [0 9 4 5 6 3 8 1 7 2], got [0 1 2 3 4 5 6 7 8 9]
+FAIL
+exit status 1
+FAIL	ebpf-ssl/internal/priority_queue	0.002s

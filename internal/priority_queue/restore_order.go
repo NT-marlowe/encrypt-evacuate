@@ -2,7 +2,7 @@ package priority_queue
 
 import (
 	"container/heap"
-	"log"
+	// "log"
 )
 
 func RestoreOrder(reorderedChan <-chan Item) <-chan Item {
@@ -14,70 +14,61 @@ func minHeapSort(inputChan <-chan Item) <-chan Item {
 
 	go func() {
 		defer close(outputChan)
-		// currentMinIndex := 0
+		currentMinIndex := 0
 
 		pq := make(PriorityQueue, 0)
 		heap.Init(&pq)
 
-		i := 0
-		for item := range inputChan {
-			// heap.Push(&pq, &item)
-			copyItem := item
-			// log.Printf("item: %v, index: %d", item, i)
-			log.Printf("item %v was read", copyItem)
-			i++
-			if i == 10 {
-				break
+		for {
+			select {
+			case tmpItem, ok := <-inputChan:
+				copyItem := tmpItem
+				if !ok {
+					return
+				}
+				// log.Printf("copyItem: %v", copyItem)
+
+				if copyItem.index == currentMinIndex {
+					outputChan <- copyItem
+					// log.Printf("chan, copy: %v was written to outputChan, minIndex = %d\n", copyItem, currentMinIndex)
+					currentMinIndex++
+					continue
+				}
+
+				if pq.Len() == 0 {
+					heap.Push(&pq, &copyItem)
+					continue
+				}
+
+				minItem := pq.Pop().(*Item)
+				// log.Printf("minItem.index: %d, currentMinIndex: %d", minItem.index, currentMinIndex)
+				if minItem.index == currentMinIndex {
+					outputChan <- *minItem
+					// log.Printf("chan, pop: %v was written to outputChan, minIndex = %d\n", copyItem, currentMinIndex)
+					currentMinIndex++
+				} else {
+					heap.Push(&pq, minItem)
+				}
+
+				heap.Push(&pq, &copyItem)
+
+			default:
+				// log.Printf("minIndex: %d, pq.Len(): %d", currentMinIndex, pq.Len())
+				if pq.Len() == 0 {
+					continue
+				}
+
+				minItemDefault := pq.Pop().(*Item)
+				// log.Printf("minItemDefault.index: %d, currentMinIndex: %d", minItemDefault.index, currentMinIndex)
+				if minItemDefault.index == currentMinIndex {
+					outputChan <- *minItemDefault
+					// log.Printf("default: %v was written to outputChan, minIndex = %d\n", minItemDefault, currentMinIndex)
+					currentMinIndex++
+				} else {
+					heap.Push(&pq, minItemDefault)
+				}
 			}
 		}
-
-		// for {
-		// 	select {
-		// 	case tmpItem, ok := <-inputChan:
-		// 		if !ok {
-		// 			return
-		// 		}
-		// 		log.Printf("tmpItem: %v", tmpItem)
-
-		// 		if tmpItem.index == currentMinIndex {
-		// 			outputChan <- tmpItem
-		// 			currentMinIndex++
-		// 			log.Printf("%v was written to outputChan, minIndex = %d\n", tmpItem, currentMinIndex)
-		// 			continue
-		// 		}
-
-		// 		if pq.Len() == 0 {
-		// 			heap.Push(&pq, &tmpItem)
-		// 			continue
-		// 		}
-
-		// 		minItem := pq.Pop().(*Item)
-		// 		if minItem.index == currentMinIndex {
-		// 			outputChan <- *minItem
-		// 			currentMinIndex++
-		// 			log.Printf("%v was written to outputChan, minIndex = %d\n", tmpItem, currentMinIndex)
-		// 		} else {
-		// 			heap.Push(&pq, minItem)
-		// 		}
-
-		// 		heap.Push(&pq, &tmpItem)
-
-		// 	default:
-		// 		// log.Printf("minIndex: %d, pq.Len(): %d", currentMinIndex, pq.Len())
-		// 		if pq.Len() == 0 {
-		// 			continue
-		// 		}
-
-		// 		minItem := pq.Pop().(*Item)
-		// 		if minItem.index == currentMinIndex {
-		// 			log.Printf("%v was written to outputChan, minIndex = %d\n", minItem, currentMinIndex)
-		// 			outputChan <- *minItem
-		// 			currentMinIndex++
-		// 		} else {
-		// 			heap.Push(&pq, minItem)
-		// 		}
-		// 	}
-		// }
 
 	}()
 
