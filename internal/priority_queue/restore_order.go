@@ -2,27 +2,11 @@ package priority_queue
 
 import (
 	"container/heap"
+	"log"
 )
 
 func RestoreOrder(reorderedChan <-chan Item) <-chan Item {
-	sortedChan := make(chan Item)
-
-	go func() {
-		defer close(sortedChan)
-
-		for {
-			tmpItem, ok := <-reorderedChan
-			if !ok {
-				return
-			}
-
-			// do some sorting
-
-			sortedChan <- tmpItem
-		}
-	}()
-
-	return sortedChan
+	return minHeapSort(reorderedChan)
 }
 
 func minHeapSort(inputChan <-chan Item) <-chan Item {
@@ -40,6 +24,7 @@ func minHeapSort(inputChan <-chan Item) <-chan Item {
 			if !ok {
 				return
 			}
+			log.Printf("tmpItem: %v", tmpItem)
 
 			if tmpItem.index == currentMinIndex {
 				outputChan <- tmpItem
