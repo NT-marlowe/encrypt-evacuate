@@ -8,20 +8,15 @@ import (
 )
 
 func TestRestoreOrder(t *testing.T) {
-	// values := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	values := []int{0, 9, 4, 5, 6, 3, 8, 1, 7, 2}
+	values := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-	// inputCh := make(chan Item)
-	inputCh := make(chan Item, len(values))
+	inputCh := make(chan Item)
 
 	// reorder the values
 	for _, value := range values {
-		// go func() {
-		// 	inputCh <- Item{value: value, index: value}
-		// 	log.Printf("%d was written to inputCh", value)
-		// }()
-		tmpItem := Item{index: value, value: value}
-		inputCh <- tmpItem
+		go func() {
+			inputCh <- Item{value: value, index: value}
+		}()
 	}
 
 	outputCh := RestoreOrder(inputCh)
