@@ -1,6 +1,6 @@
 package priority_queue
 
-func tmp(reorderedChan <-chan Item) <-chan Item {
+func RestoreOrder(reorderedChan <-chan Item) <-chan Item {
 	sortedChan := make(chan Item)
 
 	go func() {
