@@ -20,32 +20,51 @@ func minHeapSort(inputChan <-chan Item) <-chan Item {
 		heap.Init(&pq)
 
 		for {
-			tmpItem, ok := <-inputChan
-			if !ok {
-				return
-			}
-			log.Printf("tmpItem: %v", tmpItem)
+			select {
+			case tmpItem, ok := <-inputChan:
+				if !ok {
+					return
+				}
+				log.Printf("tmpItem: %v", tmpItem)
 
-			if tmpItem.index == currentMinIndex {
-				outputChan <- tmpItem
-				currentMinIndex++
-				continue
-			}
+				if tmpItem.index == currentMinIndex {
+					outputChan <- tmpItem
+					currentMinIndex++
+					log.Printf("%v was written to outputChan, minIndex = %d\n", tmpItem, currentMinIndex)
+					continue
+				}
 
-			if pq.Len() == 0 {
+				if pq.Len() == 0 {
+					heap.Push(&pq, &tmpItem)
+					continue
+				}
+
+				minItem := pq.Pop().(*Item)
+				if minItem.index == currentMinIndex {
+					outputChan <- *minItem
+					currentMinIndex++
+					log.Printf("%v was written to outputChan, minIndex = %d\n", tmpItem, currentMinIndex)
+				} else {
+					heap.Push(&pq, minItem)
+				}
+
 				heap.Push(&pq, &tmpItem)
-				continue
-			}
 
-			minItem := pq.Pop().(*Item)
-			if minItem.index == currentMinIndex {
-				outputChan <- *minItem
-				currentMinIndex++
-			} else {
-				heap.Push(&pq, minItem)
-			}
+			default:
+				// log.Printf("minIndex: %d, pq.Len(): %d", currentMinIndex, pq.Len())
+				if pq.Len() == 0 {
+					continue
+				}
 
-			heap.Push(&pq, &tmpItem)
+				minItem := pq.Pop().(*Item)
+				if minItem.index == currentMinIndex {
+					log.Printf("%v was written to outputChan, minIndex = %d\n", minItem, currentMinIndex)
+					outputChan <- *minItem
+					currentMinIndex++
+				} else {
+					heap.Push(&pq, minItem)
+				}
+			}
 		}
 
 	}()
