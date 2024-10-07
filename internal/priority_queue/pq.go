@@ -24,9 +24,9 @@ func (pq PriorityQueue) Swap(i, j int) {
 }
 
 func (pq *PriorityQueue) Push(x any) {
-	n := len(*pq)
+	// n := len(*pq)
 	item := x.(*Item)
-	item.index = n
+	// item.index = n
 	*pq = append(*pq, item)
 }
 
