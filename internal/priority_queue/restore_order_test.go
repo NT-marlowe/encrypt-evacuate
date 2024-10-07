@@ -19,7 +19,9 @@ func TestRestoreOrder(t *testing.T) {
 		// 	inputCh <- Item{value: value, index: value}
 		// 	log.Printf("%d was written to inputCh", value)
 		// }()
-		inputCh <- Item{value: value, index: value}
+		tmpItem := Item{index: value, value: value}
+		inputCh <- tmpItem
+		log.Printf("%v was written to inputCh", tmpItem)
 	}
 
 	outputCh := RestoreOrder(inputCh)
