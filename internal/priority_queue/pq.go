@@ -27,6 +27,7 @@ func (pq PriorityQueue) Len() int {
 	return len(pq)
 }
 
+// Min-heap.
 func (pq PriorityQueue) Less(i, j int) bool {
 	return pq[i].index < pq[j].index
 }
@@ -35,6 +36,8 @@ func (pq PriorityQueue) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 }
 
+// Min-heap.
+// |index| should not be updated because it is used to track the original position of the item.
 func (pq *PriorityQueue) Push(x any) {
 	// n := len(*pq)
 	item := x.(*Item)
@@ -42,6 +45,7 @@ func (pq *PriorityQueue) Push(x any) {
 	*pq = append(*pq, item)
 }
 
+// Min-heap.
 func (pq *PriorityQueue) Pop() any {
 	old := *pq
 	n := len(old)
