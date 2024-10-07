@@ -13,18 +13,19 @@ type indexedRecord struct {
 	record ringbuf.Record
 }
 
-type dataBlock [DataBlockSize]uint8
+type dataBlock struct {
+	dataBuf [DataBlockSize]uint8
+	dataLen uint32
+}
 
 type indexedDataBlock struct {
 	index     int
 	dataBlock dataBlock
-	dataLen   uint32
 }
 
 func makeIndexedDataBlock(index int, data [DataBlockSize]uint8, dataLen uint32) indexedDataBlock {
 	return indexedDataBlock{
 		index:     index,
-		dataBlock: data,
-		dataLen:   dataLen,
+		dataBlock: dataBlock{dataBuf: data, dataLen: dataLen},
 	}
 }

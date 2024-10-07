@@ -9,6 +9,18 @@ type Item struct {
 	value any
 }
 
+func MakeItem(index int, value any) Item {
+	return Item{index: index, value: value}
+}
+
+func (item *Item) GetValue() any {
+	return item.value
+}
+
+func (item *Item) GetIndex() int {
+	return item.index
+}
+
 type PriorityQueue []*Item
 
 func (pq PriorityQueue) Len() int {
