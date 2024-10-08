@@ -28,8 +28,8 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 	var start time.Time
 	var elapsed time.Duration
 	for {
-		start = time.Now()
 		ird, ok := <-irdCh
+		start = time.Now()
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
@@ -40,9 +40,9 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 			continue
 		}
 
-		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 		elapsed = time.Since(start)
 		fmt.Printf("binary.Read: %v\n", elapsed)
+		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 	}
 }
 

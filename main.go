@@ -98,6 +98,8 @@ func main() {
 		// elapsed time of rd.Read?
 		start = time.Now()
 		record, err := rd.Read()
+		elapsed = time.Since(start)
+		fmt.Printf("rd.Read: %v\n", elapsed)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
@@ -111,7 +113,5 @@ func main() {
 		indexedRecordCh <- indexedRecord{index: index, record: record}
 		index++
 
-		elapsed = time.Since(start)
-		fmt.Printf("rd.Read: %v\n", elapsed)
 	}
 }

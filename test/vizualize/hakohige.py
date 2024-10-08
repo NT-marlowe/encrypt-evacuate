@@ -36,6 +36,7 @@ with open(sys.argv[1], "r") as file:
             if operation in data:
                 data[operation].append(value)
 
+print()
 for ops in operations:
     print(f"{ops}: {len(data[ops])} samples")
 
@@ -43,10 +44,18 @@ for ops in operations:
 df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in data.items()]))
 
 # 箱ひげ図の描画
+"""
+DataFrameのカラムから箱ひげ図を作成します。 
+箱ひげ図は、数値データのグループを四分位値でグラフ化する方法です。 
+箱はデータのQ1からQ3の四分位値から広がり、中央値 (Q2)に線が引かれる。 
+ひげは、データの範囲を示すためにボックスの端から伸びます。 
+デフォルトでは、ボックスの端から1.5 * IQR (IQR = Q3 - Q1)を超えない範囲で広がり、
+その区間内で最も遠いデータポイントで終わります。 外れ値は，個別の点としてプロットされる．
+"""
 plt.figure(figsize=(12, 7))
 df.boxplot()
 plt.ylabel("Time (us)")
-plt.title("Processing Time for Different Operations (> 1000us are ignored)")
+plt.title(f"Processing Time, parallelism = {parallelism} (> 1000us are ignored)")
 plt.xticks(rotation=30)
 plt.grid(True)
 plt.savefig("./img/hakohige.png")
