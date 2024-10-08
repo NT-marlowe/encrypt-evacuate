@@ -25,7 +25,6 @@ func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBloc
 
 func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlock) {
 	var event capture_sslEncDataEventT
-
 	var start time.Time
 	var elapsed time.Duration
 	for {
@@ -52,18 +51,28 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 
 	go func() {
 		defer close(itemCh)
+		var start time.Time
+		var elapsed time.Duration
+
 		for idb := range idbCh {
+			start = time.Now()
 			itemCh <- priority_queue.MakeItem(idb.index, idb.dataBlock)
+			elapsed = time.Since(start)
+			fmt.Printf("MakeItem: %v\n", elapsed)
 		}
 	}()
 
 	restoredCh := priority_queue.RestoreOrder(itemCh)
 
+	var start time.Time
+	var elapsed time.Duration
 	for item := range restoredCh {
+		start = time.Now()
 		idb := item.GetValue().(dataBlock)
 		// log.Printf("idx: %d\n", item.GetIndex())
-
 		file.Write(idb.dataBuf[:idb.dataLen])
+		elapsed = time.Since(start)
+		fmt.Printf("file.Write: %v\n", elapsed)
 	}
 
 }
