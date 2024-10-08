@@ -2,9 +2,12 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
+
+	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -89,7 +92,11 @@ func main() {
 	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file)
 
 	var index int
+	var start time.Time
+	var elapsed time.Duration
 	for {
+		// elapsed time of rd.Read?
+		start = time.Now()
 		record, err := rd.Read()
 
 		if err != nil {
@@ -103,5 +110,8 @@ func main() {
 
 		indexedRecordCh <- indexedRecord{index: index, record: record}
 		index++
+
+		elapsed = time.Since(start)
+		fmt.Printf("rd.Read: %v\n", elapsed)
 	}
 }

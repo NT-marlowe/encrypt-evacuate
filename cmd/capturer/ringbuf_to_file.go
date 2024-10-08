@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 const (
@@ -23,7 +25,10 @@ func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBloc
 func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlock) {
 	var event capture_sslEncDataEventT
 
+	var start time.Time
+	var elapsed time.Duration
 	for {
+		start = time.Now()
 		ird, ok := <-irdCh
 		if !ok {
 			log.Println("Record channel closed, exiting..")
@@ -36,6 +41,8 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 		}
 
 		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
+		elapsed = time.Since(start)
+		fmt.Printf("rd.Read: %v\n", elapsed)
 	}
 }
 
