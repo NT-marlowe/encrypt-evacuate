@@ -3,11 +3,20 @@ import matplotlib.pyplot as plt
 import re
 import sys
 
+operations = [
+    "rd.Read",
+    "binary.Read",
+    "MakeItem",
+    "minHeapSort",
+    "file.Write",
+]
+parallelism = 4
+
 # ファイルからデータを読み込む
-data = {"rd.Read": [], "binary.Read": [], "file.Write": []}
+data = {operation: [] for operation in operations}
 with open(sys.argv[1], "r") as file:
     for line in file:
-        match = re.match(r"(\w+\.\w+):\s([\d\.]+)([a-zµ]*)", line)
+        match = re.match(r"([\w\.]+):\s([\d\.]+)([a-zµ]*)", line)
         if match:
             operation, value, unit = match.groups()
             value = float(value)
@@ -16,12 +25,19 @@ with open(sys.argv[1], "r") as file:
                 value *= 1000 * 1000
             elif unit == "ms":
                 value *= 1000
+            elif unit == "ns":
+                value /= 1000
 
+            if operation == "binary.Read":
+                value /= parallelism
             if value >= 1000:
                 print(f"{operation} took {value} us")
                 continue
             if operation in data:
                 data[operation].append(value)
+
+for ops in operations:
+    print(f"{ops}: {len(data[ops])} samples")
 
 # データフレームに変換
 df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in data.items()]))
@@ -31,6 +47,6 @@ plt.figure(figsize=(12, 7))
 df.boxplot()
 plt.ylabel("Time (us)")
 plt.title("Processing Time for Different Operations (> 1000us are ignored)")
-plt.xticks(rotation=45)
+plt.xticks(rotation=30)
 plt.grid(True)
 plt.savefig("./img/hakohige.png")
