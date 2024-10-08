@@ -43,7 +43,7 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 
 		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 		elapsed = time.Since(start)
-		fmt.Printf("rd.Read: %v\n", elapsed)
+		fmt.Printf("binary.Read: %v\n", elapsed)
 	}
 }
 
