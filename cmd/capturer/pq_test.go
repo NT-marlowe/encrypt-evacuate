@@ -45,9 +45,10 @@ func TestPriorityQueuePopOrder(t *testing.T) {
 
 // 	// Update the idx of the item with index 5
 // 	targetIndex := 5
-// 	newDataBuf := [4096]byte{1, 2, 3, 4}
-// 	newDataBlock := makeIndexedDataBlock(targetIndex, newDataBuf, 4)
-// 	pq.update(pq[targetIndex], targetIndex, newDataBlock.index)
+// 	newIndex := 100
+// 	// newDataBuf := [4096]byte{1, 2, 3, 4}
+// 	// newDataBlock := dataBlock{dataBuf: newDataBuf, dataLen: 4}
+// 	pq.update(pq[targetIndex], newIndex, dataBlock{})
 
 // 	var poppedValues []int
 // 	for pq.Len() > 0 {
@@ -57,8 +58,9 @@ func TestPriorityQueuePopOrder(t *testing.T) {
 // 	}
 
 // 	// The updated idx should be the first one to be popped
-// 	if poppedValues[targetIndex] != makeIndexedDataBlock(targetIndex, newValue).index {
-// 		t.Errorf("Priority queue update is incorrect: Expected %v, got %v", newValue, poppedValues[0])
+// 	leastPriorityIndex := poppedValues[len(poppedValues)-1]
+// 	if leastPriorityIndex != newIndex {
+// 		t.Errorf("Priority queue update is incorrect: Expected %v, got %v", newIndex, leastPriorityIndex)
 // 	}
 // }
 

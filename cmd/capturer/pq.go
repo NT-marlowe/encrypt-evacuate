@@ -1,25 +1,8 @@
 package main
 
-import (
-	"container/heap"
-)
-
-// type Item struct {
-// 	index int // The priority of the item in the queue. The less, the higher priority.
-// 	value any
-// }
-
-// func MakeItem(index int, value any) Item {
-// 	return Item{index: index, value: value}
-// }
-
-// // func (item *indexedDataBlock) GetValue() any {
-// // 	return item.value
-// // }
-
-// func (item *indexedDataBlock) GetIndex() int {
-// 	return item.index
-// }
+// import (
+// 	"container/heap"
+// )
 
 type PriorityQueue []*indexedDataBlock
 
@@ -55,8 +38,25 @@ func (pq *PriorityQueue) Pop() any {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *indexedDataBlock, index int, value dataBlock) {
-	item.dataBlock = value
-	item.index = index
-	heap.Fix(pq, item.index)
-}
+// func (pq *PriorityQueue) update(item *indexedDataBlock, index int, value dataBlock) {
+// 	item.index = index
+// 	item.dataBlock = value
+// 	heap.Fix(pq, item.index)
+// }
+
+// type Item struct {
+// 	index int // The priority of the item in the queue. The less, the higher priority.
+// 	value any
+// }
+
+// func MakeItem(index int, value any) Item {
+// 	return Item{index: index, value: value}
+// }
+
+// // func (item *indexedDataBlock) GetValue() any {
+// // 	return item.value
+// // }
+
+// func (item *indexedDataBlock) GetIndex() int {
+// 	return item.index
+// }
