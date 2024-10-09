@@ -43,4 +43,7 @@ plt.ylabel("Time (us)")
 plt.title("Processing Time for Different Operations (> 1000us are ignored)")
 plt.xticks(rotation=30)
 plt.grid(True)
-plt.savefig("./img/hakohige.png")
+if parallelism == 1:
+    plt.savefig(f"./img/hakohige_sequential.png")
+else:
+    plt.savefig(f"./img/hakohige_parallel_{parallelism}.png")
