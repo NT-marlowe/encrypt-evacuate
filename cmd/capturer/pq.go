@@ -41,7 +41,6 @@ func (pq PriorityQueue) Swap(i, j int) {
 func (pq *PriorityQueue) Push(x any) {
 	// n := len(*pq)
 	item := x.(*indexedDataBlock)
-	// item.index = n
 	*pq = append(*pq, item)
 }
 
@@ -56,7 +55,7 @@ func (pq *PriorityQueue) Pop() any {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *indexedDataBlock, value dataBlock, index int) {
+func (pq *PriorityQueue) update(item *indexedDataBlock, index int, value dataBlock) {
 	item.dataBlock = value
 	item.index = index
 	heap.Fix(pq, item.index)
