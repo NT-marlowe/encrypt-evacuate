@@ -2,18 +2,18 @@ package main
 
 import (
 	"container/heap"
-	"fmt"
-	"time"
+	// "fmt"
+	// "time"
 )
 
 // slice, key: Item.index, value: time.TIme
-var enqueueTime = make(map[int]time.Time)
+// var enqueueTime = make(map[int]time.Time)
 
-func measureTime(index int) {
-	elapsed := time.Since(enqueueTime[index])
-	fmt.Printf("minHeapSort: %v\n", elapsed)
-	delete(enqueueTime, index)
-}
+// func measureTime(index int) {
+// 	elapsed := time.Since(enqueueTime[index])
+// 	fmt.Printf("minHeapSort: %v\n", elapsed)
+// 	delete(enqueueTime, index)
+// }
 
 func restoreOrder(reorderedChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 	return minHeapSort(reorderedChan)
@@ -32,7 +32,7 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 		for {
 			select {
 			case tmpItem, ok := <-inputChan:
-				enqueueTime[tmpItem.index] = time.Now()
+				// enqueueTime[tmpItem.index] = time.Now()
 
 				if !ok {
 					return
@@ -42,7 +42,7 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 					outputChan <- tmpItem
 					currentMinIndex++
 
-					measureTime(tmpItem.index)
+					// measureTime(tmpItem.index)
 
 					continue
 				}
@@ -57,7 +57,7 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 					outputChan <- *minItem
 					currentMinIndex++
 
-					measureTime(minItem.index)
+					// measureTime(minItem.index)
 
 				} else {
 					heap.Push(&pq, minItem)
@@ -75,7 +75,7 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 					outputChan <- *minItem
 					currentMinIndex++
 
-					measureTime(minItem.index)
+					// measureTime(minItem.index)
 				} else {
 					heap.Push(&pq, minItem)
 				}
