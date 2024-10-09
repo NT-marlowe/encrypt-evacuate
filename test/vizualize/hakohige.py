@@ -4,7 +4,7 @@ import re
 import sys
 
 # ファイルからデータを読み込む
-operations = ["rd.Read", "binary.Read", "file.Write", "minHeapSort"]
+operations = ["rd.Read", "binary.Read", "minHeapSort", "file.Write"]
 data = {operation: [] for operation in operations}
 parallelism = int(sys.argv[2])
 
@@ -27,7 +27,7 @@ with open(sys.argv[1], "r") as file:
             if operation == "binary.Read":
                 value /= parallelism
 
-            if value >= 1000:
+            if value >= 10000:
                 print(f"{operation} took {value} us")
                 continue
             if operation in data:
@@ -41,6 +41,6 @@ plt.figure(figsize=(12, 7))
 df.boxplot()
 plt.ylabel("Time (us)")
 plt.title("Processing Time for Different Operations (> 1000us are ignored)")
-plt.xticks(rotation=45)
+plt.xticks(rotation=30)
 plt.grid(True)
 plt.savefig("./img/hakohige.png")

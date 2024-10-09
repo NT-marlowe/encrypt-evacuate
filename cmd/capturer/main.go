@@ -18,8 +18,6 @@ const (
 	sharedLibraryPath = "/lib/x86_64-linux-gnu/libcrypto.so.3"
 	symbol            = "EVP_EncryptUpdate"
 	dataShelterPath   = "/data_shelter"
-
-	ChannelBufferSize = 1000
 )
 
 func main() {
@@ -80,7 +78,7 @@ func main() {
 	}
 	defer file.Close()
 
-	indexedRecordCh := make(chan indexedRecord, ChannelBufferSize)
+	indexedRecordCh := make(chan indexedRecord)
 	defer close(indexedRecordCh)
 
 	indexedDataBlockCh := make(chan indexedDataBlock)
