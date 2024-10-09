@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"ebpf-ssl/internal/priority_queue"
 	"encoding/binary"
 	"log"
 	"os"
@@ -41,19 +40,19 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 }
 
 func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
-	itemCh := make(chan priority_queue.Item)
+	// itemCh := make(chan priority_queue.Item)
 
-	go func() {
-		defer close(itemCh)
-		for idb := range idbCh {
-			itemCh <- priority_queue.MakeItem(idb.index, idb.dataBlock)
-		}
-	}()
+	// go func() {
+	// 	defer close(itemCh)
+	// 	for idb := range idbCh {
+	// 		itemCh <- priority_queue.MakeItem(idb.index, idb.dataBlock)
+	// 	}
+	// }()
 
-	restoredCh := priority_queue.RestoreOrder(itemCh)
+	restoredCh := restoreOrder(idbCh)
 
 	for item := range restoredCh {
-		idb := item.GetValue().(dataBlock)
+		idb := item.dataBlock
 		// log.Printf("idx: %d\n", item.GetIndex())
 
 		file.Write(idb.dataBuf[:idb.dataLen])
