@@ -2,9 +2,11 @@ package main
 
 import (
 	"errors"
+	// "fmt"
 	"log"
 	"os"
 	"os/signal"
+	// "time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -15,8 +17,6 @@ const (
 	sharedLibraryPath = "/lib/x86_64-linux-gnu/libcrypto.so.3"
 	symbol            = "EVP_EncryptUpdate"
 	dataShelterPath   = "/data_shelter"
-
-	ChannelBufferSize = 1000
 )
 
 func main() {
@@ -77,7 +77,7 @@ func main() {
 	}
 	defer file.Close()
 
-	indexedRecordCh := make(chan indexedRecord, ChannelBufferSize)
+	indexedRecordCh := make(chan indexedRecord)
 	defer close(indexedRecordCh)
 
 	indexedDataBlockCh := make(chan indexedDataBlock)
@@ -89,8 +89,15 @@ func main() {
 	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file)
 
 	var index int
+	// var start time.Time
+	// var elapsed time.Duration
 	for {
+		// start = time.Now()
+
 		record, err := rd.Read()
+
+		// elapsed = time.Since(start)
+		// fmt.Printf("rd.Read: %v\n", elapsed)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
@@ -103,5 +110,6 @@ func main() {
 
 		indexedRecordCh <- indexedRecord{index: index, record: record}
 		index++
+
 	}
 }

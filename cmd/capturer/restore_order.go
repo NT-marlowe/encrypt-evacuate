@@ -2,9 +2,18 @@ package main
 
 import (
 	"container/heap"
-	// "ebpf-ssl/internal/priority_queue"
-	// "log"
+	// "fmt"
+	// "time"
 )
+
+// slice, key: Item.index, value: time.TIme
+// var enqueueTime = make(map[int]time.Time)
+
+// func measureTime(index int) {
+// 	elapsed := time.Since(enqueueTime[index])
+// 	fmt.Printf("minHeapSort: %v\n", elapsed)
+// 	delete(enqueueTime, index)
+// }
 
 func restoreOrder(reorderedChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 	return minHeapSort(reorderedChan)
@@ -23,6 +32,8 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 		for {
 			select {
 			case tmpItem, ok := <-inputChan:
+				// enqueueTime[tmpItem.index] = time.Now()
+
 				if !ok {
 					return
 				}
@@ -30,6 +41,9 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 				if tmpItem.index == currentMinIndex {
 					outputChan <- tmpItem
 					currentMinIndex++
+
+					// measureTime(tmpItem.index)
+
 					continue
 				}
 
@@ -42,6 +56,9 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 				if minItem.index == currentMinIndex {
 					outputChan <- *minItem
 					currentMinIndex++
+
+					// measureTime(minItem.index)
+
 				} else {
 					heap.Push(&pq, minItem)
 				}
@@ -57,6 +74,8 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 				if minItem.index == currentMinIndex {
 					outputChan <- *minItem
 					currentMinIndex++
+
+					// measureTime(minItem.index)
 				} else {
 					heap.Push(&pq, minItem)
 				}
