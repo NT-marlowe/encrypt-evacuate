@@ -1,27 +1,27 @@
-package priority_queue
+package main
 
 import (
 	"container/heap"
 )
 
-type Item struct {
-	index int // The priority of the item in the queue. The less, the higher priority.
-	value any
-}
+// type Item struct {
+// 	index int // The priority of the item in the queue. The less, the higher priority.
+// 	value any
+// }
 
-func MakeItem(index int, value any) Item {
-	return Item{index: index, value: value}
-}
+// func MakeItem(index int, value any) Item {
+// 	return Item{index: index, value: value}
+// }
 
-func (item *Item) GetValue() any {
-	return item.value
-}
+// // func (item *indexedDataBlock) GetValue() any {
+// // 	return item.value
+// // }
 
-func (item *Item) GetIndex() int {
-	return item.index
-}
+// func (item *indexedDataBlock) GetIndex() int {
+// 	return item.index
+// }
 
-type PriorityQueue []*Item
+type PriorityQueue []*indexedDataBlock
 
 func (pq PriorityQueue) Len() int {
 	return len(pq)
@@ -40,7 +40,7 @@ func (pq PriorityQueue) Swap(i, j int) {
 // |index| should not be updated because it is used to track the original position of the item.
 func (pq *PriorityQueue) Push(x any) {
 	// n := len(*pq)
-	item := x.(*Item)
+	item := x.(*indexedDataBlock)
 	// item.index = n
 	*pq = append(*pq, item)
 }
@@ -56,8 +56,8 @@ func (pq *PriorityQueue) Pop() any {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *Item, value any, index int) {
-	item.value = value
+func (pq *PriorityQueue) update(item *indexedDataBlock, value dataBlock, index int) {
+	item.dataBlock = value
 	item.index = index
 	heap.Fix(pq, item.index)
 }

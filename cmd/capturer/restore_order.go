@@ -2,7 +2,7 @@ package main
 
 import (
 	"container/heap"
-	"ebpf-ssl/internal/priority_queue"
+	// "ebpf-ssl/internal/priority_queue"
 	// "log"
 )
 
@@ -17,7 +17,7 @@ func minHeapSort(inputChan <-chan indexedDataBlock) <-chan indexedDataBlock {
 		defer close(outputChan)
 		currentMinIndex := 0
 
-		pq := make(priority_queue.PriorityQueue, 0)
+		pq := make(PriorityQueue, 0)
 		heap.Init(&pq)
 
 		for {
