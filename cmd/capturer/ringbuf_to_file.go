@@ -58,11 +58,16 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 
 	restoredCh := restoreOrder(idbCh)
 
+	var start time.Time
+	var elapsed time.Duration
 	for item := range restoredCh {
+		start = time.Now()
 		idb := item.dataBlock
 		// log.Printf("idx: %d\n", item.GetIndex())
 
 		file.Write(idb.dataBuf[:idb.dataLen])
+		elapsed = time.Since(start)
+		fmt.Printf("file.Write: %v\n", elapsed)
 	}
 
 }
