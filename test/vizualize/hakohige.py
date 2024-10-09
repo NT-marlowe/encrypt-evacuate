@@ -6,7 +6,7 @@ import sys
 # ファイルからデータを読み込む
 operations = ["rd.Read", "binary.Read", "minHeapSort", "file.Write"]
 data = {operation: [] for operation in operations}
-parallelism = int(sys.argv[2])
+parallelism = int(sys.argv[2]) if len(sys.argv) > 2 else 1
 
 with open(sys.argv[1], "r") as file:
     for line in file:
