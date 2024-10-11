@@ -3,12 +3,12 @@
 set -e
 set -u
 
+subcom=$1
 
 # echo "filename, levenstein_distance, partial_match_ratio"
-# echo "filename, match_ratio"
+echo "filename, ${subcom}"
 # for file in $(ls ./data | grep -v enc); do
 
-subcom=$1
 # ringbuf_filesize=$2
 
 # for file in $(ls ./data/2* | grep -v enc); do

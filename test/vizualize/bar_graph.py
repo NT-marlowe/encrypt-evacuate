@@ -66,19 +66,22 @@ def plot_graph_exp():
     plt.savefig(f"./img/retention_match_exp.png")
 
 
-def plot_graph_incremental():
-    filesize_list, retention_list = read_csv(f"{data_dir_inc}/retention.csv")
-    filesize_list, match_list = read_csv(f"{data_dir_inc}/match.csv")
+def plot_graph_inc(metrics: str):
+    _, match_list = read_csv(f"{data_dir_inc}/{metrics}.csv")
+    _, match_list_p4 = read_csv(f"{data_dir_inc}/{metrics}_p4.csv")
 
     labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
     x = np.arange(len(labels))
     width = 0.2
 
     fig, ax = plt.subplots()
-    ax.bar(x - width / 2, retention_list, width, label="Retention Rate")
-    ax.bar(x + width / 2, match_list, width, label="Match Rate")
+    ax.bar(x - width / 2, match_list, width, label="Seqential")
+    ax.bar(x + width / 2, match_list_p4, width, label="Parallel (p = 4)")
 
-    ax.set_title("Retention and Match Rates by File Size")
+    if metrics == "retention":
+        ax.set_title("Retention Rates by File Size")
+    elif metrics == "match":
+        ax.set_title("Match Rates by File Size")
 
     ax.set_xlabel("Size of Original File [Byte]")
     ax.set_ylabel("Rate")
@@ -87,9 +90,11 @@ def plot_graph_incremental():
     ax.legend()
 
     # plot these two lists
-    plt.savefig(f"./img/retention_match_inc.png")
+    plt.savefig(f"./img/{metrics}_seq_paralell.png")
 
 
-plot_graph_exp()
+# plot_graph_exp()
 
-plot_graph_incremental()
+# plot_graph_incremental()
+plot_graph_inc("retention")
+plot_graph_inc("match")
