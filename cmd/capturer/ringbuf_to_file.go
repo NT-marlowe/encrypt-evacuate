@@ -62,3 +62,30 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 	}
 
 }
+
+func map_write_tmp(idbCh <-chan indexedDataBlock, file *os.File) {
+	m := make(map[int]dataBlock)
+	currentIndex := 0
+	var db dataBlock
+	var ok bool
+
+	for {
+		select {
+		case idb := <-idbCh:
+			if idb.index == currentIndex {
+				dataBlock := idb.dataBlock
+				file.Write(dataBlock.dataBuf[:dataBlock.dataLen])
+				currentIndex++
+			} else {
+				m[idb.index] = idb.dataBlock
+			}
+		default:
+			if db, ok = m[currentIndex]; ok {
+				file.Write(db.dataBuf[:db.dataLen])
+				delete(m, currentIndex)
+				currentIndex++
+			}
+
+		}
+	}
+}
