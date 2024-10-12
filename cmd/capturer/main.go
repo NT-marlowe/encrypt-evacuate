@@ -29,7 +29,8 @@ func main() {
 	var parallelism int
 	var err error
 	if len(os.Args) == 2 {
-		parallelism = 1
+		// p = 15 is the tenttavely the best value for parallelism.
+		parallelism = 15
 	} else {
 		parallelism, err = strconv.Atoi(os.Args[2])
 		if err != nil {
