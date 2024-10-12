@@ -14,8 +14,7 @@ const (
 )
 
 func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File) {
-	// go writeFileData(idbCh, file)
-	go map_write_tmp(idbCh, file)
+	go writeFileData(idbCh, file)
 
 	for i := 0; i < Parallelism; i++ {
 		go decodeIndexedRecord(irdCh, idbCh)
@@ -48,23 +47,6 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 }
 
 func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
-	restoredCh := restoreOrder(idbCh)
-
-	// var start time.Time
-	// var elapsed time.Duration
-	for item := range restoredCh {
-		// start = time.Now()
-		idb := item.dataBlock
-		// log.Printf("idx: %d\n", item.GetIndex())
-
-		file.Write(idb.dataBuf[:idb.dataLen])
-		// elapsed = time.Since(start)
-		// fmt.Printf("file.Write: %v\n", elapsed)
-	}
-
-}
-
-func map_write_tmp(idbCh <-chan indexedDataBlock, file *os.File) {
 	m := make(map[int]dataBlock)
 	currentIndex := 0
 	var db dataBlock
