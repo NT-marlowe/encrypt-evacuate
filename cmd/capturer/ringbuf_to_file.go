@@ -56,8 +56,8 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 		select {
 		case idb := <-idbCh:
 			if idb.index == currentIndex {
-				dataBlock := idb.dataBlock
-				file.Write(dataBlock.dataBuf[:dataBlock.dataLen])
+				db = idb.dataBlock
+				file.Write(db.dataBuf[:db.dataLen])
 				currentIndex++
 			} else {
 				m[idb.index] = idb.dataBlock
