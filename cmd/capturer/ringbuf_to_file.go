@@ -68,35 +68,30 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 	var db dataBlock
 	var ok bool
 
-	for {
-		select {
-		case idb, ok = <-idbCh:
+	for idb = range idbCh {
+		// fmt.Printf("idb.index: %d, currentIndex: %d\n", idb.index, currentIndex)
+		if idb.index == currentIndex {
+			db = idb.dataBlock
+			file.Write(db.dataBuf[:db.dataLen])
+			fmt.Printf("from chan, idx = %d\n", idb.index)
+			currentIndex++
+		} else {
+			m[idb.index] = idb.dataBlock
+			enqueueTime[idb.index] = time.Now()
+			fmt.Printf("idx = %d was enqueued\n", idb.index)
+		}
+
+		for {
+			db, ok = m[currentIndex]
 			if !ok {
-				log.Println("Data block channel closed, exiting..")
-				return
+				break
 			}
+			file.Write(db.dataBuf[:db.dataLen])
+			delete(m, currentIndex)
+			fmt.Printf("from map, idx = %d\n", currentIndex)
+			measureTime(currentIndex, "writeFileData")
 
-			if idb.index == currentIndex {
-				db = idb.dataBlock
-				file.Write(db.dataBuf[:db.dataLen])
-				measureTime(idb.index, "writeFileData")
-				currentIndex++
-			} else {
-				m[idb.index] = idb.dataBlock
-				enqueueTime[idb.index] = time.Now()
-			}
-		default:
-			for {
-				db, ok = m[currentIndex]
-				if !ok {
-					break
-				}
-				file.Write(db.dataBuf[:db.dataLen])
-				delete(m, currentIndex)
-				measureTime(idb.index, "writeFileData")
-
-				currentIndex++
-			}
+			currentIndex++
 		}
 	}
 }

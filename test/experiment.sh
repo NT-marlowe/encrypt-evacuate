@@ -4,7 +4,7 @@
 set -e
 set -u
 
-USER := marlowe
+USER=marlowe
 
 # if not root user, exit
 if [ "$EUID" -ne 0 ]
