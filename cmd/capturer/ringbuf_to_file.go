@@ -14,7 +14,8 @@ const (
 )
 
 func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File) {
-	go writeFileData(idbCh, file)
+	// go writeFileData(idbCh, file)
+	go map_write_tmp(idbCh, file)
 
 	for i := 0; i < Parallelism; i++ {
 		go decodeIndexedRecord(irdCh, idbCh)
@@ -80,12 +81,15 @@ func map_write_tmp(idbCh <-chan indexedDataBlock, file *os.File) {
 				m[idb.index] = idb.dataBlock
 			}
 		default:
-			if db, ok = m[currentIndex]; ok {
+			for {
+				db, ok = m[currentIndex]
+				if !ok {
+					break
+				}
 				file.Write(db.dataBuf[:db.dataLen])
 				delete(m, currentIndex)
 				currentIndex++
 			}
-
 		}
 	}
 }

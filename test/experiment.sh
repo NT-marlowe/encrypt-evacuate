@@ -4,6 +4,8 @@
 set -e
 set -u
 
+USER := marlowe
+
 # if not root user, exit
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -38,5 +40,7 @@ for file in $(ls ./data/1* | grep -v enc); do
     
     # rm ./data/{$file}.enc
 done
+
+chown -R ${USER}:${USER} ../cmd/capturer/*
 
 
