@@ -17,8 +17,7 @@ EBPF_PROGRAM=ebpf-ssl
 DATA_SHELTER=/data_shelter
 
 rm -f ${DATA_SHELTER}/*
-
-cd .. && make && cd test
+cd .. && make all && cd test
 
 # for file in $(ls ./data | grep -v enc); do
 for file in $(ls ./data/1* | grep -v enc); do

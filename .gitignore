@@ -3,3 +3,4 @@ venv
 *.out
 __pycache__/
 
+*.log

@@ -52,7 +52,7 @@ var enqueueTime = make(map[int]time.Time)
 func measureTime(index int, op string) {
 	t, ok := enqueueTime[index]
 	if !ok {
-		fmt.Printf("No enqueue time found for index %d\n", index)
+		// fmt.Printf("No enqueue time found for index %d\n", index)
 		return
 	}
 	elapsed := time.Since(t)
@@ -73,12 +73,10 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 		if idb.index == currentIndex {
 			db = idb.dataBlock
 			file.Write(db.dataBuf[:db.dataLen])
-			fmt.Printf("from chan, idx = %d\n", idb.index)
 			currentIndex++
 		} else {
 			m[idb.index] = idb.dataBlock
 			enqueueTime[idb.index] = time.Now()
-			fmt.Printf("idx = %d was enqueued\n", idb.index)
 		}
 
 		for {
@@ -88,7 +86,6 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 			}
 			file.Write(db.dataBuf[:db.dataLen])
 			delete(m, currentIndex)
-			fmt.Printf("from map, idx = %d\n", currentIndex)
 			measureTime(currentIndex, "writeFileData")
 
 			currentIndex++
