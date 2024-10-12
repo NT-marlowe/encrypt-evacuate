@@ -9,14 +9,10 @@ import (
 	// "time"
 )
 
-const (
-	Parallelism = 4
-)
-
-func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File) {
+func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File, parallelism int) {
 	go writeFileData(idbCh, file)
 
-	for i := 0; i < Parallelism; i++ {
+	for i := 0; i < parallelism; i++ {
 		go decodeIndexedRecord(irdCh, idbCh)
 	}
 
@@ -46,19 +42,49 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 	}
 }
 
+// slice, key: Item.index, value: time.TIme
+// var enqueueTime = make(map[int]time.Time)
+
+// func measureTime(index int, op string) {
+// 	t, ok := enqueueTime[index]
+// 	if !ok {
+// 		// fmt.Printf("No enqueue time found for index %d\n", index)
+// 		return
+// 	}
+// 	elapsed := time.Since(t)
+
+// 	fmt.Printf("%s: %v\n", op, elapsed)
+// 	delete(enqueueTime, index)
+// }
+
 func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
-	restoredCh := restoreOrder(idbCh)
+	m := make(map[int]dataBlock)
+	currentIndex := 0
+	var idb indexedDataBlock
+	var db dataBlock
+	var ok bool
 
-	// var start time.Time
-	// var elapsed time.Duration
-	for item := range restoredCh {
-		// start = time.Now()
-		idb := item.dataBlock
-		// log.Printf("idx: %d\n", item.GetIndex())
+	for idb = range idbCh {
+		// fmt.Printf("idb.index: %d, currentIndex: %d\n", idb.index, currentIndex)
+		if idb.index == currentIndex {
+			db = idb.dataBlock
+			file.Write(db.dataBuf[:db.dataLen])
+			currentIndex++
+		} else {
+			m[idb.index] = idb.dataBlock
+			// enqueueTime[idb.index] = time.Now()
+		}
 
-		file.Write(idb.dataBuf[:idb.dataLen])
-		// elapsed = time.Since(start)
-		// fmt.Printf("file.Write: %v\n", elapsed)
+		for {
+			db, ok = m[currentIndex]
+			if !ok {
+				break
+			}
+			file.Write(db.dataBuf[:db.dataLen])
+			delete(m, currentIndex)
+			// measureTime(currentIndex, "writeFileData")
+
+			currentIndex++
+		}
 	}
-
 }

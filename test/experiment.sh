@@ -4,24 +4,26 @@
 set -e
 set -u
 
+
 # if not root user, exit
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
 
-
+USER=marlowe
 EBPF_PROGRAM=ebpf-ssl
 DATA_SHELTER=/data_shelter
 
-rm -f ${DATA_SHELTER}/*
+parallelism=$1
 
-cd .. && make && cd test
+rm -f ${DATA_SHELTER}/*
+cd .. && make all && cd test
 
 # for file in $(ls ./data | grep -v enc); do
 for file in $(ls ./data/1* | grep -v enc); do
     file=$(basename $file)
-    ../${EBPF_PROGRAM} $file &
+    ../${EBPF_PROGRAM} $file  ${parallelism} &
     pid=$!
     sleep 1
     
@@ -38,5 +40,7 @@ for file in $(ls ./data/1* | grep -v enc); do
     
     # rm ./data/{$file}.enc
 done
+
+chown -R ${USER}:${USER} ../cmd/capturer/*
 
 

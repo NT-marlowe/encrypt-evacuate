@@ -2,10 +2,12 @@ package main
 
 import (
 	"errors"
+	"strconv"
 	// "fmt"
 	"log"
 	"os"
 	"os/signal"
+
 	// "time"
 
 	"github.com/cilium/ebpf/link"
@@ -20,10 +22,21 @@ const (
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatalf("Usage: %s filename", os.Args[0])
+	if len(os.Args) != 2 && len(os.Args) != 3 {
+		log.Fatalf("Usage: %s filename [parallelism]", os.Args[0])
 	}
 	filename := os.Args[1]
+	var parallelism int
+	var err error
+	if len(os.Args) == 2 {
+		// p = 15 is the tenttavely the best value for parallelism.
+		parallelism = 15
+	} else {
+		parallelism, err = strconv.Atoi(os.Args[2])
+		if err != nil {
+			log.Fatalf("Invalid parallelism: %s", err)
+		}
+	}
 
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {
@@ -86,7 +99,7 @@ func main() {
 	// main goroutine: processRingBufRecord
 	//		--> decodeIndexedRecord (multi goroutines)
 	//		--> writeFileData (single goroutine)
-	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file)
+	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file, parallelism)
 
 	var index int
 	// var start time.Time

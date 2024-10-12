@@ -26,7 +26,7 @@ run: all
 		sudo rm /data_shelter/${TMP_FILE_NAME}; \
 		echo "Remove old file"; \
 	fi
-	sudo ./${BIN} ${TMP_FILE_NAME}
+	sudo ./${BIN} ${TMP_FILE_NAME} 4
 
 .PHONY: dump
 dump: capture_ssl.o
