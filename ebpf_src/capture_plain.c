@@ -5,6 +5,8 @@
 #include <bpf/bpf_tracing.h>
 #include <linux/ptrace.h>
 
+#include "vmlinux_subset.h"
+
 #define MAX_DATA_LEN 4096
 #define MAX_STACK_DEPTH 127
 
@@ -16,6 +18,13 @@ struct enc_data_event_t {
 	int data_len;
 };
 struct enc_data_event_t *unused __attribute__((unused));
+
+struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(max_entries, 1024);
+	__type(key, uintptr_t);
+	__type(value, int);
+} ptr_to_fd SEC(".maps");
 
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
