@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"strconv"
 	// "fmt"
 	"log"
 	"os"
@@ -74,13 +73,9 @@ func main() {
 	}()
 
 	// create a file in dataShelterPath
-	err = os.MkdirAll(dataShelterPath, 0766)
+	file, err := setupDataShelter(dataShelterPath, filename)
 	if err != nil {
-		log.Fatal("Creating data shelter path:", err)
-	}
-	file, err := os.Create(dataShelterPath + "/" + filename)
-	if err != nil {
-		log.Fatal("Creating file in data shelter path:", err)
+		log.Fatal("Set up data shelter: ", err)
 	}
 	defer file.Close()
 
@@ -119,24 +114,4 @@ func main() {
 		index++
 
 	}
-}
-
-func parseArgs() (string, int) {
-	if len(os.Args) != 2 && len(os.Args) != 3 {
-		log.Fatalf("Usage: %s filename [parallelism]", os.Args[0])
-	}
-
-	filename := os.Args[1]
-	var parallelism int
-	var err error
-	if len(os.Args) == 2 {
-		// p = 15 is the tenttavely the best value for parallelism.
-		parallelism = 15
-	} else {
-		parallelism, err = strconv.Atoi(os.Args[2])
-		if err != nil {
-			log.Fatalf("Invalid parallelism: %s", err)
-		}
-	}
-	return filename, parallelism
 }
