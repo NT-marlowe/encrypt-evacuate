@@ -52,7 +52,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	if (fd == NULL) {
 		return 0;
 	}
-	bpf_printk("ptr %p -> fd: %d\n", plaintext_buf, *fd);
+	// bpf_printk("ptr %p -> fd: %d\n", plaintext_buf, *fd);
 
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
@@ -78,6 +78,17 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 	}
 
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
+	return 0;
+}
+
+SEC("fexit/do_sys_openat2")
+int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
+	const struct open_how *how, long ret) {
+	if (ret < 0 || check_comm_name() != 0) {
+		return 0;
+	}
+
+	bpf_printk("do_sys_openat2\n");
 	return 0;
 }
 
