@@ -14,7 +14,7 @@ all: ${GO_SRCS} gen
 # 	go generate
 
 .PHONY: gen
-gen: ebpf_src/capture_ssl.c chown
+gen: ebpf_src/capture_plain.c chown
 	go generate cmd/capturer/gen.go
 
 .PHONE: chown

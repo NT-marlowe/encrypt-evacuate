@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// Load the compiled eBPF ELF and load it into the kernel.
-	var objs capture_sslObjects
+	var objs capture_plainObjects
 	if err := loadCapture_sslObjects(&objs, nil); err != nil {
 		log.Fatal("Loading eBPF objects:", err)
 	}
