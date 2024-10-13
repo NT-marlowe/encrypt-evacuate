@@ -66,4 +66,20 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	return 0;
 }
 
+SEC("fentry/ksys_read")
+int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
+	if (fd < 0) {
+		return 0;
+	}
+	char comm[16] = {0};
+	bpf_get_current_comm(&comm, sizeof(comm));
+	// ToDo: filter with pid
+	if (comm[0] != 'm' || comm[1] != 'y') {
+		return 0;
+	}
+
+	bpf_printk("read: %d, buf: %p\n", fd, buf);
+	return 0;
+}
+
 char __license[] SEC("license") = "Dual MIT/GPL";
