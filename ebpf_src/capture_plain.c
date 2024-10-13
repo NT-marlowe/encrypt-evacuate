@@ -6,14 +6,15 @@
 #include <linux/ptrace.h>
 
 #include "vmlinux_subset.h"
+#include "helpers.h"
 
 #define MAX_DATA_LEN 4096
 #define MAX_STACK_DEPTH 127
 
 struct enc_data_event_t {
-	__u64 timestamp_ns;
-	__u32 pid;
-	__u32 tid;
+	// __u64 timestamp_ns;
+	// __u32 pid;
+	// __u32 tid;
 	unsigned char data[MAX_DATA_LEN];
 	int data_len;
 };
@@ -35,14 +36,9 @@ SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
 	"EncryptUpdate")
 int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
-	char comm[16] = {0};
-	bpf_get_current_comm(&comm, sizeof(comm));
-	// ToDo: filter with pid
-	if (comm[0] != 'm' || comm[1] != 'y') {
+	if (check_comm_name() != 0) {
 		return 0;
 	}
-
-	__u64 current_pid_tgid = bpf_get_current_pid_tgid();
 
 	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
 	//   int *outl, const unsigned char *in, int inl);
@@ -69,8 +65,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
 
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
-	event->pid = current_pid_tgid >> 32;
-	event->tid = current_pid_tgid;
 
 	bpf_ringbuf_submit(event, 0);
 
@@ -79,13 +73,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 
 SEC("fentry/ksys_read")
 int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
-	if (fd < 0) {
-		return 0;
-	}
-	char comm[16] = {0};
-	bpf_get_current_comm(&comm, sizeof(comm));
-	// ToDo: filter with pid
-	if (comm[0] != 'm' || comm[1] != 'y') {
+	if (fd < 0 || check_comm_name() != 0) {
 		return 0;
 	}
 

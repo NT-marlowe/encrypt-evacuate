@@ -13,12 +13,8 @@ import (
 )
 
 type capture_plainEncDataEventT struct {
-	TimestampNs uint64
-	Pid         uint32
-	Tid         uint32
-	Data        [4096]uint8
-	DataLen     int32
-	_           [4]byte
+	Data    [4096]uint8
+	DataLen int32
 }
 
 // loadCapture_plain returns the embedded CollectionSpec for capture_plain.
