@@ -11,9 +11,9 @@
 #define MAX_STACK_DEPTH 127
 
 struct enc_data_event_t {
-	__u64 timestamp_ns;
-	__u32 pid;
-	__u32 tid;
+	// __u64 timestamp_ns;
+	// __u32 pid;
+	// __u32 tid;
 	unsigned char data[MAX_DATA_LEN];
 	int data_len;
 };
@@ -42,8 +42,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	__u64 current_pid_tgid = bpf_get_current_pid_tgid();
-
 	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
 	//   int *outl, const unsigned char *in, int inl);
 	const char *plaintext_buf = (const char *)PT_REGS_PARM4(ctx);
@@ -69,8 +67,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
 
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
-	event->pid = current_pid_tgid >> 32;
-	event->tid = current_pid_tgid;
 
 	bpf_ringbuf_submit(event, 0);
 
