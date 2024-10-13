@@ -19,7 +19,7 @@ func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBloc
 }
 
 func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlock) {
-	var event capture_sslEncDataEventT
+	var event capture_plainEncDataEventT
 
 	// var start time.Time
 	// var elapsed time.Duration

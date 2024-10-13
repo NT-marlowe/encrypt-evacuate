@@ -1,6 +1,7 @@
 BIN := ebpf-ssl
 NAME := capturer
 TMP_FILE_NAME := tmp
+USER := $(shell whoami)
 
 GO_SRCS := $(shell find . -name '*.go')
 
@@ -13,8 +14,12 @@ all: ${GO_SRCS} gen
 # 	go generate
 
 .PHONY: gen
-gen: ebpf_src/capture_ssl.c
+gen: ebpf_src/capture_plain.c chown
 	go generate cmd/capturer/gen.go
+
+.PHONE: chown
+chown:
+	sudo chown -R ${USER}:${USER} ./cmd
 
 # capture_ssl.o: capture_ssl.c
 # 	clang -O2 -g -target bpf -c -o capture_ssl.o capture_ssl.c
