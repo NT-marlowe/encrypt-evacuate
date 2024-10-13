@@ -61,6 +61,14 @@ func main() {
 	}
 	defer uprobe.Close()
 
+	link, err := link.AttachTracing(link.TracingOptions{
+		Program: objs.FentryKsysRead,
+	})
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link.Close()
+
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {
 		log.Fatal("Creating ringbuf reader:", err)
