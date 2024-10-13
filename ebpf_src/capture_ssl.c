@@ -17,33 +17,10 @@ struct enc_data_event_t {
 };
 struct enc_data_event_t *unused __attribute__((unused));
 
-struct bpf_map_def SEC("maps") data_buffer_heap = {
-	.type        = BPF_MAP_TYPE_PERCPU_ARRAY,
-	.key_size    = sizeof(__u32),
-	.value_size  = sizeof(struct enc_data_event_t),
-	.max_entries = 1,
-};
-
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
 	__uint(max_entries, 1024 * 1024);
 } events_ringbuf SEC(".maps");
-
-static __always_inline struct enc_data_event_t *create_enc_data_event(
-	const __u64 current_pid_tgid) {
-	__u32 zero = 0;
-	struct enc_data_event_t *event =
-		bpf_map_lookup_elem(&data_buffer_heap, &zero);
-	if (!event) {
-		return NULL;
-	}
-
-	event->timestamp_ns = bpf_ktime_get_ns();
-	event->pid          = current_pid_tgid >> 32;
-	event->tid          = current_pid_tgid;
-
-	return event;
-}
 
 SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
