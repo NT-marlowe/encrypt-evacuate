@@ -6,6 +6,7 @@
 #include <linux/ptrace.h>
 
 #include "vmlinux_subset.h"
+#include "helpers.h"
 
 #define MAX_DATA_LEN 4096
 #define MAX_STACK_DEPTH 127
@@ -35,10 +36,7 @@ SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
 	"EncryptUpdate")
 int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
-	char comm[16] = {0};
-	bpf_get_current_comm(&comm, sizeof(comm));
-	// ToDo: filter with pid
-	if (comm[0] != 'm' || comm[1] != 'y') {
+	if (check_comm_name() != 0) {
 		return 0;
 	}
 
