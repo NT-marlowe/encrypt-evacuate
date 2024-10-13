@@ -22,21 +22,7 @@ const (
 )
 
 func main() {
-	if len(os.Args) != 2 && len(os.Args) != 3 {
-		log.Fatalf("Usage: %s filename [parallelism]", os.Args[0])
-	}
-	filename := os.Args[1]
-	var parallelism int
-	var err error
-	if len(os.Args) == 2 {
-		// p = 15 is the tenttavely the best value for parallelism.
-		parallelism = 15
-	} else {
-		parallelism, err = strconv.Atoi(os.Args[2])
-		if err != nil {
-			log.Fatalf("Invalid parallelism: %s", err)
-		}
-	}
+	filename, parallelism := parseArgs()
 
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {
@@ -133,4 +119,24 @@ func main() {
 		index++
 
 	}
+}
+
+func parseArgs() (string, int) {
+	if len(os.Args) != 2 && len(os.Args) != 3 {
+		log.Fatalf("Usage: %s filename [parallelism]", os.Args[0])
+	}
+
+	filename := os.Args[1]
+	var parallelism int
+	var err error
+	if len(os.Args) == 2 {
+		// p = 15 is the tenttavely the best value for parallelism.
+		parallelism = 15
+	} else {
+		parallelism, err = strconv.Atoi(os.Args[2])
+		if err != nil {
+			log.Fatalf("Invalid parallelism: %s", err)
+		}
+	}
+	return filename, parallelism
 }
