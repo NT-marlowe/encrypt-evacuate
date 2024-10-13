@@ -73,10 +73,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 
 SEC("fentry/ksys_read")
 int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
-	if (fd < 0) {
-		return 0;
-	}
-	if (check_comm_name() != 0) {
+	if (fd < 0 || check_comm_name() != 0) {
 		return 0;
 	}
 

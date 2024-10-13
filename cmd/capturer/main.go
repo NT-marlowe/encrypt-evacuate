@@ -4,8 +4,6 @@ import (
 	"errors"
 	// "fmt"
 	"log"
-	"os"
-	"os/signal"
 
 	// "time"
 
@@ -60,17 +58,7 @@ func main() {
 	}
 	defer rd.Close()
 
-	stopper := make(chan os.Signal, 5)
-	signal.Notify(stopper, os.Interrupt)
-
-	go func() {
-		<-stopper
-
-		if err := rd.Close(); err != nil {
-			log.Fatalf("Closing ringbuf reader: %v", err)
-		}
-
-	}()
+	startStopper(rd)
 
 	// create a file in dataShelterPath
 	file, err := setupDataShelter(dataShelterPath, filename)
