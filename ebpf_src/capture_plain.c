@@ -26,6 +26,13 @@ struct {
 } ptr_to_fd SEC(".maps");
 
 struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(max_entries, 1024);
+	__type(key, long);
+	__type(value, char[MAX_FILENAME_LEN]);
+} fd_to_filename SEC(".maps");
+
+struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
 	__uint(max_entries, 1024 * 1024);
 } events_ringbuf SEC(".maps");
@@ -89,7 +96,12 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	bpf_probe_read_user(reader_buf, MAX_FILENAME_LEN, filename);
 	reader_buf[MAX_FILENAME_LEN - 1] = 0;
 
-	bpf_printk("filename = %s\n", reader_buf);
+	if (bpf_map_update_elem(&fd_to_filename, &ret, &reader_buf, BPF_ANY) != 0) {
+		bpf_printk("Failed to update fd_to_filename map\n");
+		return 0;
+	}
+
+	// bpf_printk("filename = %s\n", reader_buf);
 	return 0;
 }
 

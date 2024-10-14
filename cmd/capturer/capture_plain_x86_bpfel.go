@@ -68,6 +68,7 @@ type capture_plainProgramSpecs struct {
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_plainMapSpecs struct {
 	EventsRingbuf *ebpf.MapSpec `ebpf:"events_ringbuf"`
+	FdToFilename  *ebpf.MapSpec `ebpf:"fd_to_filename"`
 	PtrToFd       *ebpf.MapSpec `ebpf:"ptr_to_fd"`
 }
 
@@ -91,12 +92,14 @@ func (o *capture_plainObjects) Close() error {
 // It can be passed to loadCapture_plainObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_plainMaps struct {
 	EventsRingbuf *ebpf.Map `ebpf:"events_ringbuf"`
+	FdToFilename  *ebpf.Map `ebpf:"fd_to_filename"`
 	PtrToFd       *ebpf.Map `ebpf:"ptr_to_fd"`
 }
 
 func (m *capture_plainMaps) Close() error {
 	return _Capture_plainClose(
 		m.EventsRingbuf,
+		m.FdToFilename,
 		m.PtrToFd,
 	)
 }
