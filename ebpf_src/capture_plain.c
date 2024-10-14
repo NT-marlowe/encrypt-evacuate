@@ -81,13 +81,18 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 		return 0;
 	}
 
-	const long FD = (long)fd;
-
-	if (bpf_map_lookup_elem(&fd_to_filename, &FD) == NULL) {
+	// Using fd as a key causese an error while loading the program because it
+	// violates the stack boundary checks by the verifier.
+	const long FD        = (long)fd;
+	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
+	if (filename == NULL) {
 		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
 		return 0;
+	} else {
+		// We don't need to use bpf helper funcs because memory in maps is
+		// considered to be safe to access.
+		bpf_printk("filename = %s\n", filename);
 	}
-	// bpf_printk("fd = %d\n", fd);
 
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
 	return 0;
