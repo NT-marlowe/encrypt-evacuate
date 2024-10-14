@@ -12,9 +12,6 @@
 #define MAX_STACK_DEPTH 127
 
 struct enc_data_event_t {
-	// __u64 timestamp_ns;
-	// __u32 pid;
-	// __u32 tid;
 	unsigned char data[MAX_DATA_LEN];
 	int data_len;
 };
@@ -52,7 +49,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	if (fd == NULL) {
 		return 0;
 	}
-	// bpf_printk("ptr %p -> fd: %d\n", plaintext_buf, *fd);
 
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
@@ -88,7 +84,11 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	bpf_printk("do_sys_openat2\n");
+	char reader_buf[16] = {0};
+	bpf_probe_read_user(reader_buf, 16, filename);
+	reader_buf[15] = 0;
+
+	bpf_printk("filename = %s\n", reader_buf);
 	return 0;
 }
 
