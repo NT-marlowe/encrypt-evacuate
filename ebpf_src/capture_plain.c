@@ -7,9 +7,10 @@
 
 #include "vmlinux_subset.h"
 #include "helpers.h"
+#include "constants.h"
 
-#define MAX_DATA_LEN 4096
-#define MAX_STACK_DEPTH 127
+// #define MAX_DATA_LEN 4096
+// #define MAX_STACK_DEPTH 127
 
 struct enc_data_event_t {
 	unsigned char data[MAX_DATA_LEN];
