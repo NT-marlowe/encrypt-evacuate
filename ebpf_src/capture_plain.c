@@ -48,7 +48,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
 	//   int *outl, const unsigned char *in, int inl);
 	const char *plaintext_buf = (const char *)PT_REGS_PARM4(ctx);
-
 	if (plaintext_buf == NULL) {
 		return 0;
 	}
@@ -56,6 +55,18 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
 	if (fd == NULL) {
 		return 0;
+	}
+
+	const long FD        = (long)*fd;
+	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
+	if (filename == NULL) {
+		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		return 0;
+	} else {
+		// We don't need to use bpf helper funcs because memory in maps is
+		// considered to be safe to access.
+		bpf_printk(
+			"pt = %p, fd = %ld, filename = %s\n", plaintext_buf, FD, filename);
 	}
 
 	struct enc_data_event_t *event;
@@ -81,19 +92,6 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 		return 0;
 	}
 
-	// Using fd as a key causese an error while loading the program because it
-	// violates the stack boundary checks by the verifier.
-	const long FD        = (long)fd;
-	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
-	if (filename == NULL) {
-		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
-		return 0;
-	} else {
-		// We don't need to use bpf helper funcs because memory in maps is
-		// considered to be safe to access.
-		bpf_printk("filename = %s\n", filename);
-	}
-
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
 	return 0;
 }
@@ -114,7 +112,6 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	// bpf_printk("filename = %s\n", reader_buf);
 	return 0;
 }
 
