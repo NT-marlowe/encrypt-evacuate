@@ -10,7 +10,7 @@ GO_SRCS := $(shell find . -name '*.go')
 all: ${GO_SRCS} gen
 	go build -o ${BIN} ./cmd/${NAME}
 
-# bpf_bpfel.go: ebpf_src/capture_ssl.c
+# bpf_bpfel.go: ebpf_src/capture_plain.c
 # 	go generate
 
 .PHONY: gen
@@ -21,8 +21,10 @@ gen: ebpf_src/capture_plain.c chown
 chown:
 	sudo chown -R ${USER}:${USER} ./cmd
 
-# capture_ssl.o: capture_ssl.c
-# 	clang -O2 -g -target bpf -c -o capture_ssl.o capture_ssl.c
+capture_plain.o: ebpf_src/capture_plain.c
+	cd ebpf_src && \
+		clang -O2 -g -target bpf -D__TARGET_ARCH_x86 \
+		-c capture_plain.c -o capture_plain.o
 
 
 .PHONY: run
@@ -34,12 +36,14 @@ run: all
 	sudo ./${BIN} ${TMP_FILE_NAME} 4
 
 .PHONY: dump
-dump: capture_ssl.o
-	llvm-objdump -S capture_ssl.o
+dump: capture_plain.o
+	cd ebpf_src && \
+		llvm-objdump -S capture_plain.o
 
 .PHONY: load
-load: capture_ssl.o
-	sudo bpftool prog load capture_ssl.o /sys/fs/bpf/my_program -d
+load: capture_plain.o
+	cd ebpf_src && \
+		sudo bpftool prog load capture_plain.o /sys/fs/bpf/my_program -d
 
 .PHONY: cat
 cat:

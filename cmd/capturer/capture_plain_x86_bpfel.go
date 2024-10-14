@@ -59,6 +59,7 @@ type capture_plainSpecs struct {
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_plainProgramSpecs struct {
 	FentryKsysRead              *ebpf.ProgramSpec `ebpf:"fentry_ksys_read"`
+	FexitDoSysOpen              *ebpf.ProgramSpec `ebpf:"fexit_do_sys_open"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.ProgramSpec `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -67,6 +68,7 @@ type capture_plainProgramSpecs struct {
 // It can be passed ebpf.CollectionSpec.Assign.
 type capture_plainMapSpecs struct {
 	EventsRingbuf *ebpf.MapSpec `ebpf:"events_ringbuf"`
+	FdToFilename  *ebpf.MapSpec `ebpf:"fd_to_filename"`
 	PtrToFd       *ebpf.MapSpec `ebpf:"ptr_to_fd"`
 }
 
@@ -90,12 +92,14 @@ func (o *capture_plainObjects) Close() error {
 // It can be passed to loadCapture_plainObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_plainMaps struct {
 	EventsRingbuf *ebpf.Map `ebpf:"events_ringbuf"`
+	FdToFilename  *ebpf.Map `ebpf:"fd_to_filename"`
 	PtrToFd       *ebpf.Map `ebpf:"ptr_to_fd"`
 }
 
 func (m *capture_plainMaps) Close() error {
 	return _Capture_plainClose(
 		m.EventsRingbuf,
+		m.FdToFilename,
 		m.PtrToFd,
 	)
 }
@@ -105,12 +109,14 @@ func (m *capture_plainMaps) Close() error {
 // It can be passed to loadCapture_plainObjects or ebpf.CollectionSpec.LoadAndAssign.
 type capture_plainPrograms struct {
 	FentryKsysRead              *ebpf.Program `ebpf:"fentry_ksys_read"`
+	FexitDoSysOpen              *ebpf.Program `ebpf:"fexit_do_sys_open"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.Program `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
 func (p *capture_plainPrograms) Close() error {
 	return _Capture_plainClose(
 		p.FentryKsysRead,
+		p.FexitDoSysOpen,
 		p.ProbeEntryEVP_EncryptUpdate,
 	)
 }

@@ -5,32 +5,9 @@
 #include <bpf/bpf_tracing.h>
 #include <linux/ptrace.h>
 
-#include "vmlinux_subset.h"
 #include "helpers.h"
-
-#define MAX_DATA_LEN 4096
-#define MAX_STACK_DEPTH 127
-
-struct enc_data_event_t {
-	// __u64 timestamp_ns;
-	// __u32 pid;
-	// __u32 tid;
-	unsigned char data[MAX_DATA_LEN];
-	int data_len;
-};
-struct enc_data_event_t *unused __attribute__((unused));
-
-struct {
-	__uint(type, BPF_MAP_TYPE_HASH);
-	__uint(max_entries, 1024);
-	__type(key, uintptr_t);
-	__type(value, int);
-} ptr_to_fd SEC(".maps");
-
-struct {
-	__uint(type, BPF_MAP_TYPE_RINGBUF);
-	__uint(max_entries, 1024 * 1024);
-} events_ringbuf SEC(".maps");
+#include "constants.h"
+#include "maps.h"
 
 SEC("uprobe/lib/x86_64-linux-gnu/"
 	"libcrypto.so.3:EVP_"
@@ -43,7 +20,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
 	//   int *outl, const unsigned char *in, int inl);
 	const char *plaintext_buf = (const char *)PT_REGS_PARM4(ctx);
-
 	if (plaintext_buf == NULL) {
 		return 0;
 	}
@@ -52,7 +28,18 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	if (fd == NULL) {
 		return 0;
 	}
-	bpf_printk("ptr %p -> fd: %d\n", plaintext_buf, *fd);
+
+	const long FD        = (long)*fd;
+	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
+	if (filename == NULL) {
+		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		return 0;
+	} else {
+		// We don't need to use bpf helper funcs because memory in maps is
+		// considered to be safe to access.
+		bpf_printk(
+			"pt = %p, fd = %ld, filename = %s\n", plaintext_buf, FD, filename);
+	}
 
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
@@ -78,6 +65,25 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 	}
 
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
+	return 0;
+}
+
+SEC("fexit/do_sys_openat2")
+int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
+	const struct open_how *how, long ret) {
+	if (ret < 0 || check_comm_name() != 0) {
+		return 0;
+	}
+
+	char reader_buf[MAX_FILENAME_LEN];
+	bpf_probe_read_user(reader_buf, MAX_FILENAME_LEN, filename);
+	reader_buf[MAX_FILENAME_LEN - 1] = 0;
+
+	if (bpf_map_update_elem(&fd_to_filename, &ret, &reader_buf, BPF_ANY) != 0) {
+		bpf_printk("Failed to update fd_to_filename map\n");
+		return 0;
+	}
+
 	return 0;
 }
 
