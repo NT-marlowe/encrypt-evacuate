@@ -23,7 +23,8 @@ chown:
 
 capture_plain.o: ebpf_src/capture_plain.c
 	cd ebpf_src && \
-		clang -O2 -g -target amd64 -c -o capture_plain.o capture_plain.c
+		clang -O2 -g -target bpf -D__TARGET_ARCH_x86 \
+		-c capture_plain.c -o capture_plain.o
 
 
 .PHONY: run
