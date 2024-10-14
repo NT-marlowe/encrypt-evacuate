@@ -85,7 +85,7 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	char reader_buf[MAX_FILENAME_LEN] = {0};
+	char reader_buf[MAX_FILENAME_LEN];
 	bpf_probe_read_user(reader_buf, MAX_FILENAME_LEN, filename);
 	reader_buf[MAX_FILENAME_LEN - 1] = 0;
 
