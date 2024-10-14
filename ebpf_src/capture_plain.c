@@ -81,10 +81,13 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 		return 0;
 	}
 
-	// if (bpf_map_lookup_elem(&fd_to_filename, &fd) == NULL) {
-	// 	bpf_printk("fd %d not found in fd_to_filename map\n", fd);
-	// 	return 0;
-	// }
+	const long FD = (long)fd;
+
+	if (bpf_map_lookup_elem(&fd_to_filename, &FD) == NULL) {
+		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		return 0;
+	}
+	// bpf_printk("fd = %d\n", fd);
 
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
 	return 0;
