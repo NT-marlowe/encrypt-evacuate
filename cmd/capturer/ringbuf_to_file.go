@@ -72,7 +72,8 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 			currentIndex++
 		} else {
 			m[idb.index] = idb.dataBlock
-			continue
+			// better without using continue
+			// continue
 			// enqueueTime[idb.index] = time.Now()
 		}
 
