@@ -24,22 +24,22 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
-	if (fd == NULL) {
-		return 0;
-	}
+	// int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
+	// if (fd == NULL) {
+	// 	return 0;
+	// }
 
-	const long FD        = (long)*fd;
-	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
-	if (filename == NULL) {
-		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
-		return 0;
-	} else {
-		// We don't need to use bpf helper funcs because memory in maps is
-		// considered to be safe to access.
-		bpf_printk(
-			"pt = %p, fd = %ld, filename = %s\n", plaintext_buf, FD, filename);
-	}
+	// const long FD        = (long)*fd;
+	// const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
+	// if (filename == NULL) {
+	// 	bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+	// 	return 0;
+	// } else {
+	// 	// We don't need to use bpf helper funcs because memory in maps is
+	// 	// considered to be safe to access.
+	// 	bpf_printk(
+	// 		"pt = %p, fd = %ld, filename = %s\n", plaintext_buf, FD, filename);
+	// }
 
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
