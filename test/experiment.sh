@@ -35,12 +35,13 @@ for file in $(ls ./data/1* | grep -v enc); do
     kill -SIGINT $pid > /dev/null 2>&1
     echo "Killed $pid"
     
-    sleep 1
+    sleep 3
     echo -----------
     
     # rm ./data/{$file}.enc
 done
 
-chown -R ${USER}:${USER} ../cmd/capturer/*
+chown -R ${USER}:${USER} ../cmd/*
+chown -R ${USER}:${USER} ../${EBPF_PROGRAM}
 
 
