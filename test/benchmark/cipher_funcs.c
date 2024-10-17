@@ -47,6 +47,7 @@ void encrypt_file(const char *input_filepath, const unsigned char *key,
 	size_t bytes_read = 0;
 	int bytes_written = 0;
 	while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, input_file)) > 0) {
+		printf("bytes_read: %ld\n", bytes_read);
 		if (EVP_EncryptUpdate(
 				ctx, buffer, &bytes_written, buffer, (int)bytes_read) != 1) {
 			handle_errors();
