@@ -52,6 +52,14 @@ func main() {
 	// }
 	// defer link_read.Close()
 
+	link_read, err := link.AttachTracing(link.TracingOptions{
+		Program: objs.FexitKsysRead,
+	})
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link_read.Close()
+
 	// link_openat, err := link.AttachTracing(
 	// 	link.TracingOptions{Program: objs.FexitDoSysOpen},
 	// )

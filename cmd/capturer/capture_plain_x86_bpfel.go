@@ -60,6 +60,7 @@ type capture_plainSpecs struct {
 type capture_plainProgramSpecs struct {
 	FentryKsysRead              *ebpf.ProgramSpec `ebpf:"fentry_ksys_read"`
 	FexitDoSysOpen              *ebpf.ProgramSpec `ebpf:"fexit_do_sys_open"`
+	FexitKsysRead               *ebpf.ProgramSpec `ebpf:"fexit_ksys_read"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.ProgramSpec `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -110,6 +111,7 @@ func (m *capture_plainMaps) Close() error {
 type capture_plainPrograms struct {
 	FentryKsysRead              *ebpf.Program `ebpf:"fentry_ksys_read"`
 	FexitDoSysOpen              *ebpf.Program `ebpf:"fexit_do_sys_open"`
+	FexitKsysRead               *ebpf.Program `ebpf:"fexit_ksys_read"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.Program `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -117,6 +119,7 @@ func (p *capture_plainPrograms) Close() error {
 	return _Capture_plainClose(
 		p.FentryKsysRead,
 		p.FexitDoSysOpen,
+		p.FexitKsysRead,
 		p.ProbeEntryEVP_EncryptUpdate,
 	)
 }

@@ -68,6 +68,13 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 	return 0;
 }
 
+SEC("fexit/ksys_read")
+int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
+	size_t count, long ret) {
+	bpf_printk("ret = %ld\n", ret);
+	return 0;
+}
+
 SEC("fexit/do_sys_openat2")
 int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	const struct open_how *how, long ret) {
