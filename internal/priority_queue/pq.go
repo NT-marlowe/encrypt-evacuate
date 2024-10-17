@@ -2,7 +2,6 @@ package priority_queue
 
 import (
 	"container/heap"
-	"fmt"
 )
 
 type Item struct {
@@ -54,11 +53,6 @@ func (pq *PriorityQueue) Pop() any {
 	old[n-1] = nil
 
 	*pq = old[0 : n-1]
-	for i, item := range *pq {
-		fmt.Printf("pq[%d] = %v\n", i, *item)
-	}
-	fmt.Println()
-	// fmt.Printf("pq = %v\n", *pq)
 	return item
 }
 

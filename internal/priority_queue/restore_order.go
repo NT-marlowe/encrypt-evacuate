@@ -2,7 +2,6 @@ package priority_queue
 
 import (
 	"container/heap"
-	"fmt"
 	// "log"
 )
 
@@ -39,7 +38,6 @@ func minHeapSort(inputChan <-chan Item) <-chan Item {
 				}
 
 				minItem := heap.Pop(&pq).(*Item)
-				fmt.Printf("currentMin = %d,minItem: %v\n", currentMinIndex, minItem)
 				if minItem.index == currentMinIndex {
 					outputChan <- *minItem
 					currentMinIndex++
@@ -55,7 +53,6 @@ func minHeapSort(inputChan <-chan Item) <-chan Item {
 				}
 
 				minItem := heap.Pop(&pq).(*Item)
-				// fmt.Printf("currentMin = %d,minItem: %v\n", currentMinIndex, minItem)
 				if minItem.index == currentMinIndex {
 					outputChan <- *minItem
 					currentMinIndex++
