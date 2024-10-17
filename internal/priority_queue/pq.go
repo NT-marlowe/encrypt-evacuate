@@ -49,10 +49,10 @@ func (pq *PriorityQueue) Push(x any) {
 func (pq *PriorityQueue) Pop() any {
 	old := *pq
 	n := len(old)
-	item := old[0]
-	old[0] = nil
+	item := old[n-1]
+	old[n-1] = nil
 
-	*pq = old[1:n]
+	*pq = old[0 : n-1]
 	return item
 }
 

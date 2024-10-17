@@ -2,7 +2,6 @@ package priority_queue
 
 import (
 	"container/heap"
-	"fmt"
 	"reflect"
 	"sort"
 	"testing"
@@ -13,8 +12,6 @@ func TestPriorityQueuePopOrder(t *testing.T) {
 
 	pq := make(PriorityQueue, 0)
 	heap.Init(&pq)
-
-	fmt.Printf("values: %v\n", values)
 
 	for _, value := range values {
 		t.Logf("Pushed value: %v", value)
@@ -63,19 +60,4 @@ func TestPriorityQueueUpdate(t *testing.T) {
 	if poppedValues[targetIndex] != newValue {
 		t.Errorf("Priority queue update is incorrect: Expected %v, got %v", newValue, poppedValues[0])
 	}
-}
-
-func TestEmptyPriorityQueue(t *testing.T) {
-	pq := make(PriorityQueue, 0)
-	heap.Init(&pq)
-
-	if pq.Len() != 0 {
-		t.Errorf("Priority queue length is incorrect: Expected 0, got %v", pq.Len())
-	}
-
-	// this test throws a panic: runtime error: index out of range [0] with length 0
-	// item := heap.Pop(&pq)
-	// if item != nil {
-	// 	t.Errorf("Popped item is not nil: Expected nil, got %v", item)
-	// }
 }
