@@ -81,8 +81,8 @@ int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 		return 0;
 	}
 
-	offset->current += offset->inc;
-	offset->inc = ret;
+	offset->prev_offset += offset->prev_inc;
+	offset->prev_inc = ret;
 
 	bpf_map_update_elem(&fd_to_offsets, &fd, offset, BPF_ANY);
 

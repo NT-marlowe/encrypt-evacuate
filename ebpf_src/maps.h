@@ -13,8 +13,8 @@ struct enc_data_event_t {
 struct enc_data_event_t *unused __attribute__((unused));
 
 struct offset_t {
-	long current;
-	long inc;
+	long prev_offset;
+	long prev_inc;
 };
 
 struct {

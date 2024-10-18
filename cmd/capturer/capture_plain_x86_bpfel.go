@@ -18,8 +18,8 @@ type capture_plainEncDataEventT struct {
 }
 
 type capture_plainOffsetT struct {
-	Current int64
-	Inc     int64
+	PrevOffset int64
+	PrevInc    int64
 }
 
 // loadCapture_plain returns the embedded CollectionSpec for capture_plain.
