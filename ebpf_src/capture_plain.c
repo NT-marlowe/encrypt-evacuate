@@ -24,12 +24,19 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	// int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
-	// if (fd == NULL) {
-	// 	return 0;
-	// }
+	int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
+	if (fd == NULL) {
+		return 0;
+	}
 
-	// const long FD        = (long)*fd;
+	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, fd);
+	if (offset == NULL) {
+		return 0;
+	}
+	bpf_printk("ptr = %p, fd = %d, prev_offset = %ld\n", plaintext_buf, *fd,
+		offset->prev_offset);
+
+	// const long FD = (long)*fd;
 	// const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
 	// if (filename == NULL) {
 	// 	bpf_printk("fd %d not found in fd_to_filename map\n", fd);

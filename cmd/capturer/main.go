@@ -44,13 +44,13 @@ func main() {
 	}
 	defer uprobe.Close()
 
-	// link_read_fexit, err := link.AttachTracing(link.TracingOptions{
-	// 	Program: objs.FentryKsysRead,
-	// })
-	// if err != nil {
-	// 	log.Fatal("Attaching tracing:", err)
-	// }
-	// defer link_read_fexit.Close()
+	link_read_fexit, err := link.AttachTracing(link.TracingOptions{
+		Program: objs.FentryKsysRead,
+	})
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link_read_fexit.Close()
 
 	link_read_fentry, err := link.AttachTracing(link.TracingOptions{
 		Program: objs.FexitKsysRead,
