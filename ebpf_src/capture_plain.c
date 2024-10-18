@@ -82,10 +82,13 @@ int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 		return 0;
 	}
 
+	// bpf_printk("prev_offset = %ld, prev_inc = %ld\n", offset->prev_offset,
+	// offset->prev_inc);
+
 	offset->prev_offset += offset->prev_inc;
 	offset->prev_inc = ret;
 
-	bpf_printk("read bytes in total: %ld\n", offset->prev_offset + ret);
+	// bpf_printk("read bytes in total: %ld\n", offset->prev_offset + ret);
 
 	bpf_map_update_elem(&fd_to_offsets, &fd, offset, BPF_ANY);
 
@@ -100,8 +103,8 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	}
 
 	const int fd = ret;
-	bpf_printk("fd = %d\n", fd);
 
+	// Updates the relation between fd and offset of the file associated to fd.
 	if (bpf_map_update_elem(
 			&fd_to_offsets, &fd, &(struct offset_t){0, 0}, BPF_ANY) != 0) {
 		bpf_printk("Failed to update fd_to_offsets map\n");
