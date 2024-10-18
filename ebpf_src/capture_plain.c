@@ -85,6 +85,14 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
+	const int fd = ret;
+
+	if (bpf_map_update_elem(
+			&fd_to_offsets, &fd, &(struct offset_t){0, 0}, BPF_ANY) != 0) {
+		bpf_printk("Failed to update fd_to_offsets map\n");
+		return 0;
+	}
+
 	char reader_buf[MAX_FILENAME_LEN];
 	bpf_probe_read_user(reader_buf, MAX_FILENAME_LEN, filename);
 	reader_buf[MAX_FILENAME_LEN - 1] = 0;

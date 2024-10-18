@@ -12,6 +12,11 @@ struct enc_data_event_t {
 };
 struct enc_data_event_t *unused __attribute__((unused));
 
+struct offset_t {
+	long current;
+	long inc;
+};
+
 struct {
 	__uint(type, BPF_MAP_TYPE_HASH);
 	__uint(max_entries, 1024);
@@ -30,3 +35,10 @@ struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
 	__uint(max_entries, 8 * 1024 * 1024);
 } events_ringbuf SEC(".maps");
+
+struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(max_entries, 1024);
+	__type(key, int);
+	__type(value, struct offset_t);
+} fd_to_offsets SEC(".maps");
