@@ -60,13 +60,13 @@ func main() {
 	}
 	defer link_read.Close()
 
-	// link_openat, err := link.AttachTracing(
-	// 	link.TracingOptions{Program: objs.FexitDoSysOpen},
-	// )
-	// if err != nil {
-	// 	log.Fatal("Attaching tracing:", err)
-	// }
-	// defer link_openat.Close()
+	link_openat, err := link.AttachTracing(
+		link.TracingOptions{Program: objs.FexitDoSysOpen},
+	)
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link_openat.Close()
 
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {

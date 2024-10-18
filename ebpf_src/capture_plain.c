@@ -78,11 +78,14 @@ int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 
 	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, &fd);
 	if (offset == NULL) {
+		bpf_printk("fd %d not found in fd_to_offsets map\n", fd);
 		return 0;
 	}
 
 	offset->prev_offset += offset->prev_inc;
 	offset->prev_inc = ret;
+
+	bpf_printk("read bytes in total: %ld\n", offset->prev_offset + ret);
 
 	bpf_map_update_elem(&fd_to_offsets, &fd, offset, BPF_ANY);
 
@@ -97,6 +100,7 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	}
 
 	const int fd = ret;
+	bpf_printk("fd = %d\n", fd);
 
 	if (bpf_map_update_elem(
 			&fd_to_offsets, &fd, &(struct offset_t){0, 0}, BPF_ANY) != 0) {
