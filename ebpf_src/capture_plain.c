@@ -71,10 +71,21 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 SEC("fexit/ksys_read")
 int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 	size_t count, long ret) {
-	if (check_comm_name() != 0) {
+	// ret means the number of bytes read.
+	if (ret < 0 || check_comm_name() != 0) {
 		return 0;
 	}
-	bpf_printk("ret = %ld\n", ret);
+
+	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, &fd);
+	if (offset == NULL) {
+		return 0;
+	}
+
+	offset->current += offset->inc;
+	offset->inc = ret;
+
+	bpf_map_update_elem(&fd_to_offsets, &fd, offset, BPF_ANY);
+
 	return 0;
 }
 
