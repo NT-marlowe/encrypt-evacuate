@@ -44,21 +44,29 @@ func main() {
 	}
 	defer uprobe.Close()
 
-	// link_read, err := link.AttachTracing(link.TracingOptions{
-	// 	Program: objs.FentryKsysRead,
-	// })
-	// if err != nil {
-	// 	log.Fatal("Attaching tracing:", err)
-	// }
-	// defer link_read.Close()
+	link_read_fexit, err := link.AttachTracing(link.TracingOptions{
+		Program: objs.FentryKsysRead,
+	})
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link_read_fexit.Close()
 
-	// link_openat, err := link.AttachTracing(
-	// 	link.TracingOptions{Program: objs.FexitDoSysOpen},
-	// )
-	// if err != nil {
-	// 	log.Fatal("Attaching tracing:", err)
-	// }
-	// defer link_openat.Close()
+	link_read_fentry, err := link.AttachTracing(link.TracingOptions{
+		Program: objs.FexitKsysRead,
+	})
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link_read_fentry.Close()
+
+	link_openat, err := link.AttachTracing(
+		link.TracingOptions{Program: objs.FexitDoSysOpen},
+	)
+	if err != nil {
+		log.Fatal("Attaching tracing:", err)
+	}
+	defer link_openat.Close()
 
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {

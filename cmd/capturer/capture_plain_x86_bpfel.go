@@ -17,6 +17,11 @@ type capture_plainEncDataEventT struct {
 	DataLen int32
 }
 
+type capture_plainOffsetT struct {
+	PrevOffset int64
+	PrevInc    int64
+}
+
 // loadCapture_plain returns the embedded CollectionSpec for capture_plain.
 func loadCapture_plain() (*ebpf.CollectionSpec, error) {
 	reader := bytes.NewReader(_Capture_plainBytes)
@@ -60,6 +65,7 @@ type capture_plainSpecs struct {
 type capture_plainProgramSpecs struct {
 	FentryKsysRead              *ebpf.ProgramSpec `ebpf:"fentry_ksys_read"`
 	FexitDoSysOpen              *ebpf.ProgramSpec `ebpf:"fexit_do_sys_open"`
+	FexitKsysRead               *ebpf.ProgramSpec `ebpf:"fexit_ksys_read"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.ProgramSpec `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -69,6 +75,7 @@ type capture_plainProgramSpecs struct {
 type capture_plainMapSpecs struct {
 	EventsRingbuf *ebpf.MapSpec `ebpf:"events_ringbuf"`
 	FdToFilename  *ebpf.MapSpec `ebpf:"fd_to_filename"`
+	FdToOffsets   *ebpf.MapSpec `ebpf:"fd_to_offsets"`
 	PtrToFd       *ebpf.MapSpec `ebpf:"ptr_to_fd"`
 }
 
@@ -93,6 +100,7 @@ func (o *capture_plainObjects) Close() error {
 type capture_plainMaps struct {
 	EventsRingbuf *ebpf.Map `ebpf:"events_ringbuf"`
 	FdToFilename  *ebpf.Map `ebpf:"fd_to_filename"`
+	FdToOffsets   *ebpf.Map `ebpf:"fd_to_offsets"`
 	PtrToFd       *ebpf.Map `ebpf:"ptr_to_fd"`
 }
 
@@ -100,6 +108,7 @@ func (m *capture_plainMaps) Close() error {
 	return _Capture_plainClose(
 		m.EventsRingbuf,
 		m.FdToFilename,
+		m.FdToOffsets,
 		m.PtrToFd,
 	)
 }
@@ -110,6 +119,7 @@ func (m *capture_plainMaps) Close() error {
 type capture_plainPrograms struct {
 	FentryKsysRead              *ebpf.Program `ebpf:"fentry_ksys_read"`
 	FexitDoSysOpen              *ebpf.Program `ebpf:"fexit_do_sys_open"`
+	FexitKsysRead               *ebpf.Program `ebpf:"fexit_ksys_read"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.Program `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -117,6 +127,7 @@ func (p *capture_plainPrograms) Close() error {
 	return _Capture_plainClose(
 		p.FentryKsysRead,
 		p.FexitDoSysOpen,
+		p.FexitKsysRead,
 		p.ProbeEntryEVP_EncryptUpdate,
 	)
 }
