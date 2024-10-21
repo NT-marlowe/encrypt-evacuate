@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	// "fmt"
 	"log"
 
@@ -34,16 +35,11 @@ func main() {
 	}
 	defer objs.Close()
 
-	ex, err := link.OpenExecutable(sharedLibraryPath)
+	upobe, err := attachUprobeProgram(&objs)
 	if err != nil {
-		log.Fatalf("Opening %s: %s", sharedLibraryPath, err)
+		log.Fatal("Attaching uprobe program:", err)
 	}
-
-	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntryEVP_EncryptUpdate, nil)
-	if err != nil {
-		log.Fatalf("Uprobe %s: %s", symbol, err)
-	}
-	defer uprobe.Close()
+	defer upobe.Close()
 
 	links := attachAllTracingPrograms(&objs)
 	for _, l := range links {
@@ -122,4 +118,18 @@ func attachAllTracingPrograms(objs *capture_plainObjects) []link.Link {
 		links = append(links, l)
 	}
 	return links
+}
+
+func attachUprobeProgram(objs *capture_plainObjects) (link.Link, error) {
+	ex, err := link.OpenExecutable(sharedLibraryPath)
+	if err != nil {
+		return nil, fmt.Errorf("opening %s: %s", sharedLibraryPath, err)
+	}
+
+	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntryEVP_EncryptUpdate, nil)
+	if err != nil {
+		return nil, fmt.Errorf("attach %s to uprobe", symbol)
+	}
+
+	return uprobe, nil
 }
