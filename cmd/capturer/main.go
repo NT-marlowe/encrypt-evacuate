@@ -7,6 +7,7 @@ import (
 
 	// "time"
 
+	"github.com/cilium/ebpf"
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
@@ -44,29 +45,10 @@ func main() {
 	}
 	defer uprobe.Close()
 
-	link_read_fexit, err := link.AttachTracing(link.TracingOptions{
-		Program: objs.FentryKsysRead,
-	})
-	if err != nil {
-		log.Fatal("Attaching tracing:", err)
+	links := attachAllTracingPrograms(&objs)
+	for _, l := range links {
+		defer l.Close()
 	}
-	defer link_read_fexit.Close()
-
-	link_read_fentry, err := link.AttachTracing(link.TracingOptions{
-		Program: objs.FexitKsysRead,
-	})
-	if err != nil {
-		log.Fatal("Attaching tracing:", err)
-	}
-	defer link_read_fentry.Close()
-
-	link_openat, err := link.AttachTracing(
-		link.TracingOptions{Program: objs.FexitDoSysOpen},
-	)
-	if err != nil {
-		log.Fatal("Attaching tracing:", err)
-	}
-	defer link_openat.Close()
 
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {
@@ -118,4 +100,26 @@ func main() {
 		index++
 
 	}
+}
+
+func attachAllTracingPrograms(objs *capture_plainObjects) []link.Link {
+	programs := []ebpf.Program{
+		*objs.FexitDoSysOpen,
+		*objs.FentryKsysRead,
+		*objs.FexitKsysRead,
+	}
+
+	var links []link.Link
+
+	for _, prog := range programs {
+		l, err := link.AttachTracing(link.TracingOptions{
+			Program: &prog,
+		})
+		if err != nil {
+			log.Fatal("Attaching tracing:", err)
+		}
+
+		links = append(links, l)
+	}
+	return links
 }
