@@ -39,11 +39,6 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	if (filename == NULL) {
 		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
 		return 0;
-	} else {
-		// We don't need to use bpf helper funcs because memory in maps is
-		// considered to be safe to access.
-		// bpf_printk(
-		// 	"filename = %s, offset = %ld\n", filename, offset->prev_offset);
 	}
 
 	struct enc_data_event_t *event;
