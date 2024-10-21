@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
-	// "fmt"
+	"fmt"
 	"log"
 
 	// "time"
 
+	"github.com/cilium/ebpf"
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
@@ -33,40 +34,16 @@ func main() {
 	}
 	defer objs.Close()
 
-	ex, err := link.OpenExecutable(sharedLibraryPath)
+	upobe, err := attachUprobeProgram(&objs)
 	if err != nil {
-		log.Fatalf("Opening %s: %s", sharedLibraryPath, err)
+		log.Fatal("Attaching uprobe program:", err)
 	}
+	defer upobe.Close()
 
-	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntryEVP_EncryptUpdate, nil)
-	if err != nil {
-		log.Fatalf("Uprobe %s: %s", symbol, err)
+	links := attachAllTracingPrograms(&objs)
+	for _, l := range links {
+		defer l.Close()
 	}
-	defer uprobe.Close()
-
-	link_read_fexit, err := link.AttachTracing(link.TracingOptions{
-		Program: objs.FentryKsysRead,
-	})
-	if err != nil {
-		log.Fatal("Attaching tracing:", err)
-	}
-	defer link_read_fexit.Close()
-
-	link_read_fentry, err := link.AttachTracing(link.TracingOptions{
-		Program: objs.FexitKsysRead,
-	})
-	if err != nil {
-		log.Fatal("Attaching tracing:", err)
-	}
-	defer link_read_fentry.Close()
-
-	link_openat, err := link.AttachTracing(
-		link.TracingOptions{Program: objs.FexitDoSysOpen},
-	)
-	if err != nil {
-		log.Fatal("Attaching tracing:", err)
-	}
-	defer link_openat.Close()
 
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {
@@ -89,15 +66,12 @@ func main() {
 	indexedDataBlockCh := make(chan indexedDataBlock)
 	defer close(indexedDataBlockCh)
 
-	// main goroutine: processRingBufRecord
-	//		--> decodeIndexedRecord (multi goroutines)
-	//		--> writeFileData (single goroutine)
-	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file, parallelism)
+	// Starts decoding goroutines and a writing goroutine.
+	startProcessingStages(indexedRecordCh, indexedDataBlockCh, file, parallelism)
 
-	var index int
 	// var start time.Time
 	// var elapsed time.Duration
-	for {
+	for index := 0; ; index++ {
 		// start = time.Now()
 
 		record, err := rd.Read()
@@ -115,7 +89,41 @@ func main() {
 		}
 
 		indexedRecordCh <- indexedRecord{index: index, record: record}
-		index++
-
 	}
+}
+
+func attachAllTracingPrograms(objs *capture_plainObjects) []link.Link {
+	programs := []*ebpf.Program{
+		objs.FexitDoSysOpen,
+		objs.FentryKsysRead,
+		objs.FexitKsysRead,
+	}
+
+	var links []link.Link
+
+	for _, prog := range programs {
+		l, err := link.AttachTracing(link.TracingOptions{
+			Program: prog,
+		})
+		if err != nil {
+			log.Fatal("Attaching tracing:", err)
+		}
+
+		links = append(links, l)
+	}
+	return links
+}
+
+func attachUprobeProgram(objs *capture_plainObjects) (link.Link, error) {
+	ex, err := link.OpenExecutable(sharedLibraryPath)
+	if err != nil {
+		return nil, fmt.Errorf("opening %s: %s", sharedLibraryPath, err)
+	}
+
+	uprobe, err := ex.Uprobe(symbol, objs.ProbeEntryEVP_EncryptUpdate, nil)
+	if err != nil {
+		return nil, fmt.Errorf("attach %s to uprobe", symbol)
+	}
+
+	return uprobe, nil
 }

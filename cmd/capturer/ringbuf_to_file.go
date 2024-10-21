@@ -9,7 +9,11 @@ import (
 	// "time"
 )
 
-func processRingBufRecord(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File, parallelism int) {
+// main goroutine
+//
+//	--> decodeIndexedRecord (multi goroutines)
+//	--> writeFileData (single goroutine)
+func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File, parallelism int) {
 	go writeFileData(idbCh, file)
 
 	for i := 0; i < parallelism; i++ {
