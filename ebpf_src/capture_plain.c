@@ -33,20 +33,13 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	if (offset == NULL) {
 		return 0;
 	}
-	bpf_printk("ptr = %p, fd = %d, prev_offset = %ld\n", plaintext_buf, *fd,
-		offset->prev_offset);
 
-	// const long FD = (long)*fd;
-	// const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
-	// if (filename == NULL) {
-	// 	bpf_printk("fd %d not found in fd_to_filename map\n", fd);
-	// 	return 0;
-	// } else {
-	// 	// We don't need to use bpf helper funcs because memory in maps is
-	// 	// considered to be safe to access.
-	// 	bpf_printk(
-	// 		"pt = %p, fd = %ld, filename = %s\n", plaintext_buf, FD, filename);
-	// }
+	const long FD        = (long)*fd;
+	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
+	if (filename == NULL) {
+		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		return 0;
+	}
 
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
@@ -59,6 +52,9 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
 
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
+
+	bpf_probe_read_kernel_str(event->filename, MAX_FILENAME_LEN, filename);
+	event->offset = offset->prev_offset;
 
 	bpf_ringbuf_submit(event, 0);
 
@@ -89,13 +85,8 @@ int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 		return 0;
 	}
 
-	// bpf_printk("prev_offset = %ld, prev_inc = %ld\n", offset->prev_offset,
-	// offset->prev_inc);
-
 	offset->prev_offset += offset->prev_inc;
 	offset->prev_inc = ret;
-
-	// bpf_printk("read bytes in total: %ld\n", offset->prev_offset + ret);
 
 	bpf_map_update_elem(&fd_to_offsets, &fd, offset, BPF_ANY);
 
