@@ -72,10 +72,9 @@ func main() {
 	//		--> writeFileData (single goroutine)
 	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file, parallelism)
 
-	var index int
 	// var start time.Time
 	// var elapsed time.Duration
-	for {
+	for index := 0; ; index++ {
 		// start = time.Now()
 
 		record, err := rd.Read()
@@ -93,8 +92,6 @@ func main() {
 		}
 
 		indexedRecordCh <- indexedRecord{index: index, record: record}
-		index++
-
 	}
 }
 
