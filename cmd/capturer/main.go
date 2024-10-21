@@ -67,10 +67,8 @@ func main() {
 	indexedDataBlockCh := make(chan indexedDataBlock)
 	defer close(indexedDataBlockCh)
 
-	// main goroutine: processRingBufRecord
-	//		--> decodeIndexedRecord (multi goroutines)
-	//		--> writeFileData (single goroutine)
-	processRingBufRecord(indexedRecordCh, indexedDataBlockCh, file, parallelism)
+	// Starts decoding goroutines and a writing goroutine.
+	startProcessingStages(indexedRecordCh, indexedDataBlockCh, file, parallelism)
 
 	// var start time.Time
 	// var elapsed time.Duration
