@@ -103,17 +103,17 @@ func main() {
 }
 
 func attachAllTracingPrograms(objs *capture_plainObjects) []link.Link {
-	programs := []ebpf.Program{
-		*objs.FexitDoSysOpen,
-		*objs.FentryKsysRead,
-		*objs.FexitKsysRead,
+	programs := []*ebpf.Program{
+		objs.FexitDoSysOpen,
+		objs.FentryKsysRead,
+		objs.FexitKsysRead,
 	}
 
 	var links []link.Link
 
 	for _, prog := range programs {
 		l, err := link.AttachTracing(link.TracingOptions{
-			Program: &prog,
+			Program: prog,
 		})
 		if err != nil {
 			log.Fatal("Attaching tracing:", err)
