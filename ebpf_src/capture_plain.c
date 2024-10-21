@@ -53,6 +53,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
 
+	bpf_probe_read_kernel_str(event->filename, MAX_FILENAME_LEN, filename);
 	event->offset = offset->prev_offset;
 
 	bpf_ringbuf_submit(event, 0);

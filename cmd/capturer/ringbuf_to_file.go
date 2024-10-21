@@ -36,12 +36,29 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 			continue
 		}
 
-		log.Printf("offset = %d\n", event.Offset)
+		// log.Printf("offset = %d\n", event.Offset)
+		log.Printf("filename = %s\n", bytesToString(event.Filename[:]))
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
 		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 	}
+}
+
+func bytesToString(data []int8) string {
+	// int8 -> byteの型変換
+	byteData := make([]byte, len(data))
+	for i, b := range data {
+		byteData[i] = byte(b)
+	}
+
+	// 0バイトで終端されているので、それ以降をトリム
+	n := 0
+	for n < len(byteData) && byteData[n] != 0 {
+		n++
+	}
+
+	return string(byteData[:n])
 }
 
 // slice, key: Item.index, value: time.TIme
