@@ -9,6 +9,8 @@
 struct enc_data_event_t {
 	unsigned char data[MAX_DATA_LEN];
 	int data_len;
+	char filename[MAX_FILENAME_LEN];
+	long offset;
 };
 struct enc_data_event_t *unused __attribute__((unused));
 

@@ -42,8 +42,8 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	} else {
 		// We don't need to use bpf helper funcs because memory in maps is
 		// considered to be safe to access.
-		bpf_printk(
-			"filename = %s, offset = %ld\n", filename, offset->prev_offset);
+		// bpf_printk(
+		// 	"filename = %s, offset = %ld\n", filename, offset->prev_offset);
 	}
 
 	struct enc_data_event_t *event;
@@ -57,6 +57,8 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
 
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
+
+	event->offset = offset->prev_offset;
 
 	bpf_ringbuf_submit(event, 0);
 

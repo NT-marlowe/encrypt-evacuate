@@ -35,6 +35,8 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
+
+		log.Printf("offset = %d\n", event.Offset)
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
