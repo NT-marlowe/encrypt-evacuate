@@ -36,8 +36,7 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 			continue
 		}
 
-		// log.Printf("offset = %d\n", event.Offset)
-		log.Printf("filename = %s\n", bytesToString(event.Filename[:]))
+		log.Printf("offset = %d, filename = %s\n", event.Offset, bytesToString(event.Filename[:]))
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
