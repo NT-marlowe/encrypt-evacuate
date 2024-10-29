@@ -86,6 +86,7 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
 	for idb := range idbCh {
 		file.Seek(idb.offset, 0)
+		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
 	}
 }
 
