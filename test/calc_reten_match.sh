@@ -11,8 +11,8 @@ echo "filename, ${subcom}"
 
 # ringbuf_filesize=$2
 
-# for file in $(ls ./data/2* | grep -v enc); do
-for file in $(ls ./data/1* | grep -v enc); do
+for file in $(ls ./data/2* | grep -v enc); do
+# for file in $(ls ./data/1* | grep -v enc); do
     file=$(basename $file)
     echo -n "$file, "
 

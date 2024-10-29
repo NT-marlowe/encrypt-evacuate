@@ -44,12 +44,12 @@ void encrypt_file(const char *input_filepath, const unsigned char *key,
 	}
 
 	unsigned char buffer[BUFFER_SIZE];
-	size_t bytes_read          = 0;
-	int bytes_written          = 0;
-	int accumulated_bytes_read = 0;
+	size_t bytes_read = 0;
+	int bytes_written = 0;
+	// int accumulated_bytes_read = 0;
 	while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, input_file)) > 0) {
-		accumulated_bytes_read += bytes_read;
-		printf("read bytes in total: %d\n", accumulated_bytes_read);
+		// accumulated_bytes_read += bytes_read;
+		// printf("read bytes in total: %d\n", accumulated_bytes_read);
 		if (EVP_EncryptUpdate(
 				ctx, buffer, &bytes_written, buffer, (int)bytes_read) != 1) {
 			handle_errors();
