@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 
-	"fmt"
+	// "fmt"
 	"log"
 	"os"
 	// "time"
@@ -50,7 +50,7 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 	}
 }
 
-func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
+func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
 	m := make(map[int]dataBlock)
 	currentIndex := 0
 	var idb indexedDataBlock
@@ -85,12 +85,7 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 }
 
 func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
-	// size := 2 * (1000000)
 	for idb := range idbCh {
-		fmt.Printf("offset = %d, dataLen = %d\n", idb.offset, idb.dataBlock.dataLen)
-		// if idb.offset == int64(size) {
-		// log.Printf("datalen = %d\n", idb.dataBlock.dataLen)
-		// }
 		file.Seek(idb.offset, 0)
 		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
 	}
