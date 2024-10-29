@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 
 	"github.com/cilium/ebpf/ringbuf"
@@ -35,7 +36,8 @@ func makeDataShleter(dataShelterPath string) error {
 }
 
 func createShelteredFile(dataShelterPath string, filename string) (*os.File, error) {
-	file, err := os.Create(dataShelterPath + "/" + filename)
+	fullPath := filepath.Join(dataShelterPath, filename)
+	file, err := os.Create(fullPath)
 	return file, err
 }
 
