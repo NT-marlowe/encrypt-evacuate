@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 
-	// "fmt"
+	"fmt"
 	"log"
 	"os"
 	// "time"
@@ -15,7 +15,8 @@ import (
 //	--> decodeIndexedRecord (multi goroutines)
 //	--> writeFileData (single goroutine)
 func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File, parallelism int) {
-	go writeFileData(idbCh, file)
+	// go writeFileData(idbCh, file)
+	go writeFileDataOffset(idbCh, file)
 
 	for i := 0; i < parallelism; i++ {
 		go decodeIndexedRecord(irdCh, idbCh)
@@ -84,7 +85,12 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 }
 
 func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
+	// size := 2 * (1000000)
 	for idb := range idbCh {
+		fmt.Printf("offset = %d, dataLen = %d\n", idb.offset, idb.dataBlock.dataLen)
+		// if idb.offset == int64(size) {
+		// log.Printf("datalen = %d\n", idb.dataBlock.dataLen)
+		// }
 		file.Seek(idb.offset, 0)
 		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
 	}
