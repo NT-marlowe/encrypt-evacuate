@@ -20,8 +20,10 @@ const (
 )
 
 func main() {
-	filename, parallelism := parseArgs()
-	log.Printf("Capturing to %s with parallelism %d", filename, parallelism)
+	parallelism, err := parseArgs()
+	if err != nil {
+		log.Fatal("Parsing args:", err)
+	}
 
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {

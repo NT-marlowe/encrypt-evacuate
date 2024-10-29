@@ -10,24 +10,23 @@ import (
 	"github.com/cilium/ebpf/ringbuf"
 )
 
-func parseArgs() (string, int) {
-	if len(os.Args) != 2 && len(os.Args) != 3 {
-		log.Fatalf("Usage: %s filename [parallelism]", os.Args[0])
+func parseArgs() (int, error) {
+	if len(os.Args) != 1 && len(os.Args) != 2 {
+		log.Fatalf("Usage: %s [parallelism]", os.Args[0])
 	}
 
-	filename := os.Args[1]
 	var parallelism int
 	var err error
-	if len(os.Args) == 2 {
+	if len(os.Args) == 1 {
 		// p = 15 is the tenttavely the best value for parallelism.
 		parallelism = 15
 	} else {
-		parallelism, err = strconv.Atoi(os.Args[2])
+		parallelism, err = strconv.Atoi(os.Args[1])
 		if err != nil {
-			log.Fatalf("Invalid parallelism: %s", err)
+			return 0, err
 		}
 	}
-	return filename, parallelism
+	return parallelism, err
 }
 
 func makeDataShleter(dataShelterPath string) error {

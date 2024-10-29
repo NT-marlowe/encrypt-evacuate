@@ -27,13 +27,15 @@ capture_plain.o: ebpf_src/capture_plain.c
 		-c capture_plain.c -o capture_plain.o
 
 
+
 .PHONY: run
 run: all
-	if [ -f /data_shelter/${TMP_FILE_NAME} ]; then \
-		sudo rm /data_shelter/${TMP_FILE_NAME}; \
-		echo "Remove old file"; \
-	fi
-	sudo ./${BIN} ${TMP_FILE_NAME} 4
+# if [ -f /data_shelter/${TMP_FILE_NAME} ]; then \
+# 	sudo rm /data_shelter/${TMP_FILE_NAME}; \
+# 	echo "Remove old file"; \
+# fi
+# sudo ./${BIN} ${TMP_FILE_NAME} 4
+	sudo ./${BIN} 4
 
 .PHONY: dump
 dump: capture_plain.o
