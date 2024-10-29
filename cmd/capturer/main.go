@@ -20,7 +20,10 @@ const (
 )
 
 func main() {
-	filename, parallelism := parseArgs()
+	parallelism, err := parseArgs()
+	if err != nil {
+		log.Fatal("Parsing args:", err)
+	}
 
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {
@@ -53,13 +56,6 @@ func main() {
 
 	startStopper(rd)
 
-	// create a file in dataShelterPath
-	file, err := setupDataShelter(dataShelterPath, filename)
-	if err != nil {
-		log.Fatal("Set up data shelter: ", err)
-	}
-	defer file.Close()
-
 	indexedRecordCh := make(chan indexedRecord)
 	defer close(indexedRecordCh)
 
@@ -67,7 +63,7 @@ func main() {
 	defer close(indexedDataBlockCh)
 
 	// Starts decoding goroutines and a writing goroutine.
-	startProcessingStages(indexedRecordCh, indexedDataBlockCh, file, parallelism)
+	startProcessingStages(indexedRecordCh, indexedDataBlockCh, parallelism)
 
 	// var start time.Time
 	// var elapsed time.Duration
