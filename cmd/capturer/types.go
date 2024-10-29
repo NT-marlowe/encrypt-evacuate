@@ -20,12 +20,14 @@ type dataBlock struct {
 
 type indexedDataBlock struct {
 	index     int
+	offset    int64
 	dataBlock dataBlock
 }
 
-func makeIndexedDataBlock(index int, data [DataBlockSize]uint8, dataLen uint32) indexedDataBlock {
+func makeIndexedDataBlock(index int, offset int64, data [DataBlockSize]uint8, dataLen uint32) indexedDataBlock {
 	return indexedDataBlock{
 		index:     index,
+		offset:    offset,
 		dataBlock: dataBlock{dataBuf: data, dataLen: dataLen},
 	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+
 	// "fmt"
 	"log"
 	"os"
@@ -44,7 +45,7 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
+		idbCh <- makeIndexedDataBlock(ird.index, event.Offset, event.Data, uint32(event.DataLen))
 	}
 }
 
@@ -79,6 +80,12 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 
 			currentIndex++
 		}
+	}
+}
+
+func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
+	for idb := range idbCh {
+		file.Seek(idb.offset, 0)
 	}
 }
 
