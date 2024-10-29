@@ -87,7 +87,6 @@ int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 
 	offset->prev_offset += offset->prev_inc;
 	offset->prev_inc = ret;
-	// bpf_printk("offset = %ld, read_byte = %ld\n", offset->prev_offset, ret);
 
 	bpf_map_update_elem(&fd_to_offsets, &fd, offset, BPF_ANY);
 
