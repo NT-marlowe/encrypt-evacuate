@@ -40,44 +40,13 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 			continue
 		}
 
-		log.Printf("offset = %d, filename = %s\n", event.Offset, bytesToString(event.Filename[:]))
+		// log.Printf("offset = %d, filename = %s\n", event.Offset, bytesToString(event.Filename[:]))
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
 		idbCh <- makeIndexedDataBlock(ird.index, event.Data, uint32(event.DataLen))
 	}
 }
-
-func bytesToString(data []int8) string {
-	// int8 -> byteの型変換
-	byteData := make([]byte, len(data))
-	for i, b := range data {
-		byteData[i] = byte(b)
-	}
-
-	// 0バイトで終端されているので、それ以降をトリム
-	n := 0
-	for n < len(byteData) && byteData[n] != 0 {
-		n++
-	}
-
-	return string(byteData[:n])
-}
-
-// slice, key: Item.index, value: time.TIme
-// var enqueueTime = make(map[int]time.Time)
-
-// func measureTime(index int, op string) {
-// 	t, ok := enqueueTime[index]
-// 	if !ok {
-// 		// fmt.Printf("No enqueue time found for index %d\n", index)
-// 		return
-// 	}
-// 	elapsed := time.Since(t)
-
-// 	fmt.Printf("%s: %v\n", op, elapsed)
-// 	delete(enqueueTime, index)
-// }
 
 func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 	m := make(map[int]dataBlock)
@@ -112,3 +81,34 @@ func writeFileData(idbCh <-chan indexedDataBlock, file *os.File) {
 		}
 	}
 }
+
+func bytesToString(data []int8) string {
+	// int8 -> byteの型変換
+	byteData := make([]byte, len(data))
+	for i, b := range data {
+		byteData[i] = byte(b)
+	}
+
+	// 0バイトで終端されているので、それ以降をトリム
+	n := 0
+	for n < len(byteData) && byteData[n] != 0 {
+		n++
+	}
+
+	return string(byteData[:n])
+}
+
+// slice, key: Item.index, value: time.TIme
+// var enqueueTime = make(map[int]time.Time)
+
+// func measureTime(index int, op string) {
+// 	t, ok := enqueueTime[index]
+// 	if !ok {
+// 		// fmt.Printf("No enqueue time found for index %d\n", index)
+// 		return
+// 	}
+// 	elapsed := time.Since(t)
+
+// 	fmt.Printf("%s: %v\n", op, elapsed)
+// 	delete(enqueueTime, index)
+// }
