@@ -21,7 +21,9 @@ rm -f ${DATA_SHELTER}/*
 cd .. && make all && cd test
 
 # for file in $(ls ./data | grep -v enc); do
-for file in $(ls ./data/1* | grep -v enc); do
+# for file in $(ls ./data/1* | grep -v enc); do
+for file in $(ls ./data/2* | grep -v enc); do
+
     file=$(basename $file)
     ../${EBPF_PROGRAM} $file  ${parallelism} &
     pid=$!
@@ -44,4 +46,5 @@ done
 chown -R ${USER}:${USER} ../cmd/*
 chown -R ${USER}:${USER} ../${EBPF_PROGRAM}
 
+echo "parallelism: ${parallelism}"
 

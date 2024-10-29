@@ -75,7 +75,7 @@ SEC("fexit/ksys_read")
 int BPF_PROG(fexit_ksys_read, const unsigned int fd, const char *buf,
 	size_t count, long ret) {
 	// ret means the number of bytes read.
-	if (ret < 0 || check_comm_name() != 0) {
+	if (ret <= 0 || check_comm_name() != 0) {
 		return 0;
 	}
 
