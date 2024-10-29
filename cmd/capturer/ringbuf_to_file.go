@@ -16,7 +16,7 @@ import (
 //	--> writeFileData (single goroutine)
 func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File, parallelism int) {
 	// go writeFileDataSequntial(idbCh, file)
-	go writeFileDataOffset(idbCh, file)
+	go writeFileDataOffset(idbCh)
 
 	for i := 0; i < parallelism; i++ {
 		go decodeIndexedRecord(irdCh, idbCh)
@@ -50,7 +50,7 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 	}
 }
 
-func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
+func writeFileDataOffset(idbCh <-chan indexedDataBlock) {
 	fileHandlerMap := make(map[string]*os.File, 0)
 	for idb := range idbCh {
 		filename := bytesToString(idb.filename[:])
