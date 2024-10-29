@@ -51,22 +51,22 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 }
 
 func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
-	// fileHandlerMap := make(map[string]*os.File, 0)
+	fileHandlerMap := make(map[string]*os.File, 0)
 	for idb := range idbCh {
-		// filename := bytesToString(idb.filename[:])
-		// file, ok := fileHandlerMap[filename]
-		// if ok {
-		// 	file.Seek(idb.offset, 0)
-		// 	file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
-		// 	continue
-		// }
+		filename := bytesToString(idb.filename[:])
+		file, ok := fileHandlerMap[filename]
+		if ok {
+			file.Seek(idb.offset, 0)
+			file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
+			continue
+		}
 
-		// file, err := setupDataShelter(dataShelterPath, filename)
-		// if err != nil {
-		// 	log.Fatal("Creating file: ", err)
-		// }
-		// fileHandlerMap[filename] = file
-		// defer file.Close()
+		file, err := setupDataShelter(dataShelterPath, filename)
+		if err != nil {
+			log.Fatal("Creating file: ", err)
+		}
+		fileHandlerMap[filename] = file
+		defer file.Close()
 
 		file.Seek(idb.offset, 0)
 		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])

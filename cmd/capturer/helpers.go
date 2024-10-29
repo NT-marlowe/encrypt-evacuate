@@ -37,6 +37,10 @@ func makeDataShleter(dataShelterPath string) error {
 
 func createShelteredFile(dataShelterPath string, filename string) (*os.File, error) {
 	fullPath := filepath.Join(dataShelterPath, filename)
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+		log.Fatal("Creating dir: ", err)
+	}
+
 	file, err := os.Create(fullPath)
 	return file, err
 }
