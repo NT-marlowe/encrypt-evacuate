@@ -46,7 +46,30 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		idbCh <- makeIndexedDataBlock(ird.index, event.Offset, event.Data, uint32(event.DataLen))
+		idbCh <- makeIndexedDataBlock(ird.index, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
+	}
+}
+
+func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
+	fileHandlerMap := make(map[string]*os.File, 0)
+	for idb := range idbCh {
+		filename := bytesToString(idb.filename[:])
+		file, ok := fileHandlerMap[filename]
+		if ok {
+			file.Seek(idb.offset, 0)
+			file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
+			continue
+		}
+
+		file, err := setupDataShelter(dataShelterPath, filename)
+		if err != nil {
+			log.Fatal("Creating file: ", err)
+		}
+		fileHandlerMap[filename] = file
+		defer file.Close()
+
+		file.Seek(idb.offset, 0)
+		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
 	}
 }
 
@@ -81,13 +104,6 @@ func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
 
 			currentIndex++
 		}
-	}
-}
-
-func writeFileDataOffset(idbCh <-chan indexedDataBlock, file *os.File) {
-	for idb := range idbCh {
-		file.Seek(idb.offset, 0)
-		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
 	}
 }
 

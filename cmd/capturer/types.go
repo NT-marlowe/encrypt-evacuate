@@ -5,7 +5,8 @@ import (
 )
 
 const (
-	DataBlockSize uint = 4096
+	dataBlockSize uint = 4096
+	fileNameLen   uint = 256
 )
 
 type indexedRecord struct {
@@ -14,20 +15,24 @@ type indexedRecord struct {
 }
 
 type dataBlock struct {
-	dataBuf [DataBlockSize]uint8
+	dataBuf [dataBlockSize]uint8
 	dataLen uint32
 }
 
 type indexedDataBlock struct {
 	index     int
 	offset    int64
+	filename  [fileNameLen]int8
 	dataBlock dataBlock
 }
 
-func makeIndexedDataBlock(index int, offset int64, data [DataBlockSize]uint8, dataLen uint32) indexedDataBlock {
+func makeIndexedDataBlock(index int, offset int64, filename [fileNameLen]int8,
+	data [dataBlockSize]uint8, dataLen uint32) indexedDataBlock {
+
 	return indexedDataBlock{
 		index:     index,
 		offset:    offset,
+		filename:  filename,
 		dataBlock: dataBlock{dataBuf: data, dataLen: dataLen},
 	}
 }
