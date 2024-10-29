@@ -56,18 +56,19 @@ func main() {
 
 	startStopper(rd)
 
-	indexedRecordCh := make(chan indexedRecord)
-	defer close(indexedRecordCh)
+	recordCh := make(chan ringbuf.Record)
+	defer close(recordCh)
 
 	indexedDataBlockCh := make(chan indexedDataBlock)
 	defer close(indexedDataBlockCh)
 
 	// Starts decoding goroutines and a writing goroutine.
-	startProcessingStages(indexedRecordCh, indexedDataBlockCh, parallelism)
+	startProcessingStages(recordCh, indexedDataBlockCh, parallelism)
 
 	// var start time.Time
 	// var elapsed time.Duration
-	for index := 0; ; index++ {
+	// for index := 0; ; index++ {
+	for {
 		// start = time.Now()
 
 		record, err := rd.Read()
@@ -84,7 +85,7 @@ func main() {
 			continue
 		}
 
-		indexedRecordCh <- indexedRecord{index: index, record: record}
+		recordCh <- record
 	}
 }
 

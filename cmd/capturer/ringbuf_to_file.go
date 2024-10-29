@@ -7,6 +7,8 @@ import (
 	// "fmt"
 	"log"
 	"os"
+
+	"github.com/cilium/ebpf/ringbuf"
 	// "time"
 )
 
@@ -14,7 +16,7 @@ import (
 //
 //	--> decodeIndexedRecord (multi goroutines)
 //	--> writeFileData (single goroutine)
-func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, parallelism int) {
+func startProcessingStages(irdCh <-chan ringbuf.Record, idbCh chan indexedDataBlock, parallelism int) {
 	// go writeFileDataSequntial(idbCh, file)
 	go writeFileDataOffset(idbCh)
 
@@ -24,20 +26,20 @@ func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlo
 
 }
 
-func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlock) {
+func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- indexedDataBlock) {
 	var event capture_plainEncDataEventT
 
 	// var start time.Time
 	// var elapsed time.Duration
 	for {
-		ird, ok := <-irdCh
+		rd, ok := <-irdCh
 		// start = time.Now()
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
 		}
 
-		if err := binary.Read(bytes.NewBuffer(ird.record.RawSample), binary.LittleEndian, &event); err != nil {
+		if err := binary.Read(bytes.NewBuffer(rd.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
@@ -46,7 +48,7 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		idbCh <- makeIndexedDataBlock(ird.index, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
+		idbCh <- makeIndexedDataBlock(0, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
 	}
 }
 
@@ -122,18 +124,3 @@ func bytesToString(data []int8) string {
 
 	return string(byteData[:n])
 }
-
-// slice, key: Item.index, value: time.TIme
-// var enqueueTime = make(map[int]time.Time)
-
-// func measureTime(index int, op string) {
-// 	t, ok := enqueueTime[index]
-// 	if !ok {
-// 		// fmt.Printf("No enqueue time found for index %d\n", index)
-// 		return
-// 	}
-// 	elapsed := time.Since(t)
-
-// 	fmt.Printf("%s: %v\n", op, elapsed)
-// 	delete(enqueueTime, index)
-// }

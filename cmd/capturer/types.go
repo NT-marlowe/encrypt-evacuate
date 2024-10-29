@@ -1,18 +1,9 @@
 package main
 
-import (
-	"github.com/cilium/ebpf/ringbuf"
-)
-
 const (
 	dataBlockSize uint = 4096
 	fileNameLen   uint = 256
 )
-
-type indexedRecord struct {
-	index  int
-	record ringbuf.Record
-}
 
 type dataBlock struct {
 	dataBuf [dataBlockSize]uint8
