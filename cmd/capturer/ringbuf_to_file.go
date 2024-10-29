@@ -14,7 +14,7 @@ import (
 //
 //	--> decodeIndexedRecord (multi goroutines)
 //	--> writeFileData (single goroutine)
-func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, file *os.File, parallelism int) {
+func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, parallelism int) {
 	// go writeFileDataSequntial(idbCh, file)
 	go writeFileDataOffset(idbCh)
 
