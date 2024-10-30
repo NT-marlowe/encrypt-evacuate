@@ -37,7 +37,6 @@ for file in $(ls ./data/2* | grep -v enc); do
 
     echo -----------
     
-    # rm ./data/{$file}.enc
 done
 
 kill -SIGINT $pid > /dev/null 2>&1
@@ -46,6 +45,8 @@ echo "Killed $pid"
 chown -R ${USER}:${USER} ../cmd/*
 chown -R ${USER}:${USER} ../${EBPF_PROGRAM}
 chown -R ${USER}:${USER} ./data/*
+
+rm ./data/*.enc
 
 echo "parallelism: ${parallelism}"
 

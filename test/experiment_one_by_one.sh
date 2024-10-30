@@ -47,5 +47,7 @@ chown -R ${USER}:${USER} ../cmd/*
 chown -R ${USER}:${USER} ../${EBPF_PROGRAM}
 chown -R ${USER}:${USER} ./data/*
 
+rm ./data/*.enc
+
 echo "parallelism: ${parallelism}"
 
