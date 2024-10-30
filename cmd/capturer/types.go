@@ -16,14 +16,3 @@ type indexedDataBlock struct {
 	filename  [fileNameLen]int8
 	dataBlock dataBlock
 }
-
-func makeIndexedDataBlock(index int, offset int64, filename [fileNameLen]int8,
-	data [dataBlockSize]uint8, dataLen uint32) indexedDataBlock {
-
-	return indexedDataBlock{
-		index:     index,
-		offset:    offset,
-		filename:  filename,
-		dataBlock: dataBlock{dataBuf: data, dataLen: dataLen},
-	}
-}

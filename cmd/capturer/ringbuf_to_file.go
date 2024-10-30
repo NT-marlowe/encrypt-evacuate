@@ -48,7 +48,6 @@ func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- capture_plain
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		// idbCh <- makeIndexedDataBlock(0, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
 		idbCh <- event
 	}
 }
@@ -74,6 +73,22 @@ func writeFileDataOffset(idbCh <-chan capture_plainEncDataEventT) {
 		file.Seek(idb.Offset, 0)
 		file.Write(idb.Data[:idb.DataLen])
 	}
+}
+
+func bytesToString(data []int8) string {
+	// int8 -> byte type cast
+	byteData := make([]byte, len(data))
+	for i, b := range data {
+		byteData[i] = byte(b)
+	}
+
+	// trim strings after null character
+	n := 0
+	for n < len(byteData) && byteData[n] != 0 {
+		n++
+	}
+
+	return string(byteData[:n])
 }
 
 func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
@@ -108,20 +123,4 @@ func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
 			currentIndex++
 		}
 	}
-}
-
-func bytesToString(data []int8) string {
-	// int8 -> byteの型変換
-	byteData := make([]byte, len(data))
-	for i, b := range data {
-		byteData[i] = byte(b)
-	}
-
-	// 0バイトで終端されているので、それ以降をトリム
-	n := 0
-	for n < len(byteData) && byteData[n] != 0 {
-		n++
-	}
-
-	return string(byteData[:n])
 }
