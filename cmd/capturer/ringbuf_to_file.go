@@ -7,6 +7,8 @@ import (
 	// "fmt"
 	"log"
 	"os"
+
+	"github.com/cilium/ebpf/ringbuf"
 	// "time"
 )
 
@@ -14,30 +16,30 @@ import (
 //
 //	--> decodeIndexedRecord (multi goroutines)
 //	--> writeFileData (single goroutine)
-func startProcessingStages(irdCh <-chan indexedRecord, idbCh chan indexedDataBlock, parallelism int) {
-	// go writeFileDataSequntial(idbCh, file)
-	go writeFileDataOffset(idbCh)
+func startProcessingStages(irdCh <-chan ringbuf.Record, eventCh chan capture_plainEncDataEventT, parallelism int) {
+	// go writeFileDataSequntial(eventCh, file)
+	go writeFileDataOffset(eventCh)
 
 	for i := 0; i < parallelism; i++ {
-		go decodeIndexedRecord(irdCh, idbCh)
+		go decodeIndexedRecord(irdCh, eventCh)
 	}
 
 }
 
-func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlock) {
+func decodeIndexedRecord(irdCh <-chan ringbuf.Record, eventCh chan<- capture_plainEncDataEventT) {
 	var event capture_plainEncDataEventT
 
 	// var start time.Time
 	// var elapsed time.Duration
 	for {
-		ird, ok := <-irdCh
+		rd, ok := <-irdCh
 		// start = time.Now()
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
 		}
 
-		if err := binary.Read(bytes.NewBuffer(ird.record.RawSample), binary.LittleEndian, &event); err != nil {
+		if err := binary.Read(bytes.NewBuffer(rd.RawSample), binary.LittleEndian, &event); err != nil {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
@@ -46,18 +48,18 @@ func decodeIndexedRecord(irdCh <-chan indexedRecord, idbCh chan<- indexedDataBlo
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		idbCh <- makeIndexedDataBlock(ird.index, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
+		eventCh <- event
 	}
 }
 
-func writeFileDataOffset(idbCh <-chan indexedDataBlock) {
+func writeFileDataOffset(eventCh <-chan capture_plainEncDataEventT) {
 	fileHandlerMap := make(map[string]*os.File, 0)
-	for idb := range idbCh {
-		filename := bytesToString(idb.filename[:])
+	for event := range eventCh {
+		filename := bytesToString(event.Filename[:])
 		file, ok := fileHandlerMap[filename]
 		if ok {
-			file.Seek(idb.offset, 0)
-			file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
+			file.Seek(event.Offset, 0)
+			file.Write(event.Data[:event.DataLen])
 			continue
 		}
 
@@ -68,29 +70,45 @@ func writeFileDataOffset(idbCh <-chan indexedDataBlock) {
 		fileHandlerMap[filename] = file
 		defer file.Close()
 
-		file.Seek(idb.offset, 0)
-		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
+		file.Seek(event.Offset, 0)
+		file.Write(event.Data[:event.DataLen])
 	}
 }
 
-func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
+func bytesToString(data []int8) string {
+	// int8 -> byte type cast
+	byteData := make([]byte, len(data))
+	for i, b := range data {
+		byteData[i] = byte(b)
+	}
+
+	// trim strings after null character
+	n := 0
+	for n < len(byteData) && byteData[n] != 0 {
+		n++
+	}
+
+	return string(byteData[:n])
+}
+
+func writeFileDataSequntial(eventCh <-chan indexedDataBlock, file *os.File) {
 	m := make(map[int]dataBlock)
 	currentIndex := 0
-	var idb indexedDataBlock
+	var event indexedDataBlock
 	var db dataBlock
 	var ok bool
 
-	for idb = range idbCh {
-		// fmt.Printf("idb.index: %d, currentIndex: %d\n", idb.index, currentIndex)
-		if idb.index == currentIndex {
-			db = idb.dataBlock
+	for event = range eventCh {
+		// fmt.Printf("event.index: %d, currentIndex: %d\n", event.index, currentIndex)
+		if event.index == currentIndex {
+			db = event.dataBlock
 			file.Write(db.dataBuf[:db.dataLen])
 			currentIndex++
 		} else {
-			m[idb.index] = idb.dataBlock
+			m[event.index] = event.dataBlock
 			// better without using continue
 			// continue
-			// enqueueTime[idb.index] = time.Now()
+			// enqueueTime[event.index] = time.Now()
 		}
 
 		for {
@@ -106,34 +124,3 @@ func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
 		}
 	}
 }
-
-func bytesToString(data []int8) string {
-	// int8 -> byteの型変換
-	byteData := make([]byte, len(data))
-	for i, b := range data {
-		byteData[i] = byte(b)
-	}
-
-	// 0バイトで終端されているので、それ以降をトリム
-	n := 0
-	for n < len(byteData) && byteData[n] != 0 {
-		n++
-	}
-
-	return string(byteData[:n])
-}
-
-// slice, key: Item.index, value: time.TIme
-// var enqueueTime = make(map[int]time.Time)
-
-// func measureTime(index int, op string) {
-// 	t, ok := enqueueTime[index]
-// 	if !ok {
-// 		// fmt.Printf("No enqueue time found for index %d\n", index)
-// 		return
-// 	}
-// 	elapsed := time.Since(t)
-
-// 	fmt.Printf("%s: %v\n", op, elapsed)
-// 	delete(enqueueTime, index)
-// }
