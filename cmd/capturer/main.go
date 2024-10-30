@@ -59,7 +59,7 @@ func main() {
 	recordCh := make(chan ringbuf.Record)
 	defer close(recordCh)
 
-	indexedDataBlockCh := make(chan indexedDataBlock)
+	indexedDataBlockCh := make(chan capture_plainEncDataEventT)
 	defer close(indexedDataBlockCh)
 
 	// Starts decoding goroutines and a writing goroutine.

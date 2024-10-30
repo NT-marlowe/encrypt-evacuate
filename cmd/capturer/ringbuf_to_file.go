@@ -16,7 +16,7 @@ import (
 //
 //	--> decodeIndexedRecord (multi goroutines)
 //	--> writeFileData (single goroutine)
-func startProcessingStages(irdCh <-chan ringbuf.Record, idbCh chan indexedDataBlock, parallelism int) {
+func startProcessingStages(irdCh <-chan ringbuf.Record, idbCh chan capture_plainEncDataEventT, parallelism int) {
 	// go writeFileDataSequntial(idbCh, file)
 	go writeFileDataOffset(idbCh)
 
@@ -26,7 +26,7 @@ func startProcessingStages(irdCh <-chan ringbuf.Record, idbCh chan indexedDataBl
 
 }
 
-func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- indexedDataBlock) {
+func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- capture_plainEncDataEventT) {
 	var event capture_plainEncDataEventT
 
 	// var start time.Time
@@ -48,18 +48,19 @@ func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- indexedDataBl
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		idbCh <- makeIndexedDataBlock(0, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
+		// idbCh <- makeIndexedDataBlock(0, event.Offset, event.Filename, event.Data, uint32(event.DataLen))
+		idbCh <- event
 	}
 }
 
-func writeFileDataOffset(idbCh <-chan indexedDataBlock) {
+func writeFileDataOffset(idbCh <-chan capture_plainEncDataEventT) {
 	fileHandlerMap := make(map[string]*os.File, 0)
 	for idb := range idbCh {
-		filename := bytesToString(idb.filename[:])
+		filename := bytesToString(idb.Filename[:])
 		file, ok := fileHandlerMap[filename]
 		if ok {
-			file.Seek(idb.offset, 0)
-			file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
+			file.Seek(idb.Offset, 0)
+			file.Write(idb.Data[:idb.DataLen])
 			continue
 		}
 
@@ -70,8 +71,8 @@ func writeFileDataOffset(idbCh <-chan indexedDataBlock) {
 		fileHandlerMap[filename] = file
 		defer file.Close()
 
-		file.Seek(idb.offset, 0)
-		file.Write(idb.dataBlock.dataBuf[:idb.dataBlock.dataLen])
+		file.Seek(idb.Offset, 0)
+		file.Write(idb.Data[:idb.DataLen])
 	}
 }
 
