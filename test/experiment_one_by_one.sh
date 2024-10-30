@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+# This script run the capturer and the ransomware program one by one.
 
 set -e
 set -u
