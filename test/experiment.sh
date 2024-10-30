@@ -17,20 +17,19 @@ DATA_SHELTER=/data_shelter
 
 parallelism=$1
 
-rm -f ${DATA_SHELTER}/*
+rm -rf ${DATA_SHELTER}/*
 cd .. && make all && cd test
 
 # for file in $(ls ./data | grep -v enc); do
 # for file in $(ls ./data/1* | grep -v enc); do
 for file in $(ls ./data/2* | grep -v enc); do
-
-    file=$(basename $file)
-    ../${EBPF_PROGRAM} $file  ${parallelism} &
+    # file=$(basename $file)
+    ../${EBPF_PROGRAM} ${parallelism} &
     pid=$!
     sleep 1
     
-    ./my_simple_ransomware ./data/$file
-    echo "Ransomware ran on $file"
+    ./my_simple_ransomware ${file}
+    echo "Ransomware ran on ${file}"
 
     sleep 3
 
@@ -45,6 +44,7 @@ done
 
 chown -R ${USER}:${USER} ../cmd/*
 chown -R ${USER}:${USER} ../${EBPF_PROGRAM}
+chown -R ${USER}:${USER} ./data/*
 
 echo "parallelism: ${parallelism}"
 
