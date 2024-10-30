@@ -16,17 +16,17 @@ import (
 //
 //	--> decodeIndexedRecord (multi goroutines)
 //	--> writeFileData (single goroutine)
-func startProcessingStages(irdCh <-chan ringbuf.Record, idbCh chan capture_plainEncDataEventT, parallelism int) {
-	// go writeFileDataSequntial(idbCh, file)
-	go writeFileDataOffset(idbCh)
+func startProcessingStages(irdCh <-chan ringbuf.Record, eventCh chan capture_plainEncDataEventT, parallelism int) {
+	// go writeFileDataSequntial(eventCh, file)
+	go writeFileDataOffset(eventCh)
 
 	for i := 0; i < parallelism; i++ {
-		go decodeIndexedRecord(irdCh, idbCh)
+		go decodeIndexedRecord(irdCh, eventCh)
 	}
 
 }
 
-func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- capture_plainEncDataEventT) {
+func decodeIndexedRecord(irdCh <-chan ringbuf.Record, eventCh chan<- capture_plainEncDataEventT) {
 	var event capture_plainEncDataEventT
 
 	// var start time.Time
@@ -48,18 +48,18 @@ func decodeIndexedRecord(irdCh <-chan ringbuf.Record, idbCh chan<- capture_plain
 		// elapsed = time.Since(start)
 		// fmt.Printf("binary.Read: %v\n", elapsed)
 
-		idbCh <- event
+		eventCh <- event
 	}
 }
 
-func writeFileDataOffset(idbCh <-chan capture_plainEncDataEventT) {
+func writeFileDataOffset(eventCh <-chan capture_plainEncDataEventT) {
 	fileHandlerMap := make(map[string]*os.File, 0)
-	for idb := range idbCh {
-		filename := bytesToString(idb.Filename[:])
+	for event := range eventCh {
+		filename := bytesToString(event.Filename[:])
 		file, ok := fileHandlerMap[filename]
 		if ok {
-			file.Seek(idb.Offset, 0)
-			file.Write(idb.Data[:idb.DataLen])
+			file.Seek(event.Offset, 0)
+			file.Write(event.Data[:event.DataLen])
 			continue
 		}
 
@@ -70,8 +70,8 @@ func writeFileDataOffset(idbCh <-chan capture_plainEncDataEventT) {
 		fileHandlerMap[filename] = file
 		defer file.Close()
 
-		file.Seek(idb.Offset, 0)
-		file.Write(idb.Data[:idb.DataLen])
+		file.Seek(event.Offset, 0)
+		file.Write(event.Data[:event.DataLen])
 	}
 }
 
@@ -91,24 +91,24 @@ func bytesToString(data []int8) string {
 	return string(byteData[:n])
 }
 
-func writeFileDataSequntial(idbCh <-chan indexedDataBlock, file *os.File) {
+func writeFileDataSequntial(eventCh <-chan indexedDataBlock, file *os.File) {
 	m := make(map[int]dataBlock)
 	currentIndex := 0
-	var idb indexedDataBlock
+	var event indexedDataBlock
 	var db dataBlock
 	var ok bool
 
-	for idb = range idbCh {
-		// fmt.Printf("idb.index: %d, currentIndex: %d\n", idb.index, currentIndex)
-		if idb.index == currentIndex {
-			db = idb.dataBlock
+	for event = range eventCh {
+		// fmt.Printf("event.index: %d, currentIndex: %d\n", event.index, currentIndex)
+		if event.index == currentIndex {
+			db = event.dataBlock
 			file.Write(db.dataBuf[:db.dataLen])
 			currentIndex++
 		} else {
-			m[idb.index] = idb.dataBlock
+			m[event.index] = event.dataBlock
 			// better without using continue
 			// continue
-			// enqueueTime[idb.index] = time.Now()
+			// enqueueTime[event.index] = time.Now()
 		}
 
 		for {

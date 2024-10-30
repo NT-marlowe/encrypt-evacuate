@@ -53,4 +53,4 @@ cat:
 
 .PHONE: clear-shelter
 clear-shelter:
-	sudo rm -f /data_shelter/*
+	sudo rm -rf /data_shelter/*

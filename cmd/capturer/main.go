@@ -59,11 +59,11 @@ func main() {
 	recordCh := make(chan ringbuf.Record)
 	defer close(recordCh)
 
-	indexedDataBlockCh := make(chan capture_plainEncDataEventT)
-	defer close(indexedDataBlockCh)
+	encDataEventCh := make(chan capture_plainEncDataEventT)
+	defer close(encDataEventCh)
 
 	// Starts decoding goroutines and a writing goroutine.
-	startProcessingStages(recordCh, indexedDataBlockCh, parallelism)
+	startProcessingStages(recordCh, encDataEventCh, parallelism)
 
 	// var start time.Time
 	// var elapsed time.Duration
