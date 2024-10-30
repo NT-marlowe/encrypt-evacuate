@@ -40,7 +40,6 @@ for file in $(ls ./data/2* | grep -v enc); do
     sleep 3
     echo -----------
     
-    # rm ./data/{$file}.enc
 done
 
 chown -R ${USER}:${USER} ../cmd/*
