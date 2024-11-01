@@ -57,9 +57,9 @@ def plot_graph_inc(metrics: str):
     ax.bar(x + width / 2, list_seek, width, label="Seek & Write")
 
     if metrics == "reten":
-        ax.set_title(f"Retention Rates by File Size, p = {parallesim}")
+        ax.set_title(f"Retention Rates by File Size, p = {parallesim:02}")
     elif metrics == "match":
-        ax.set_title(f"Match Rates by File Size, p = {parallesim}")
+        ax.set_title(f"Match Rates by File Size, p = {parallesim:02}")
 
     ax.set_xlabel("Size of Original File [Byte]")
     ax.set_ylabel("Rate")
@@ -68,7 +68,7 @@ def plot_graph_inc(metrics: str):
     ax.legend()
 
     # plot these two lists
-    plt.savefig(f"./img/reorder_vs_seek_{metrics}_p{parallesim}.png")
+    plt.savefig(f"./img/reorder_vs_seek/{metrics}_p{parallesim:02}.png")
 
 
 # plot_graph_exp()
