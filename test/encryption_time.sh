@@ -3,8 +3,8 @@
 set -e
 set -u
 
-iter=$1
-filename=$2
+iter=10000
+filename=$1
 function iterate_encrypt() {
     for i in $(seq 1 ${iter}); do
         ./foobar ./data/03_1MB.data
