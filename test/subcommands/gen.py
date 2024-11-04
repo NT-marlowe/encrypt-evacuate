@@ -41,8 +41,9 @@ def generate_random_files(init_size: int = K):
     filesize = init_size
     idx = 0
     while filesize < G:
-        generate_random_file(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
-        # write_lorem(f"./data/{idx:02d}_{get_filename(filesize)}", filesize)
+        generate_random_file(
+            f"./data/power_10/{idx:02d}_{get_filename(filesize)}", filesize
+        )
         filesize *= 10
         idx += 1
 
