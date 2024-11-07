@@ -57,7 +57,7 @@ void encrypt_file(const char *input_filepath, const unsigned char *key,
 			handle_errors();
 		}
 		// For testing whether our system can handle lseek.
-		if (cnt < 10) {
+		if (cnt < 30) {
 			off_t curret_offset = lseek(fd, -1024, SEEK_CUR);
 			printf("current offset: %ld\n", curret_offset);
 			cnt++;
