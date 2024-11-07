@@ -103,8 +103,8 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	const int fd = ret;
 
 	// Updates the relation between fd and offset of the file associated to fd.
-	if (bpf_map_update_elem(
-			&fd_to_offsets, &fd, &(struct offset_t){0, 0}, BPF_ANY) != 0) {
+	if (bpf_map_update_elem(&fd_to_offsets, &fd, &(struct offset_t){0, 0, 0, 0},
+			BPF_ANY) != 0) {
 		bpf_printk("Failed to update fd_to_offsets map\n");
 		return 0;
 	}

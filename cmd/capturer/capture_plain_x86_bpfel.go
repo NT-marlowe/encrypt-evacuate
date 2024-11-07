@@ -21,8 +21,11 @@ type capture_plainEncDataEventT struct {
 }
 
 type capture_plainOffsetT struct {
-	PrevOffset int64
-	PrevInc    int64
+	PrevOffset   int64
+	PrevInc      int64
+	IsSeeked     int32
+	_            [4]byte
+	SeekedOffset int64
 }
 
 // loadCapture_plain returns the embedded CollectionSpec for capture_plain.
