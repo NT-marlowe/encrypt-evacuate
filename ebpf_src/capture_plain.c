@@ -122,4 +122,24 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	return 0;
 }
 
+SEC("fexit/ksys_lseek")
+int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,
+	unsigned int whence, long ret) {
+	if (ret < 0 || check_comm_name() != 0) {
+		bpf_printk("lseek, ret: %ld\n", ret);
+		return 0;
+	}
+
+	struct offset_t *offset_entry = bpf_map_lookup_elem(&fd_to_offsets, &fd);
+	if (offset_entry == NULL) {
+		return 0;
+	}
+
+	offset_entry->is_seeked     = 1;
+	offset_entry->seeked_offset = ret;
+	bpf_printk("offset is updated to %ld\n", ret);
+
+	return 0;
+}
+
 char __license[] SEC("license") = "Dual MIT/GPL";

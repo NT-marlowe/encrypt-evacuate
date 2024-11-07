@@ -94,6 +94,7 @@ func attachAllTracingPrograms(objs *capture_plainObjects) []link.Link {
 		objs.FexitDoSysOpen,
 		objs.FentryKsysRead,
 		objs.FexitKsysRead,
+		objs.FexitKsysLseek,
 	}
 
 	var links []link.Link

@@ -4,9 +4,11 @@
 #include <openssl/aes.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
+#include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 void handle_errors(void) {
 	ERR_print_errors_fp(stderr);
@@ -55,6 +57,9 @@ void encrypt_file(const char *input_filepath, const unsigned char *key,
 		}
 		fwrite(buffer, 1, bytes_written, output_file);
 	}
+
+	off_t ret = lseek(fileno(input_file), 0, SEEK_SET);
+	printf("lseek ret: %ld\n", ret);
 
 	if (EVP_EncryptFinal_ex(ctx, buffer, &bytes_written) != 1) {
 		handle_errors();
