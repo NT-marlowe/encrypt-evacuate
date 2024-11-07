@@ -147,7 +147,7 @@ int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,
 
 	offset_entry->is_seeked     = 1;
 	offset_entry->seeked_offset = ret;
-	bpf_printk("offset is updated to %ld\n", ret);
+	// bpf_printk("offset is updated to %ld\n", ret);
 
 	return 0;
 }
