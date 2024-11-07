@@ -137,7 +137,6 @@ SEC("fexit/ksys_lseek")
 int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,
 	unsigned int whence, long ret) {
 	if (ret < 0 || check_comm_name() != 0) {
-		bpf_printk("lseek, ret: %ld\n", ret);
 		return 0;
 	}
 
