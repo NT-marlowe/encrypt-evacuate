@@ -68,6 +68,17 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 	}
 
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
+
+	struct offset_t *offset_entry = bpf_map_lookup_elem(&fd_to_offsets, &fd);
+	if (offset_entry == NULL) {
+		return 0;
+	}
+	if (offset_entry->is_seeked == 1) {
+		offset_entry->prev_offset = offset_entry->seeked_offset;
+		offset_entry->prev_inc    = 0;
+		offset_entry->is_seeked   = 0;
+	}
+
 	return 0;
 }
 
@@ -103,8 +114,8 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	const int fd = ret;
 
 	// Updates the relation between fd and offset of the file associated to fd.
-	if (bpf_map_update_elem(
-			&fd_to_offsets, &fd, &(struct offset_t){0, 0}, BPF_ANY) != 0) {
+	if (bpf_map_update_elem(&fd_to_offsets, &fd, &(struct offset_t){0, 0, 0, 0},
+			BPF_ANY) != 0) {
 		bpf_printk("Failed to update fd_to_offsets map\n");
 		return 0;
 	}
@@ -118,6 +129,25 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		bpf_printk("Failed to update fd_to_filename map\n");
 		return 0;
 	}
+
+	return 0;
+}
+
+SEC("fexit/ksys_lseek")
+int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,
+	unsigned int whence, long ret) {
+	if (ret < 0 || check_comm_name() != 0) {
+		return 0;
+	}
+
+	struct offset_t *offset_entry = bpf_map_lookup_elem(&fd_to_offsets, &fd);
+	if (offset_entry == NULL) {
+		return 0;
+	}
+
+	offset_entry->is_seeked     = 1;
+	offset_entry->seeked_offset = ret;
+	// bpf_printk("offset is updated to %ld\n", ret);
 
 	return 0;
 }

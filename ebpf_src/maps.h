@@ -17,6 +17,8 @@ struct enc_data_event_t *unused __attribute__((unused));
 struct offset_t {
 	long prev_offset;
 	long prev_inc;
+	int is_seeked;
+	long seeked_offset;
 };
 
 struct {
