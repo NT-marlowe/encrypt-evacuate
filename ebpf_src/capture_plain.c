@@ -68,6 +68,17 @@ int BPF_PROG(fentry_ksys_read, const unsigned int fd, const char *buf) {
 	}
 
 	bpf_map_update_elem(&ptr_to_fd, (uintptr_t *)&buf, &fd, BPF_ANY);
+
+	struct offset_t *offset_entry = bpf_map_lookup_elem(&fd_to_offsets, &fd);
+	if (offset_entry == NULL) {
+		return 0;
+	}
+	if (offset_entry->is_seeked == 1) {
+		offset_entry->prev_offset = offset_entry->seeked_offset;
+		offset_entry->prev_inc    = 0;
+		offset_entry->is_seeked   = 0;
+	}
+
 	return 0;
 }
 
