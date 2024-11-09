@@ -2,11 +2,12 @@
 //
 //
 
+// Do not move this line after libbpf includes, or compile errors woudl cause.
 #include "vmlinux.h"
 
-// #include <linux/bpf.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
+// #include <linux/bpf.h>
 // #include <linux/ptrace.h>
 
 #include "helpers.h"

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bpf/bpf_helpers.h>
-// #include <linux/bpf.h>
 
 static __always_inline int check_comm_name() {
 	char comm[16] = {0};
