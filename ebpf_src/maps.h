@@ -1,10 +1,10 @@
 #pragma once
 
 #include <bpf/bpf_helpers.h>
-#include <linux/bpf.h>
+// #include <linux/bpf.h>
 
 #include "constants.h"
-#include "vmlinux_subset.h"
+// #include "vmlinux_subset.h"
 
 struct enc_data_event_t {
 	unsigned char data[MAX_DATA_LEN];
