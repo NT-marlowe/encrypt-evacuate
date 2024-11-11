@@ -148,8 +148,12 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
-	bpf_printk("dname: %s\n", dname);
+	// const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
+	// bpf_printk("dname: %s\n", dname);
+
+	// char path[128];
+	// bpf_d_path(pwd_dentry, path, sizeof(path));
+	// bpf_printk("path: %s\n", path);
 
 	// struct dentry *parent = NULL;
 	// for (int i = 0; i < 10; i++) {
@@ -163,6 +167,13 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	// 	pwd_dentry = parent;
 	// }
 
+	return 0;
+}
+
+SEC("kretprobe/do_sys_openat2")
+int BPF_KRETPROBE(kretprobe_openat2, long ret) {
+	const int fd = ret;
+	bpf_printk("kretprobe_openat2: %d\n", fd);
 	return 0;
 }
 
