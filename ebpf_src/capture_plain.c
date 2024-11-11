@@ -172,8 +172,25 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 
 SEC("kretprobe/do_sys_openat2")
 int BPF_KRETPROBE(kretprobe_openat2, long ret) {
-	const int fd = ret;
-	bpf_printk("kretprobe_openat2: %d\n", fd);
+	// const int fd = ret;
+	// bpf_printk("kretprobe_openat2: %d\n", fd);
+
+	struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+	if (task == NULL) {
+		return 0;
+	}
+
+	struct dentry *pwd_dentry;
+	int err = BPF_CORE_READ_INTO(&pwd_dentry, task, fs, pwd.dentry);
+	if (err) {
+		bpf_printk("Failed to read task->fs->pwd\n");
+		return 0;
+	}
+
+	char path[128];
+	bpf_d_path(pwd_dentry, path, sizeof(path));
+	bpf_printk("path: %s\n", path);
+
 	return 0;
 }
 
