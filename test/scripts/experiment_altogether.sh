@@ -34,7 +34,7 @@ for file in $(ls ./data/incremental/* | grep -v enc); do
     ./my_simple_ransomware ${file}
     echo "Ransomware ran on ${file}"
 
-    sleep 2
+    sleep 4
 
     echo -----------
 
