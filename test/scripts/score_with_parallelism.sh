@@ -9,9 +9,9 @@ function main() {
 
     check_root
 
-    parallelisms=(1 2)
+    parallelisms=(1 2 4 6 8 10 15 16 32)
     for p in ${parallelisms[@]}; do
-        ${current_dir}/../experiment_altogether.sh ${p}
+        ${current_dir}/experiment_altogether.sh ${p}
     done
 
 }
