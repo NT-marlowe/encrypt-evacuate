@@ -12,7 +12,7 @@ echo "filename, ${subcom}"
 # ringbuf_filesize=$2
 
 # for original in $(ls ./data/2* | grep -v enc); do
-for original in $(ls ./data/1* | grep -v enc); do
+for original in $(ls ./data/incremental/* | grep -v enc); do
     base=$(basename $original)
     echo -n "${base}, "
 
@@ -20,5 +20,3 @@ for original in $(ls ./data/1* | grep -v enc); do
     recovered=/data_shelter/${original}
     python3 commands.py ${subcom} ${original} ${recovered}
 done
-
-
