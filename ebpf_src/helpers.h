@@ -25,13 +25,15 @@ static inline void read_path_and_write_buf(const int fd) {
 	struct dentry *dentry = BPF_CORE_READ(f, f_path.dentry);
 	struct dentry *parent = NULL;
 
+	bpf_printk("fd: %d\n", fd);
+
 	char path[MAX_PATH_LEN];
 	u16 length = 0;
 	for (uint i = 0; i < MAX_LOOP; i++) {
 		const unsigned char *dname = BPF_CORE_READ(dentry, d_name.name);
 		const u32 hash             = BPF_CORE_READ(dentry, d_name.hash);
 
-		// bpf_printk("dname: %s, hash: %u\n", dname, hash);
+		bpf_printk("i = %d, dname: %s, hash: %u\n", i, dname, hash);
 
 		if (length < MAX_PATH_LEN - DNAME_LEN - 1) {
 			int tmp_len =
