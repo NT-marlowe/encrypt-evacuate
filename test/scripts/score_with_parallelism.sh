@@ -11,8 +11,8 @@ function main() {
 
     check_root
 
-    # parallelisms=(1 2 4 6 8 10 15 16 32)
-    parallelisms=(1)
+    parallelisms=(1 2 4 6 8 10 12 14 16 24 32)
+    # parallelisms=(1)
     for p in ${parallelisms[@]}; do
 
         ${current_dir}/experiment_altogether.sh ${p}
