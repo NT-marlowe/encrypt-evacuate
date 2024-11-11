@@ -136,8 +136,6 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	read_path_and_write_buf(dfd);
-
 	// struct task_struct *task = (struct task_struct *)bpf_get_current_task();
 	// if (task == NULL) {
 	// 	return 0;
