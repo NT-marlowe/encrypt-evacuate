@@ -7,6 +7,7 @@
 
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
+#include <bpf/bpf_core_read.h>
 // #include <linux/bpf.h>
 // #include <linux/ptrace.h>
 
@@ -135,6 +136,20 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
+	struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+	if (task == NULL) {
+		return 0;
+	}
+
+	struct path pwd;
+	int err = BPF_CORE_READ_INTO(&pwd, task, fs, pwd);
+	if (err) {
+		bpf_printk("Failed to read task->fs->pwd\n");
+		return 0;
+	}
+
+	bpf_printk("ptr of pwd = %p\n", &pwd);
+
 	return 0;
 }
 
@@ -152,7 +167,6 @@ int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,
 
 	offset_entry->is_seeked     = 1;
 	offset_entry->seeked_offset = ret;
-	// bpf_printk("offset is updated to %ld\n", ret);
 
 	return 0;
 }
