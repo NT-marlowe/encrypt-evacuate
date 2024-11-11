@@ -13,11 +13,8 @@ fi
 
 USER=marlowe
 EBPF_PROGRAM=ebpf-ssl
-DATA_SHELTER=/data_shelter
 
 parallelism=$1
-
-rm -rf ${DATA_SHELTER}/*
 
 cd $(git rev-parse --show-toplevel)
 make all
@@ -31,7 +28,7 @@ pid=$!
 sleep 1
 
 # for file in $(ls ./data | grep -v enc); do
-for file in $(ls ./data/1* | grep -v enc); do
+for file in $(ls ./data/incremental/* | grep -v enc); do
     # for file in $(ls ./data/2* | grep -v enc); do
     # file=$(basename $file)
 

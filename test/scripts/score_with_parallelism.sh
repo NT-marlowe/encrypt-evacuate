@@ -9,8 +9,6 @@ function main() {
 
     check_root
 
-    echo ${current_dir}
-
     parallelisms=(1 2)
     for p in ${parallelisms[@]}; do
         ${current_dir}/../experiment_altogether.sh ${p}
