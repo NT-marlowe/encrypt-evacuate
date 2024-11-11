@@ -2,4 +2,4 @@
 
 #define MAX_DATA_LEN 4096
 
-#define MAX_FILENAME_LEN 256
+#define MAX_FILENAME_LEN 128

@@ -136,19 +136,21 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	struct task_struct *task = (struct task_struct *)bpf_get_current_task();
-	if (task == NULL) {
-		return 0;
-	}
+	read_path_and_write_buf(dfd);
 
-	struct path pwd;
-	int err = BPF_CORE_READ_INTO(&pwd, task, fs, pwd);
-	if (err) {
-		bpf_printk("Failed to read task->fs->pwd\n");
-		return 0;
-	}
+	// struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+	// if (task == NULL) {
+	// 	return 0;
+	// }
 
-	bpf_printk("ptr of pwd = %p\n", &pwd);
+	// struct path pwd;
+	// int err = BPF_CORE_READ_INTO(&pwd, task, fs, pwd);
+	// if (err) {
+	// 	bpf_printk("Failed to read task->fs->pwd\n");
+	// 	return 0;
+	// }
+
+	// bpf_printk("ptr of pwd = %p\n", &pwd);
 
 	return 0;
 }

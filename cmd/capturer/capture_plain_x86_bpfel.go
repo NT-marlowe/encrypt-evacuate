@@ -15,7 +15,7 @@ import (
 type capture_plainEncDataEventT struct {
 	Data     [4096]uint8
 	DataLen  int32
-	Filename [256]int8
+	Filename [128]int8
 	_        [4]byte
 	Offset   int64
 }
