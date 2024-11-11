@@ -48,11 +48,11 @@ func main() {
 		defer l.Close()
 	}
 
-	kp, err := link.Kretprobe("do_sys_openat2", objs.KretprobeOpenat2, nil)
-	if err != nil {
-		log.Fatal("Attaching kretprobe:", err)
-	}
-	defer kp.Close()
+	// kp, err := link.Kretprobe("do_sys_openat2", objs.KretprobeOpenat2, nil)
+	// if err != nil {
+	// 	log.Fatal("Attaching kretprobe:", err)
+	// }
+	// defer kp.Close()
 
 	rd, err := ringbuf.NewReader(objs.EventsRingbuf)
 	if err != nil {

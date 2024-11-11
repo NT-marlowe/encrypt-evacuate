@@ -141,12 +141,17 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	struct dentry *pwd_dentry;
-	int err = BPF_CORE_READ_INTO(&pwd_dentry, task, fs, pwd.dentry);
+	// struct dentry *pwd_dentry;
+	struct path pwd;
+	int err = BPF_CORE_READ_INTO(&pwd, task, fs, pwd);
 	if (err) {
 		bpf_printk("Failed to read task->fs->pwd\n");
 		return 0;
 	}
+
+	char path[128];
+	bpf_d_path(&pwd, path, sizeof(path));
+	bpf_printk("path: %s\n", path);
 
 	// const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
 	// bpf_printk("dname: %s\n", dname);
@@ -170,29 +175,29 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	return 0;
 }
 
-SEC("kretprobe/do_sys_openat2")
-int BPF_KRETPROBE(kretprobe_openat2, long ret) {
-	// const int fd = ret;
-	// bpf_printk("kretprobe_openat2: %d\n", fd);
+// SEC("kretprobe/do_sys_openat2")
+// int BPF_KRETPROBE(kretprobe_openat2, long ret) {
+// 	// const int fd = ret;
+// 	// bpf_printk("kretprobe_openat2: %d\n", fd);
 
-	struct task_struct *task = (struct task_struct *)bpf_get_current_task();
-	if (task == NULL) {
-		return 0;
-	}
+// 	struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+// 	if (task == NULL) {
+// 		return 0;
+// 	}
 
-	struct dentry *pwd_dentry;
-	int err = BPF_CORE_READ_INTO(&pwd_dentry, task, fs, pwd.dentry);
-	if (err) {
-		bpf_printk("Failed to read task->fs->pwd\n");
-		return 0;
-	}
+// 	struct dentry *pwd_dentry;
+// 	int err = BPF_CORE_READ_INTO(&pwd_dentry, task, fs, pwd.dentry);
+// 	if (err) {
+// 		bpf_printk("Failed to read task->fs->pwd\n");
+// 		return 0;
+// 	}
 
-	char path[128];
-	bpf_d_path(pwd_dentry, path, sizeof(path));
-	bpf_printk("path: %s\n", path);
+// 	char path[128];
+// 	bpf_d_path(pwd_dentry, path, sizeof(path));
+// 	bpf_printk("path: %s\n", path);
 
-	return 0;
-}
+// 	return 0;
+// }
 
 SEC("fexit/ksys_lseek")
 int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,

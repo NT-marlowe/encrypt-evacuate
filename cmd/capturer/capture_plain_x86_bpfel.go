@@ -73,7 +73,6 @@ type capture_plainProgramSpecs struct {
 	FexitDoSysOpen              *ebpf.ProgramSpec `ebpf:"fexit_do_sys_open"`
 	FexitKsysLseek              *ebpf.ProgramSpec `ebpf:"fexit_ksys_lseek"`
 	FexitKsysRead               *ebpf.ProgramSpec `ebpf:"fexit_ksys_read"`
-	KretprobeOpenat2            *ebpf.ProgramSpec `ebpf:"kretprobe_openat2"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.ProgramSpec `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -129,7 +128,6 @@ type capture_plainPrograms struct {
 	FexitDoSysOpen              *ebpf.Program `ebpf:"fexit_do_sys_open"`
 	FexitKsysLseek              *ebpf.Program `ebpf:"fexit_ksys_lseek"`
 	FexitKsysRead               *ebpf.Program `ebpf:"fexit_ksys_read"`
-	KretprobeOpenat2            *ebpf.Program `ebpf:"kretprobe_openat2"`
 	ProbeEntryEVP_EncryptUpdate *ebpf.Program `ebpf:"probe_entry_EVP_EncryptUpdate"`
 }
 
@@ -139,7 +137,6 @@ func (p *capture_plainPrograms) Close() error {
 		p.FexitDoSysOpen,
 		p.FexitKsysLseek,
 		p.FexitKsysRead,
-		p.KretprobeOpenat2,
 		p.ProbeEntryEVP_EncryptUpdate,
 	)
 }
