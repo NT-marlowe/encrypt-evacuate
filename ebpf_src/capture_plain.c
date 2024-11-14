@@ -141,20 +141,15 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	// struct dentry *pwd_dentry;
-	struct path pwd;
-	int err = BPF_CORE_READ_INTO(&pwd, task, fs, pwd);
+	struct dentry *pwd_dentry;
+	int err = BPF_CORE_READ_INTO(&pwd_dentry, task, fs, pwd.dentry);
 	if (err) {
 		bpf_printk("Failed to read task->fs->pwd\n");
 		return 0;
 	}
 
-	char path[128];
-	bpf_d_path(&pwd, path, sizeof(path));
-	bpf_printk("path: %s\n", path);
-
-	// const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
-	// bpf_printk("dname: %s\n", dname);
+	const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
+	bpf_printk("fd = %d, dname: %s\n", fd, dname);
 
 	// char path[128];
 	// bpf_d_path(pwd_dentry, path, sizeof(path));
