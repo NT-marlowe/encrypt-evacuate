@@ -148,19 +148,10 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
-	// const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
-	// bpf_printk("fd = %d, dname: %s\n", fd, dname);
-
-	// char path[128];
-	// bpf_d_path(pwd_dentry, path, sizeof(path));
-	// bpf_printk("path: %s\n", path);
-
 	struct dentry *parent = NULL;
 	for (int i = 0; i < 10; i++) {
-		const unsigned char *dname = BPF_CORE_READ(pwd_dentry, d_name.name);
-		// const u32 hash             = BPF_CORE_READ(pwd_dentry, d_name.hash);
-		// bpf_printk("i = %d, dname: %s, hash: %u\n", i, dname, hash);
-		bpf_printk("i = %d, dname: %s\n", i, dname);
+		const unsigned char *dirname = BPF_CORE_READ(pwd_dentry, d_name.name);
+		bpf_printk("i = %d, dname: %s\n", i, dirname);
 		parent = BPF_CORE_READ(pwd_dentry, d_parent);
 		if (parent == pwd_dentry) {
 			break;
