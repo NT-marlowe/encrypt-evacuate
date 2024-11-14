@@ -26,25 +26,25 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
-	if (fd == NULL) {
+	int *fd_ptr = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
+	if (fd_ptr == NULL) {
 		return 0;
 	}
 
-	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, fd);
+	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, fd_ptr);
 	if (offset == NULL) {
 		return 0;
 	}
 
-	const long FD        = (long)*fd;
+	const long FD        = (long)*fd_ptr;
 	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
 	if (filename == NULL) {
-		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		bpf_printk("fd %ld not found in fd_to_filename map\n", FD);
 		return 0;
 	}
 	const char *pwd = bpf_map_lookup_elem(&fd_to_pwd, &FD);
 	if (pwd == NULL) {
-		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		bpf_printk("fd %ld not found in fd_to_filename map\n", FD);
 		return 0;
 	}
 
