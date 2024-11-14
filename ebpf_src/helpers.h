@@ -13,9 +13,8 @@ static __always_inline int check_comm_name() {
 	return 0;
 }
 
-#define MAX_LOOP 10
-#define MAX_PATH_LEN 256
-#define DNAME_LEN 32
+// #define MAX_PATH_LEN 256
+// #define DNAME_LEN 32
 
 // static inline void read_path_and_write_buf(const int fd) {
 // 	struct task_struct *task = (struct task_struct *)bpf_get_current_task();

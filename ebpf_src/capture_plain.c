@@ -148,17 +148,28 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
+	char path_buf[MAX_PATH_LEN];
+	u16 length            = 0;
 	struct dentry *parent = NULL;
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < MAX_LOOP; i++) {
 		const unsigned char *dirname = BPF_CORE_READ(pwd_dentry, d_name.name);
-		bpf_printk("i = %d, dname: %s\n", i, dirname);
-		parent = BPF_CORE_READ(pwd_dentry, d_parent);
-		if (parent == pwd_dentry) {
-			break;
+		if (length < MAX_PATH_LEN - DNAME_LEN - 1) {
+			int tmp_len = bpf_probe_read_kernel_str(
+				path_buf + length, DNAME_LEN, dirname);
+			if (tmp_len > 0) {
+				length += tmp_len;
+			}
+
+			// bpf_printk("i = %d, dname: %s\n", i, dirname);
+			parent = BPF_CORE_READ(pwd_dentry, d_parent);
+			if (parent == pwd_dentry) {
+				break;
+			}
+			pwd_dentry = parent;
 		}
-		pwd_dentry = parent;
 	}
 
+	bpf_printk("path: %s\n", path_buf);
 	return 0;
 }
 
