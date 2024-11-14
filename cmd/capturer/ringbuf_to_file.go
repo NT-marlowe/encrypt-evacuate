@@ -100,7 +100,6 @@ func writeFileDataSequntial(eventCh <-chan indexedDataBlock, file *os.File) {
 	var ok bool
 
 	for event = range eventCh {
-		// fmt.Printf("event.index: %d, currentIndex: %d\n", event.index, currentIndex)
 		if event.index == currentIndex {
 			db = event.dataBlock
 			file.Write(db.dataBuf[:db.dataLen])

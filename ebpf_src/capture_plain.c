@@ -1,6 +1,4 @@
 //go:build ignore
-//
-//
 
 // Do not move this line after libbpf includes, or compile errors woudl cause.
 #include "vmlinux.h"
@@ -8,8 +6,6 @@
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
 #include <bpf/bpf_core_read.h>
-// #include <linux/bpf.h>
-// #include <linux/ptrace.h>
 
 #include "helpers.h"
 #include "constants.h"
