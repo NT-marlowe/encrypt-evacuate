@@ -49,19 +49,19 @@ void encrypt_file(const char *input_filepath, const unsigned char *key,
 	size_t bytes_read = 0;
 	int bytes_written = 0;
 
-	const int fd = fileno(input_file);
-	int cnt      = 0;
+	// const int fd = fileno(input_file);
+	// int cnt      = 0;
 	while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, input_file)) > 0) {
 		if (EVP_EncryptUpdate(
 				ctx, buffer, &bytes_written, buffer, (int)bytes_read) != 1) {
 			handle_errors();
 		}
 		// For testing whether our system can handle lseek.
-		if (cnt < 30) {
-			off_t curret_offset = lseek(fd, -1024, SEEK_CUR);
-			printf("current offset: %ld\n", curret_offset);
-			cnt++;
-		}
+		// if (cnt < 30) {
+		// 	off_t curret_offset = lseek(fd, -1024, SEEK_CUR);
+		// 	("current offset: %ld\n", curret_offset);
+		// 	cnt++;
+		// }
 
 		fwrite(buffer, 1, bytes_written, output_file);
 	}
