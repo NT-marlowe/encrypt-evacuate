@@ -56,7 +56,7 @@ func writeFileDataOffset(eventCh <-chan capture_plainEncDataEventT) {
 	fileHandlerMap := make(map[string]*os.File, 0)
 	for event := range eventCh {
 		filename := bytesToString(event.Filename[:])
-		log.Printf("pwd = %s\n", bytesToString(event.Pwd[:]))
+		// log.Printf("pwd = %s\n", bytesToString(event.Pwd[:]))
 		file, ok := fileHandlerMap[filename]
 		if ok {
 			file.Seek(event.Offset, 0)
@@ -100,7 +100,6 @@ func writeFileDataSequntial(eventCh <-chan indexedDataBlock, file *os.File) {
 	var ok bool
 
 	for event = range eventCh {
-		// fmt.Printf("event.index: %d, currentIndex: %d\n", event.index, currentIndex)
 		if event.index == currentIndex {
 			db = event.dataBlock
 			file.Write(db.dataBuf[:db.dataLen])

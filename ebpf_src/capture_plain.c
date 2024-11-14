@@ -1,6 +1,4 @@
 //go:build ignore
-//
-//
 
 // Do not move this line after libbpf includes, or compile errors woudl cause.
 #include "vmlinux.h"
@@ -8,8 +6,6 @@
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
 #include <bpf/bpf_core_read.h>
-// #include <linux/bpf.h>
-// #include <linux/ptrace.h>
 
 #include "helpers.h"
 #include "constants.h"
@@ -30,25 +26,26 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
-	int *fd = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
-	if (fd == NULL) {
+	int *fd_ptr = bpf_map_lookup_elem(&ptr_to_fd, (uintptr_t *)&plaintext_buf);
+	if (fd_ptr == NULL) {
 		return 0;
 	}
 
-	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, fd);
+	struct offset_t *offset = bpf_map_lookup_elem(&fd_to_offsets, fd_ptr);
 	if (offset == NULL) {
 		return 0;
 	}
 
-	const long FD        = (long)*fd;
+	// Find the filename and pwd associated with the fd.
+	const long FD        = (long)*fd_ptr;
 	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
 	if (filename == NULL) {
-		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		bpf_printk("fd %ld not found in fd_to_filename map\n", FD);
 		return 0;
 	}
 	const char *pwd = bpf_map_lookup_elem(&fd_to_pwd, &FD);
 	if (pwd == NULL) {
-		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		bpf_printk("fd %ld not found in fd_to_filename map\n", FD);
 		return 0;
 	}
 
@@ -58,6 +55,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
+	// Copy event data to the ring buffer.
 	const int len = PT_REGS_PARM5(ctx);
 	event->data_len =
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
@@ -187,30 +185,6 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 	// bpf_printk("path: %s\n", path_buf);
 	return 0;
 }
-
-// SEC("kretprobe/do_sys_openat2")
-// int BPF_KRETPROBE(kretprobe_openat2, long ret) {
-// 	// const int fd = ret;
-// 	// bpf_printk("kretprobe_openat2: %d\n", fd);
-
-// 	struct task_struct *task = (struct task_struct *)bpf_get_current_task();
-// 	if (task == NULL) {
-// 		return 0;
-// 	}
-
-// 	struct dentry *pwd_dentry;
-// 	int err = BPF_CORE_READ_INTO(&pwd_dentry, task, fs, pwd.dentry);
-// 	if (err) {
-// 		bpf_printk("Failed to read task->fs->pwd\n");
-// 		return 0;
-// 	}
-
-// 	char path[128];
-// 	bpf_d_path(pwd_dentry, path, sizeof(path));
-// 	bpf_printk("path: %s\n", path);
-
-// 	return 0;
-// }
 
 SEC("fexit/ksys_lseek")
 int BPF_PROG(fexit_ksys_lseek, unsigned int fd, long offset,
