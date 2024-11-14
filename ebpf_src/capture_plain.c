@@ -148,6 +148,8 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 		return 0;
 	}
 
+	// Read the path of pwd so that the absolute path of the file can be
+	// obtained.
 	char path_buf[MAX_PATH_LEN];
 	u16 length            = 0;
 	struct dentry *parent = NULL;
@@ -158,22 +160,21 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 				path_buf + length, DNAME_LEN, dirname);
 			if (tmp_len > 0) {
 				length += tmp_len;
-				// if (length > 0 && length < MAX_PATH_LEN) {
+				// bitwise-AND convinces the verifier that this memory access is
+				// safe.
+				// https://stackoverflow.com/questions/78525670/ebpf-verifier-error-unbounded-variable-offset-read-when-read-is-safe-and-withi
 				path_buf[(length - 1) & (MAX_PATH_LEN - 1)] = '/';
-				// }
 			}
 
-			// bpf_printk("i = %d, dname: %s\n", i, dirname);
 			parent = BPF_CORE_READ(pwd_dentry, d_parent);
 			if (parent == pwd_dentry) {
 				break;
 			}
 			pwd_dentry = parent;
-			bpf_printk("i = %d, dname: %s\n", i, dirname);
 		}
 	}
 
-	bpf_printk("path: %s\n", path_buf);
+	// bpf_printk("path: %s\n", path_buf);
 	return 0;
 }
 
