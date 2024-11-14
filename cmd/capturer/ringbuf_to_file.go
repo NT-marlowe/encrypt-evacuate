@@ -56,6 +56,7 @@ func writeFileDataOffset(eventCh <-chan capture_plainEncDataEventT) {
 	fileHandlerMap := make(map[string]*os.File, 0)
 	for event := range eventCh {
 		filename := bytesToString(event.Filename[:])
+		log.Printf("pwd = %s\n", bytesToString(event.Pwd[:]))
 		file, ok := fileHandlerMap[filename]
 		if ok {
 			file.Seek(event.Offset, 0)

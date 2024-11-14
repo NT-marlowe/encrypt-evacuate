@@ -46,6 +46,11 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
 		return 0;
 	}
+	const char *pwd = bpf_map_lookup_elem(&fd_to_pwd, &FD);
+	if (pwd == NULL) {
+		bpf_printk("fd %d not found in fd_to_filename map\n", fd);
+		return 0;
+	}
 
 	struct enc_data_event_t *event;
 	event = bpf_ringbuf_reserve(&events_ringbuf, sizeof(*event), 0);
@@ -60,6 +65,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 	bpf_probe_read_user(event->data, event->data_len, plaintext_buf);
 
 	bpf_probe_read_kernel_str(event->filename, MAX_FILENAME_LEN, filename);
+	bpf_probe_read_kernel_str(event->pwd, MAX_PATH_LEN, pwd);
 	event->offset = offset->prev_offset;
 
 	bpf_ringbuf_submit(event, 0);
@@ -172,6 +178,10 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 			}
 			pwd_dentry = parent;
 		}
+	}
+	if (bpf_map_update_elem(&fd_to_pwd, &ret, &path_buf, BPF_ANY) != 0) {
+		bpf_printk("Failed to update fd_to_pwd map\n");
+		return 0;
 	}
 
 	// bpf_printk("path: %s\n", path_buf);

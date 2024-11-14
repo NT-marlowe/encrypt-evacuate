@@ -10,6 +10,7 @@ struct enc_data_event_t {
 	unsigned char data[MAX_DATA_LEN];
 	int data_len;
 	char filename[MAX_FILENAME_LEN];
+	char pwd[MAX_PATH_LEN];
 	long offset;
 };
 struct enc_data_event_t *unused __attribute__((unused));
@@ -34,6 +35,13 @@ struct {
 	__type(key, long);
 	__type(value, char[MAX_FILENAME_LEN]);
 } fd_to_filename SEC(".maps");
+
+struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(max_entries, 1024);
+	__type(key, long);
+	__type(value, char[MAX_PATH_LEN]);
+} fd_to_pwd SEC(".maps");
 
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);

@@ -16,6 +16,7 @@ type capture_plainEncDataEventT struct {
 	Data     [4096]uint8
 	DataLen  int32
 	Filename [256]int8
+	Pwd      [128]int8
 	_        [4]byte
 	Offset   int64
 }
@@ -83,6 +84,7 @@ type capture_plainMapSpecs struct {
 	EventsRingbuf *ebpf.MapSpec `ebpf:"events_ringbuf"`
 	FdToFilename  *ebpf.MapSpec `ebpf:"fd_to_filename"`
 	FdToOffsets   *ebpf.MapSpec `ebpf:"fd_to_offsets"`
+	FdToPwd       *ebpf.MapSpec `ebpf:"fd_to_pwd"`
 	PtrToFd       *ebpf.MapSpec `ebpf:"ptr_to_fd"`
 }
 
@@ -108,6 +110,7 @@ type capture_plainMaps struct {
 	EventsRingbuf *ebpf.Map `ebpf:"events_ringbuf"`
 	FdToFilename  *ebpf.Map `ebpf:"fd_to_filename"`
 	FdToOffsets   *ebpf.Map `ebpf:"fd_to_offsets"`
+	FdToPwd       *ebpf.Map `ebpf:"fd_to_pwd"`
 	PtrToFd       *ebpf.Map `ebpf:"ptr_to_fd"`
 }
 
@@ -116,6 +119,7 @@ func (m *capture_plainMaps) Close() error {
 		m.EventsRingbuf,
 		m.FdToFilename,
 		m.FdToOffsets,
+		m.FdToPwd,
 		m.PtrToFd,
 	)
 }
