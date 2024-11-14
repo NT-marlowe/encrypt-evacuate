@@ -36,6 +36,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
+	// Find the filename and pwd associated with the fd.
 	const long FD        = (long)*fd_ptr;
 	const char *filename = bpf_map_lookup_elem(&fd_to_filename, &FD);
 	if (filename == NULL) {
@@ -54,6 +55,7 @@ int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
 		return 0;
 	}
 
+	// Copy event data to the ring buffer.
 	const int len = PT_REGS_PARM5(ctx);
 	event->data_len =
 		(len < MAX_DATA_LEN ? (len & (MAX_DATA_LEN - 1)) : MAX_DATA_LEN);
