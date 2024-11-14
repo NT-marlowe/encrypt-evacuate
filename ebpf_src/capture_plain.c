@@ -158,6 +158,9 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 				path_buf + length, DNAME_LEN, dirname);
 			if (tmp_len > 0) {
 				length += tmp_len;
+				// if (length > 0 && length < MAX_PATH_LEN) {
+				path_buf[(length - 1) & (MAX_PATH_LEN - 1)] = '/';
+				// }
 			}
 
 			// bpf_printk("i = %d, dname: %s\n", i, dirname);
@@ -166,6 +169,7 @@ int BPF_PROG(fexit_do_sys_open, const int dfd, const char *filename,
 				break;
 			}
 			pwd_dentry = parent;
+			bpf_printk("i = %d, dname: %s\n", i, dirname);
 		}
 	}
 
