@@ -20,6 +20,7 @@ def read_data(filepath: str):
     return data
 
 
+parallelism = sys.argv[1]
 # ディレクトリとファイルの設定
 directory = "../result/buf_capability/journal"
 files = os.listdir(directory)
@@ -46,7 +47,7 @@ plt.xticks([2**x for x in range(8)], [str(2**x) for x in range(8)])
 plt.ylabel("Rate", fontsize=16)
 plt.yticks(np.arange(0, 1.1, 0.2))
 plt.title(
-    "Valiation of Match Rate with File Size for Different Ring Buffer Sizes",
+    f"Valiation of Match Rate for Different Ring Buffer Sizes (DoP = {parallelism})",
     fontsize=16,
 )
 
