@@ -56,9 +56,9 @@ def plot_combined_data(data, title, metrics_type):
 
 
 # reten ファイルを1つのグラフにプロット
-reten_data = load_and_merge_data("../result/measure_parallelism_seek/reten_*")
+reten_data = load_and_merge_data("../result/measure_parallelism_seek/reten_*.csv")
 plot_combined_data(reten_data, "Reten_Seek", MetricsType.RETEN)
 
 # match ファイルを1つのグラフにプロット
-match_data = load_and_merge_data("../result/measure_parallelism_seek/match_*")
+match_data = load_and_merge_data("../result/measure_parallelism_seek/match_*.csv")
 plot_combined_data(match_data, "Match_Seek", MetricsType.MATCH)
