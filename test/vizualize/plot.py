@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import os
+import sys
 import re
 
 
@@ -10,6 +11,13 @@ def parse_name(filename: str):
     match = re.search(pattern, filename)
     if match:
         return int(match.group(1))
+
+
+def read_data(filepath: str):
+    data = pd.read_csv(filepath, header=None, names=["filesize", "rate"])[1:]
+    data["filesize"] = data["filesize"].str.extract(r"\d+_(\d+)MB\.data").astype(int)
+    data["rate"] = data["rate"].astype(float)
+    return data
 
 
 # ディレクトリとファイルの設定
@@ -25,17 +33,11 @@ for file in files:
     if file.startswith("match"):
         # print(file)
         filepath = os.path.join(directory, file)
-        data = pd.read_csv(filepath, header=None, names=["filesize", "rate"])[1:]
-        # ファイルサイズをMB単位で表示できるように処理
-        data["filesize"] = (
-            data["filesize"].str.extract(r"\d+_(\d+)MB\.data").astype(int)
-        )
-        data["rate"] = data["rate"].astype(float)
+        data = read_data(filepath)
 
         plt.plot(
             data["filesize"], data["rate"], marker="o", label=f"{parse_name(file)} MiB"
         )
-        print(data["rate"])
 
 # グラフの設定
 plt.xlabel("Size of Original File [MB]", fontsize=16)
