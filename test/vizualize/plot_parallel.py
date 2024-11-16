@@ -2,6 +2,12 @@ import os
 import glob
 import pandas as pd
 import matplotlib.pyplot as plt
+from enum import Enum
+
+
+class MetricsType(Enum):
+    RETEN = 1
+    MATCH = 2
 
 
 def extract_file_size(filename):
@@ -21,19 +27,28 @@ def load_and_merge_data(file_pattern):
     return data
 
 
-def plot_combined_data(data, title):
+def plot_combined_data(data, title, metrics_type):
     """複数のデータを1つのグラフにまとめてプロット"""
     plt.figure(figsize=(10, 6))
     data = dict(sorted(data.items(), key=lambda x: int(x[0])))
     for key, df in data.items():
         plt.plot(df["size"], df["value"], marker="o", label=key)
-        print(key)
+        print(key, end=" ")
         plt.legend()
 
-    plt.xlabel("File Size (MB)")
+    print()
+
+    plt.xlabel("File Size [MB]")
     plt.xticks([i for i in range(1, 11, 1)])
-    plt.ylabel("Value")
-    plt.title(f"{title} Plot")
+    if metrics_type == MetricsType.RETEN:
+        plt.ylabel("Retention Rate \n (Higher is better)")
+        plt.title(f"Retention Rates Across Diffrent Degrees of Parallelism")
+
+    elif metrics_type == MetricsType.MATCH:
+        plt.ylabel("Match Rate \n (Higher is better)")
+        plt.title(f"Match Rates Across Diffrent Degrees of Parallelism")
+
+    # plt.ylabel("Value")
     # plt.legend(title="p[数字]")
     plt.grid(True)
     # plt.show()
@@ -42,8 +57,8 @@ def plot_combined_data(data, title):
 
 # reten ファイルを1つのグラフにプロット
 reten_data = load_and_merge_data("../result/measure_parallelism_seek/reten_*")
-plot_combined_data(reten_data, "Reten_Seek")
+plot_combined_data(reten_data, "Reten_Seek", MetricsType.RETEN)
 
 # match ファイルを1つのグラフにプロット
 match_data = load_and_merge_data("../result/measure_parallelism_seek/match_*")
-plot_combined_data(match_data, "Match_Seek")
+plot_combined_data(match_data, "Match_Seek", MetricsType.MATCH)
