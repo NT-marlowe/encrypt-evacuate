@@ -4,6 +4,6 @@ filename, match
 22_4MB.data, 1.000
 23_8MB.data, 1.000
 24_16MB.data, 1.000
-25_32MB.data, 0.775
-26_64MB.data, 0.478
-27_128MB.data, 0.394
+25_32MB.data, 1.000
+26_64MB.data, 0.748
+27_128MB.data, 0.472
