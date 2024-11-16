@@ -32,9 +32,9 @@ def plot_combined_data(data, title, metrics_type):
     plt.figure(figsize=(10, 6))
     data = dict(sorted(data.items(), key=lambda x: int(x[0])))
     for key, df in data.items():
-        plt.plot(df["size"], df["value"], marker="o", label=key)
+        plt.plot(df["size"], df["value"], marker="o", label=int(key))
         print(key, end=" ")
-        plt.legend()
+    plt.legend(title="parallelism")
 
     print()
 
