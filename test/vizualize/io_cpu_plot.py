@@ -41,7 +41,7 @@ def visualize_cpu_usage():
     plt.xlabel("Timestamp")
     plt.ylabel("CPU Usage (user + system) [%]")
     plt.title("CPU Usage Over Time (User + System)")
-    plt.grid(True)
+    plt.grid(axis="y")
     plt.legend()
     plt.tight_layout()
 
