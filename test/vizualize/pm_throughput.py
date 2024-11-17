@@ -1,6 +1,6 @@
 import json
-import matplotlib.pyplot as plt
 import sys
+import numpy as np
 
 
 def load_disk_data(json_file):
@@ -37,21 +37,45 @@ def print_diff(json_file1, json_file2):
         print(
             f"rkB/s = {rkB_s_diff:>10}\t wkB/s = {wkB_s_diff:>10}\t util = {util_diff:>6.2f}"
         )
-    # exit(0)
-    #     timestamps.append(stat["timestamp"])
-    #     avg_cpu = stat["avg-cpu"]
-    #     cpu_usage.append(avg_cpu["user"] + avg_cpu["system"])
 
-    # # 折れ線グラフを作成
-    # plt.figure(figsize=(12, 6))
-    # plt.plot(timestamps, cpu_usage, marker="o", label="CPU Usage (User + System)")
-    # plt.xticks(rotation=45)
-    # plt.xlabel("Timestamp")
-    # plt.ylabel("CPU Usage (%)")
-    # plt.title("CPU Usage Over Time (User + System)")
-    # plt.grid(True)
+
+def accumulate_positive_write(json_file1, json_file2):
+    print(f"{json_file2} - {json_file1}")
+
+    write_data = []
+    for idx in range(1, 6, 1):
+        disk_data_1 = load_disk_data(f"{json_file1}.{idx}")
+        disk_data_2 = load_disk_data(f"{json_file2}.{idx}")
+        for i in range(len(disk_data_1)):
+            # rkB_s_diff = disk_data_2[i][0] - disk_data_1[i][0]
+            wkB_s_diff = disk_data_2[i][1] - disk_data_1[i][1]
+            # util_diff = disk_data_2[i][2] - disk_data_1[i][2]
+            if wkB_s_diff > 0:
+                write_data.append(wkB_s_diff)
+
+    return write_data
+
+
+# def accumulate_positive_write(json_file):
+#     write_data = []
+#     for i in range(1, 6):
+#         path = f"{json_file}.{i}"
+#         data = load_disk_data(path)
+#         for r, w, u in data:
+#             if w > 0:
+#                 write_data.append(w)
+
+
+#     return write_data
+def print_stat(write_data):
+    print(f"Mean: {np.mean(write_data)} [kB/s]")
+    print(f"Median: {np.median(write_data)} [kB/s]")
+    print(f"Max: {np.max(write_data)} [kB/s]")
+    print(f"Min: {np.min(write_data)} [kB/s]")
+    print(f"Std: {np.std(write_data)} [kB/s]")
 
 
 if __name__ == "__main__":
     json_file1, json_file2 = sys.argv[1], sys.argv[2]
-    print_diff(json_file1, json_file2)
+    write_data = accumulate_positive_write(json_file1, json_file2)
+    print_stat(write_data)
