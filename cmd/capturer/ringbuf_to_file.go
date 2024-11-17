@@ -64,7 +64,7 @@ func writeFileDataOffset(eventCh <-chan capture_plainEncDataEventT) {
 			continue
 		}
 
-		log.Printf("Creating file: %s\n", filename)
+		// log.Printf("Creating file: %s\n", filename)
 
 		file, err := setupDataShelter(dataShelterPath, filename)
 		if err != nil {
