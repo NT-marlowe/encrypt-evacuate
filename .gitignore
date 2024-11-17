@@ -8,3 +8,4 @@ __pycache__/
 README
 .vscode/
 test/files_sysbench/
+test/files_sysbench
