@@ -28,7 +28,7 @@ def plot(iostat_data, label: str, metric: str):
         marker="o",
         label=label,
     )
-    plt.xticks(xticks)
+    plt.xticks(xticks, xticks)
 
 
 def visualize_cpu_metric(metric: str, output_file: str):
