@@ -7,3 +7,4 @@ __pycache__/
 *.txt
 README
 .vscode/
+test/files_sysbench/
