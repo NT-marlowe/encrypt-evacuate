@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 #
+set -eu
+out_filename=$1
+
+iostat -xyt -o JSON 1 15 > ${out_filename} &
 
 for file in $(ls ./files_sysbench | grep -v 'enc'); do
     echo "Encrypting ${file}"
