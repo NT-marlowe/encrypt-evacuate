@@ -14,28 +14,32 @@ def plot(iostat_data, label: str):
         cpu_usage.append(avg_cpu["user"] + avg_cpu["system"])
 
     # 折れ線グラフを作成
-    plt.figure(figsize=(12, 6))
     plt.plot(
         xticks,
         cpu_usage,
         marker="o",
         label=label,
     )
-    plt.xticks()
-    plt.tight_layout()
+    plt.xticks(xticks)
+    # plt.tight_layout()
 
 
-def visualize_cpu_usage(json_file):
+def visualize_cpu_usage():
+    data_dir = "../result/io_cpu"
+    files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
     # JSONファイルを読み込む
-    with open(json_file, "r") as file:
-        data = json.load(file)
 
-    # データからタイムスタンプとCPU使用率を抽出
-    plot(data, "CPU Usage")
+    plt.figure(figsize=(12, 6))
+    for file in files:
+        path = f"{data_dir}/{file}"
+        with open(path, "r") as f:
+            data = json.load(f)
 
-    plt.xticks(rotation=45)
+        # データからタイムスタンプとCPU使用率を抽出
+        plot(data, file.split(".")[0])
+
     plt.xlabel("Timestamp")
-    plt.ylabel("CPU Usage (%)")
+    plt.ylabel("CPU Usage (user + system) [%]")
     plt.title("CPU Usage Over Time (User + System)")
     plt.grid(True)
     plt.legend()
@@ -46,4 +50,4 @@ def visualize_cpu_usage(json_file):
 
 
 # 実行例
-visualize_cpu_usage(sys.argv[1])
+visualize_cpu_usage()
