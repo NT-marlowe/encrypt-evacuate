@@ -43,11 +43,12 @@ def read_csv(filepath: str) -> tuple[list[int], list[float]]:
         return filesize_list, ratio_list
 
 
-def plot_graph_inc(metrics: str, file1, file2, parallelsim: int):
+def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str):
     _, list_reorder = read_csv(file1)
     _, list_seek = read_csv(file2)
 
-    labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
+    # labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
+    labels = ["1K", "10K", "100K", "1M", "10M", "100M"]
     x = np.arange(len(labels))
     width = 0.2
 
@@ -67,7 +68,7 @@ def plot_graph_inc(metrics: str, file1, file2, parallelsim: int):
     ax.legend()
 
     # plot these two lists
-    plt.savefig(f"./img/seqential_vs_parallel_{metrics}_p{parallelsim}.png")
+    plt.savefig(f"./img/seqential_vs_parallel_{metrics}_p{parallelsim}_{size_type}.png")
 
 
 # plot_graph_exp()
@@ -79,5 +80,7 @@ if __name__ == "__main__":
 
     file1, file2 = sys.argv[2], sys.argv[3]
 
+    size_type = sys.argv[4]
+
     # plot_graph_inc("reten")
-    plot_graph_inc("match", file1, file2, parallesim)
+    plot_graph_inc("match", file1, file2, parallesim, size_type)
