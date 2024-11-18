@@ -4,8 +4,7 @@ import numpy as np
 import sys
 
 
-parallesim = int(sys.argv[1])
-data_dir = f"../result/reorder_vs_seek/p{parallesim}"
+# data_dir = f"../result/reorder_vs_seek/p{parallesim}"
 
 
 def suffix_to_unit(suffix: str) -> int:
@@ -44,17 +43,17 @@ def read_csv(filepath: str) -> tuple[list[int], list[float]]:
         return filesize_list, ratio_list
 
 
-def plot_graph_inc(metrics: str):
-    _, list_reorder = read_csv(f"{data_dir}/fix_reorder_{metrics}.txt")
-    _, list_seek = read_csv(f"{data_dir}/seek_write_{metrics}.txt")
+def plot_graph_inc(metrics: str, file1, file2, parallelsim: int):
+    _, list_reorder = read_csv(file1)
+    _, list_seek = read_csv(file2)
 
     labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
     x = np.arange(len(labels))
     width = 0.2
 
     fig, ax = plt.subplots()
-    ax.bar(x - width / 2, list_reorder, width, label="Fix Reorder")
-    ax.bar(x + width / 2, list_seek, width, label="Seek & Write")
+    ax.bar(x - width / 2, list_reorder, width, label="Previous")
+    ax.bar(x + width / 2, list_seek, width, label="Current")
 
     if metrics == "reten":
         ax.set_title(f"Retention Rates by File Size, p = {parallesim:02}")
@@ -68,11 +67,17 @@ def plot_graph_inc(metrics: str):
     ax.legend()
 
     # plot these two lists
-    plt.savefig(f"./img/reorder_vs_seek/{metrics}_p{parallesim:02}.png")
+    plt.savefig(f"./img/seqential_vs_parallel_{metrics}_p{parallelsim}.png")
 
 
 # plot_graph_exp()
 
 # plot_graph_incremental()
-plot_graph_inc("reten")
-plot_graph_inc("match")
+
+if __name__ == "__main__":
+    parallesim = int(sys.argv[1])
+
+    file1, file2 = sys.argv[2], sys.argv[3]
+
+    # plot_graph_inc("reten")
+    plot_graph_inc("match", file1, file2, parallesim)
