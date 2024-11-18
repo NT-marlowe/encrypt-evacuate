@@ -12,7 +12,8 @@ echo "filename, ${subcom}"
 # ringbuf_filesize=$2
 
 # for original in $(ls ./data/2* | grep -v enc); do
-for original in $(ls ./data/incremental/* | grep -v enc); do
+# for original in $(ls ./data/incremental/* | grep -v enc); do
+for original in $(ls ./data/power_10/* | grep -v enc); do
     # for original in $(ls ./data/power_2/* | grep -v enc); do
     base=$(basename $original)
     echo -n "${base}, "
