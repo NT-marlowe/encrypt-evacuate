@@ -27,7 +27,8 @@ sleep 1
 
 # for file in $(ls ./data | grep -v enc); do
 # for file in $(ls ./data/incremental/* | grep -v enc); do
-for file in $(ls ./data/power_2/* | grep -v enc); do
+for file in $(ls ./data/power_10/* | grep -v enc); do
+    # for file in $(ls ./data/power_2/* | grep -v enc); do
     # for file in $(ls ./data/incremental/10_1MB.data | grep -v enc); do
     # for file in $(ls ./data/2* | grep -v enc); do
     # file=$(basename $file)

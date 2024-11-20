@@ -1,0 +1,7 @@
+filename, match
+00_1KB.data, 1.000
+01_10KB.data, 1.000
+02_100KB.data, 1.000
+03_1MB.data, 1.000
+04_10MB.data, 0.368
+05_100MB.data, 0.363
