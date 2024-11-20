@@ -13,7 +13,8 @@ echo "filename, ${subcom}"
 
 # for original in $(ls ./data/2* | grep -v enc); do
 # for original in $(ls ./data/incremental/* | grep -v enc); do
-for original in $(ls ./data/power_10/* | grep -v enc); do
+# for original in $(ls ./data/power_10/* | grep -v enc); do
+for original in $(ls ./files_sysbench/* | grep -v '\.enc'); do
     # for original in $(ls ./data/power_2/* | grep -v enc); do
     base=$(basename $original)
     echo -n "${base}, "

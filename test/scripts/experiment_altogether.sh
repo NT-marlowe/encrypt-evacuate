@@ -36,7 +36,7 @@ for file in $(ls ./data/power_10/* | grep -v enc); do
     ./my_simple_ransomware ${file}
     echo "Ransomware ran on ${file}"
 
-    sleep 4
+    # sleep 4
 
     echo -----------
 
