@@ -4,7 +4,7 @@ set -eu
 out_filename=$1
 iter=$2
 
-time_len=10
+time_len=30
 EBPF_PROGRAM=ebpf-ssl
 
 function run_once() {
@@ -48,17 +48,12 @@ function main() {
     fi
 
     for i in $(seq 1 ${iter}); do
-        echo $i
-        local pid
+        local copied_pid
 
         if [ "$#" -eq 3 ]; then
-            echo $parallelism
             ../${EBPF_PROGRAM} ${parallelism} >stdout.log 2>stderr.log &
-            pid=$!
+            local pid=$!
             copied_pid=${pid}
-            echo "pid is ${pid}"
-            # search process with $pid
-            ps auxww | grep ${pid} | grep -v grep
             sleep 1
         fi
         run_once ${out_filename}.${i}
@@ -66,9 +61,7 @@ function main() {
         sleep 2
 
         if [ "$#" -eq 3 ]; then
-            echo ${pid}
-            # kill -SIGINT ${pid} >/dev/null 2>&1
-            kill -SIGINT ${copied_pid}
+            kill -SIGINT ${copied_pid} >/dev/null 2>&1
             sleep 2
         fi
     done
