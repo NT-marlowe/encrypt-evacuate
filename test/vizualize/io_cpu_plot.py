@@ -2,13 +2,7 @@ import json
 import matplotlib.pyplot as plt
 
 
-def plot(iostat_data, label: str, metric: str):
-    """
-    指定されたCPUメトリクスをプロットする
-    :param iostat_data: JSON形式のiostatデータ
-    :param label: グラフの凡例に使用するラベル
-    :param metric: プロットするCPUメトリクス (例: 'user', 'system', 'iowait')
-    """
+def parse_data(iostat_data, metric: str):
     xticks = [
         i for i in range(1, len(iostat_data["sysstat"]["hosts"][0]["statistics"]) + 1)
     ]
@@ -19,16 +13,33 @@ def plot(iostat_data, label: str, metric: str):
         if metric == "user+system":
             values.append(avg_cpu["user"] + avg_cpu["system"])
         else:
-            values.append(avg_cpu.get(metric, 0))
+            values.append(avg_cpu[metric])
 
-    # 折れ線グラフを作成
-    plt.plot(
-        xticks,
-        values,
-        marker="o",
-        label=label,
-    )
-    plt.xticks(xticks, xticks)
+    return xticks, values
+
+
+def calc_average(base_filename: str, metric: str, iter: int):
+    """
+    指定されたmetricsの値の配列を取得し，iteration間の平均値を計算する．
+    """
+    val_2d_array = []
+    for i in range(1, iter + 1):
+        path = f"{base_filename}.{i}"
+        with open(path, "r") as f:
+            data = json.load(f)
+            xticks, values = parse_data(data, metric)
+            val_2d_array.append(values)
+
+    res = []
+    series_len = len(xticks)
+    for j in range(series_len):
+        tmp = 0
+        for i in range(iter):
+            tmp += val_2d_array[i][j]
+
+        res.append(tmp / series_len)
+
+    return res, xticks
 
 
 def visualize_cpu_metric(metric: str, output_file: str):
@@ -43,13 +54,16 @@ def visualize_cpu_metric(metric: str, output_file: str):
 
     plt.figure(figsize=(12, 6))
     for file in files:
-        for i in range(1, iter + 1):
-            path = f"{data_dir}/{file}.{i}"
-            with open(path, "r") as f:
-                data = json.load(f)
+        base_path = f"{data_dir}/{file}"
+        values, xticks = calc_average(base_path, metric, iter)
 
-            # プロット
-            plot(data, file.split(".")[0], metric)
+        plt.plot(
+            xticks,
+            values,
+            marker="o",
+            label=file.split(".")[0],
+        )
+        plt.xticks(xticks, xticks)
 
     # ラベル設定
     plt.xlabel("Timestamp")
@@ -58,7 +72,7 @@ def visualize_cpu_metric(metric: str, output_file: str):
         if metric != "user+system"
         else "CPU Usage (user + system) [%]"
     )
-    plt.title(f"{metric.capitalize()} Over Time")
+    plt.title(f"{metric.capitalize()} Over Time ({iter} times average)")
     plt.grid(axis="y")
     plt.legend()
     plt.tight_layout()
