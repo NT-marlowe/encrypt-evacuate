@@ -16,10 +16,9 @@ def load_disk_data(json_file):
         rkB_s = sda_disk_data["rkB/s"]
         wkB_s = sda_disk_data["wkB/s"]
         disk_util = sda_disk_data["util"]
-        print(
-            # f"rkB/s = {sda_disk_data['rkB/s']:>10}\t wkB/s = {sda_disk_data['wkB/s']:>10}"
-            f"rkB/s = {rkB_s:>10}\t wkB/s = {wkB_s:>10}\t util = {disk_util:>10}"
-        )
+        # print(
+        #     f"rkB/s = {rkB_s:>10}\t wkB/s = {wkB_s:>10}\t util = {disk_util:>10}"
+        # )
         res.append((rkB_s, wkB_s, disk_util))
 
     return res
