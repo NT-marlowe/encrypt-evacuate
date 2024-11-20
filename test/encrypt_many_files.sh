@@ -9,27 +9,27 @@ function run_once() {
     local filename=$1
     echo $filename
 
-	sudo sync
-	echo 3 | sudo tee /proc/sys/vm/drop_caches
+    sudo sync
+    echo 3 | sudo tee /proc/sys/vm/drop_caches
 
-	iostat -xyt -o JSON 1 ${time_len} > ${filename} &
-	pid=$!
+    iostat -xyt -o JSON 1 ${time_len} >${filename} &
+    pid=$!
 
-	for file in $(ls ./files_sysbench | grep -v 'enc'); do
-	    echo "Encrypting ${file}"
-	    ./my_simple_ransomware ./files_sysbench/${file}
-	done
+    for file in $(ls ./files_sysbench | grep -v 'enc'); do
+        echo "Encrypting ${file}"
+        ./my_simple_ransomware ./files_sysbench/${file}
+    done
 
-	echo "Cleaning up..."
-	rm -rf ./files_sysbench/*.enc
-	wait $pid
+    echo "Cleaning up..."
+    rm -rf ./files_sysbench/*.enc
+    wait $pid
 }
 
 function main() {
-	for i in `seq 1 ${iter}`; do
-		run_once ${out_filename}.${i}
-	done
+    for i in $(seq 1 ${iter}); do
+        run_once ${out_filename}.${i}
+        sleep 2
+    done
 }
 
 main "$@"
-	
