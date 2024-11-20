@@ -39,15 +39,17 @@ def visualize_cpu_metric(metric: str, output_file: str):
     """
     data_dir = "../result/io_cpu"
     files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
+    iter = 5
 
     plt.figure(figsize=(12, 6))
     for file in files:
-        path = f"{data_dir}/{file}"
-        with open(path, "r") as f:
-            data = json.load(f)
+        for i in range(1, iter + 1):
+            path = f"{data_dir}/{file}.{i}"
+            with open(path, "r") as f:
+                data = json.load(f)
 
-        # プロット
-        plot(data, file.split(".")[0], metric)
+            # プロット
+            plot(data, file.split(".")[0], metric)
 
     # ラベル設定
     plt.xlabel("Timestamp")
