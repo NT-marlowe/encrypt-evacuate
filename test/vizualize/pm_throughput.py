@@ -11,13 +11,12 @@ def load_disk_data(json_file):
     res = []
 
     for stat in data["sysstat"]["hosts"][0]["statistics"]:
-        vda_disk_data = stat["disk"][-1]
+        sda_disk_data = stat["disk"][-1]
         # print(stat["disk"][-1]["wkB/s"], end=", ")
-        rkB_s = vda_disk_data["rkB/s"]
-        wkB_s = vda_disk_data["wkB/s"]
-        disk_util = vda_disk_data["util"]
+        rkB_s = sda_disk_data["rkB/s"]
+        wkB_s = sda_disk_data["wkB/s"]
+        disk_util = sda_disk_data["util"]
         # print(
-        #     # f"rkB/s = {vda_disk_data['rkB/s']:>10}\t wkB/s = {vda_disk_data['wkB/s']:>10}"
         #     f"rkB/s = {rkB_s:>10}\t wkB/s = {wkB_s:>10}\t util = {disk_util:>10}"
         # )
         res.append((rkB_s, wkB_s, disk_util))
@@ -50,7 +49,9 @@ def accumulate_positive_write(json_file1, json_file2):
             # rkB_s_diff = disk_data_2[i][0] - disk_data_1[i][0]
             wkB_s_diff = disk_data_2[i][1] - disk_data_1[i][1]
             # util_diff = disk_data_2[i][2] - disk_data_1[i][2]
-            if wkB_s_diff > 0:
+            # if wkB_s_diff > 1000:
+            if abs(wkB_s_diff) > 1000:  # more than 1MB/s
+                # if abs(wkB_s_diff) > 0:
                 write_data.append(wkB_s_diff)
 
     return write_data
@@ -68,6 +69,8 @@ def accumulate_positive_write(json_file1, json_file2):
 
 #     return write_data
 def print_stat(write_data):
+    print((write_data))
+    print(sorted(write_data))
     print(f"Mean: {np.mean(write_data)} [kB/s]")
     print(f"Median: {np.median(write_data)} [kB/s]")
     print(f"Max: {np.max(write_data)} [kB/s]")
