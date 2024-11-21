@@ -49,7 +49,8 @@ def accumulate_positive_write(json_file1, json_file2):
             # rkB_s_diff = disk_data_2[i][0] - disk_data_1[i][0]
             wkB_s_diff = disk_data_2[i][1] - disk_data_1[i][1]
             # util_diff = disk_data_2[i][2] - disk_data_1[i][2]
-            if wkB_s_diff > 0:
+            # if wkB_s_diff > 1000:
+            if abs(wkB_s_diff) > 1000:
                 write_data.append(wkB_s_diff)
 
     return write_data

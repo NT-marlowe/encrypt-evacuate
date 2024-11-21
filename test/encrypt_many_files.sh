@@ -62,7 +62,7 @@ function main() {
         local copied_pid
 
         if [ "$#" -eq 3 ]; then
-            ../${EBPF_PROGRAM} ${parallelism} >stdout.log 2>stderr.log &
+            ../${EBPF_PROGRAM} ${parallelism} &
             local pid=$!
             copied_pid=${pid}
             sleep 1
@@ -74,6 +74,7 @@ function main() {
         if [ "$#" -eq 3 ]; then
             kill -SIGINT ${copied_pid} >/dev/null 2>&1
             sleep 2
+            rm -rf /data_shelter/files_sysbench
         fi
     done
 }
