@@ -41,7 +41,7 @@ def print_diff(json_file1, json_file2):
 def accumulate_positive_write(json_file1, json_file2):
     print(f"{json_file2} - {json_file1}")
 
-    write_data = []
+    write_data_MBs = []
     for idx in range(1, 6, 1):
         disk_data_1 = load_disk_data(f"{json_file1}.{idx}")
         disk_data_2 = load_disk_data(f"{json_file2}.{idx}")
@@ -52,33 +52,33 @@ def accumulate_positive_write(json_file1, json_file2):
             # if wkB_s_diff > 1000:
             if abs(wkB_s_diff) > 1000:  # more than 1MB/s
                 # if abs(wkB_s_diff) > 0:
-                write_data.append(wkB_s_diff)
+                write_data_MBs.append(wkB_s_diff)
 
-    return write_data
+    return write_data_MBs
 
 
 # def accumulate_positive_write(json_file):
-#     write_data = []
+#     write_data_MBs = []
 #     for i in range(1, 6):
 #         path = f"{json_file}.{i}"
 #         data = load_disk_data(path)
 #         for r, w, u in data:
 #             if w > 0:
-#                 write_data.append(w)
+#                 write_data_MBs.append(w)
 
 
-#     return write_data
-def print_stat(write_data):
-    print((write_data))
-    print(sorted(write_data))
-    print(f"Mean: {np.mean(write_data)} [kB/s]")
-    print(f"Median: {np.median(write_data)} [kB/s]")
-    print(f"Max: {np.max(write_data)} [kB/s]")
-    print(f"Min: {np.min(write_data)} [kB/s]")
-    print(f"Std: {np.std(write_data)} [kB/s]")
+#     return write_data_MBs
+def print_stat(write_data_MBs):
+    print((write_data_MBs))
+    print(sorted(write_data_MBs))
+    print(f"Mean: {np.mean(write_data_MBs)} [kB/s]")
+    print(f"Median: {np.median(write_data_MBs)} [kB/s]")
+    print(f"Max: {np.max(write_data_MBs)} [kB/s]")
+    print(f"Min: {np.min(write_data_MBs)} [kB/s]")
+    print(f"Std: {np.std(write_data_MBs)} [kB/s]")
 
 
 if __name__ == "__main__":
     json_file1, json_file2 = sys.argv[1], sys.argv[2]
-    write_data = accumulate_positive_write(json_file1, json_file2)
-    print_stat(write_data)
+    write_data_MBs = accumulate_positive_write(json_file1, json_file2)
+    print_stat(write_data_MBs)
