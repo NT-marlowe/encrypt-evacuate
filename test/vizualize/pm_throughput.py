@@ -52,7 +52,7 @@ def accumulate_positive_write(json_file1, json_file2):
             wkB_s_diff = disk_data_2[i][1] - disk_data_1[i][1]
             # util_diff = disk_data_2[i][2] - disk_data_1[i][2]
             # if wkB_s_diff > 1000:
-            if abs(wkB_s_diff) > 500:  # more than 1MB/s
+            if abs(wkB_s_diff) > 500:  # more than 500kB/s
                 # if abs(wkB_s_diff) > 100:
                 write_data_MBs.append(wkB_s_diff / 1000)
 
