@@ -10,7 +10,7 @@ def load_disk_data(json_file):
 
     res = []
 
-    write_data = []
+    # write_data = []
     for stat in data["sysstat"]["hosts"][0]["statistics"]:
         sda_disk_data = stat["disk"][-1]
         # print(stat["disk"][-1]["wkB/s"], end=", ")
@@ -19,10 +19,10 @@ def load_disk_data(json_file):
         disk_util = sda_disk_data["util"]
         res.append((rkB_s, wkB_s, disk_util))
 
-        if wkB_s > 0:
-            write_data.append(wkB_s)
+    #     if wkB_s > 0:
+    #         write_data.append(wkB_s)
 
-    print(sorted(write_data))
+    # print(sorted(write_data))
     return res
 
 
@@ -57,16 +57,6 @@ def accumulate_positive_write(json_file1, json_file2):
                 write_data_MBs.append(wkB_s_diff / 1000)
 
     return write_data_MBs
-
-
-# def accumulate_positive_write(json_file):
-#     write_data_MBs = []
-#     for i in range(1, 6):
-#         path = f"{json_file}.{i}"
-#         data = load_disk_data(path)
-#         for r, w, u in data:
-#             if w > 0:
-#                 write_data_MBs.append(w)
 
 
 #     return write_data_MBs
