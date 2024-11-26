@@ -4,9 +4,6 @@ import numpy as np
 import sys
 
 
-# data_dir = f"../result/reorder_vs_seek/p{parallesim}"
-
-
 def suffix_to_unit(suffix: str) -> int:
     if suffix == "K":
         return 1000
@@ -43,18 +40,24 @@ def read_csv(filepath: str) -> tuple[list[int], list[float]]:
         return filesize_list, ratio_list
 
 
-def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str):
-    _, list1 = read_csv(file1)
-    _, list2 = read_csv(file2)
+# def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str):
+def plot_graph(metrics: str, filename: str, parallelsim: int, size_type: str):
+    _, values = read_csv(filename)
 
-    # labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
-    labels = ["1K", "10K", "100K", "1M", "10M", "100M"]
+    if size_type == "exp":
+        labels = ["1K", "10K", "100K", "1M", "10M", "100M"]
+    elif size_type == "inc":
+        labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
+    else:
+        raise ValueError("Invalid size type")
+
     x = np.arange(len(labels))
     width = 0.2
 
     fig, ax = plt.subplots()
-    ax.bar(x - width / 2, list1, width, label="Previous")
-    ax.bar(x + width / 2, list2, width, label="Current")
+    # ax.bar(x - width / 2, list1, width, label="Previous")
+    # ax.bar(x + width / 2, list2, width, label="Current")
+    ax.bar(x, values, width)
 
     if metrics == "reten":
         ax.set_title(f"Retention Rates by File Size, p = {parallesim:02}")
@@ -62,13 +65,14 @@ def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str)
         ax.set_title(f"Match Rates by File Size, p = {parallesim:02}")
 
     ax.set_xlabel("Size of Original File [Byte]")
-    ax.set_ylabel("Rate")
+    ax.set_ylabel("Match Rate")
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
-    ax.legend()
+    # ax.legend()
 
     # plot these two lists
-    plt.savefig(f"./img/seqential_vs_parallel_{metrics}_p{parallelsim}_{size_type}.png")
+    # plt.savefig(f"./img/seqential_vs_parallel_{metrics}_p{parallelsim}_{size_type}.png")
+    plt.savefig(f"./img/{metrics}_p{parallelsim}_{size_type}.png")
 
 
 # plot_graph_exp()
@@ -78,9 +82,11 @@ def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str)
 if __name__ == "__main__":
     parallesim = int(sys.argv[1])
 
-    file1, file2 = sys.argv[2], sys.argv[3]
+    # file1, file2 = sys.argv[2], sys.argv[3]
+    filename = sys.argv[2]
 
-    size_type = sys.argv[4]
+    size_type = sys.argv[3]
 
     # plot_graph_inc("reten")
-    plot_graph_inc("match", file1, file2, parallesim, size_type)
+    # plot_graph_inc("match", file1, file2, parallesim, size_type)
+    plot_graph("match", filename, parallesim, size_type)
