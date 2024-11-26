@@ -44,8 +44,8 @@ def read_csv(filepath: str) -> tuple[list[int], list[float]]:
 
 
 def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str):
-    _, list_reorder = read_csv(file1)
-    _, list_seek = read_csv(file2)
+    _, list1 = read_csv(file1)
+    _, list2 = read_csv(file2)
 
     # labels = ["1M", "2M", "3M", "4M", "5M", "6M", "7M", "8M", "9M", "10M"]
     labels = ["1K", "10K", "100K", "1M", "10M", "100M"]
@@ -53,8 +53,8 @@ def plot_graph_inc(metrics: str, file1, file2, parallelsim: int, size_type: str)
     width = 0.2
 
     fig, ax = plt.subplots()
-    ax.bar(x - width / 2, list_reorder, width, label="Previous")
-    ax.bar(x + width / 2, list_seek, width, label="Current")
+    ax.bar(x - width / 2, list1, width, label="Previous")
+    ax.bar(x + width / 2, list2, width, label="Current")
 
     if metrics == "reten":
         ax.set_title(f"Retention Rates by File Size, p = {parallesim:02}")
