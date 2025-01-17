@@ -32,12 +32,14 @@ def calc_average(base_filename: str, metric: str, iter: int):
 
     res = []
     series_len = len(xticks)
+    print(f"series_len: {series_len}")
     for j in range(series_len):
         tmp = 0
         for i in range(iter):
             tmp += val_2d_array[i][j]
 
-        res.append(tmp / series_len)
+        # res.append(tmp / series_len)
+        res.append(tmp / iter)
 
     return res, xticks
 
