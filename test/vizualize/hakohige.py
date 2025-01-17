@@ -4,7 +4,7 @@ import re
 import sys
 
 # ファイルからデータを読み込む
-operations = ["rd.Read", "binary.Read", "writeFileData"]
+operations = ["rd.Read", "binary.Read", "file.Write"]
 data = {operation: [] for operation in operations}
 parallelism = int(sys.argv[2]) if len(sys.argv) > 2 else 1
 
@@ -35,12 +35,13 @@ with open(sys.argv[1], "r") as file:
 
 # データフレームに変換
 df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in data.items()]))
+df.columns = ["Read", "Decode", "Write"]
 
 # 箱ひげ図の描画
 plt.figure(figsize=(12, 7))
 df.boxplot()
 plt.ylabel("Time (us)")
-plt.title("Processing Time for Different Operations (> 1000us are ignored)")
+# plt.title("Processing Time for Different Operations (> 1000us are ignored)")
 plt.xticks(rotation=30)
 plt.grid(True)
 if parallelism == 1:
