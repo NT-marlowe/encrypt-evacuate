@@ -49,10 +49,10 @@ def visualize_cpu_metric(metric: str, output_file: str):
     :param metric: プロットするCPUメトリクス (例: 'user', 'system', 'iowait', 'user+system')
     :param output_file: グラフ画像の保存先ファイル名
     """
-    # data_dir = "../result/io_cpu"
-    data_dir = ".."
-    # files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
-    files = ["encryption_load.json", "proposed_method_load.json"]
+    data_dir = "../result/io_cpu"
+    # data_dir = ".."
+    files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
+    # files = ["encryption_load.json", "proposed_method_load.json"]
     iter = 5
 
     for i in range(1, iter + 1):
