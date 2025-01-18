@@ -49,8 +49,10 @@ def visualize_cpu_metric(metric: str, output_file: str):
     :param metric: プロットするCPUメトリクス (例: 'user', 'system', 'iowait', 'user+system')
     :param output_file: グラフ画像の保存先ファイル名
     """
-    data_dir = "../result/io_cpu"
-    files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
+    # data_dir = "../result/io_cpu"
+    data_dir = ".."
+    # files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
+    files = ["encryption_load.json", "proposed_method_load.json"]
     iter = 5
 
     for i in range(1, iter + 1):
@@ -59,6 +61,8 @@ def visualize_cpu_metric(metric: str, output_file: str):
             base_path = f"{data_dir}/{file}.{i}"
             # values, xticks = calc_average(base_path, metric, iter)
             xticks, values = parse_data(base_path, metric)
+            if file == "proposed_method_load.json":
+                print(values)
 
             plt.plot(
                 xticks,
@@ -86,7 +90,7 @@ def visualize_cpu_metric(metric: str, output_file: str):
 
 # 実行例
 # user + system の使用率をプロット
-visualize_cpu_metric("user+system", "./img/cpu_usage.png")
+# visualize_cpu_metric("user+system", "./img/cpu_usage.png")
 
 # iowait をプロット
 visualize_cpu_metric("iowait", "./img/iowait_usage.png")
