@@ -52,8 +52,8 @@ def visualize_cpu_metric(metric: str, output_file: str):
     # data_dir = "../result/io_cpu"
     data_dir = ".."
     # files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
-    n = 7
-    files = [f"fuga_{i}.json.1" for i in range(1, n + 1)]
+    n = 9
+    files = [f"fuga_{i}.json.1" for i in range(0, n + 1)]
     iter = 5
 
     plt.figure(figsize=(12, 6))
