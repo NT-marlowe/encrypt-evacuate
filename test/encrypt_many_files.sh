@@ -12,12 +12,16 @@ function encrypt_sysbench_files() {
     done
 }
 
+function clear_cache() {
+    sudo sync
+    echo 3 | sudo tee /proc/sys/vm/drop_caches
+}
+
 function run_once() {
     local filename=$1
     echo $filename
 
-    sudo sync
-    echo 3 | sudo tee /proc/sys/vm/drop_caches
+    clear_cache
 
     iostat -xyt -o JSON 1 ${time_len} >${filename} &
     pid=$!
@@ -39,6 +43,7 @@ function build() {
 
 function main() {
     if [ "$#" -lt 2 ]; then
+        clear_cache
         encrypt_sysbench_files
         return
     fi
@@ -76,6 +81,8 @@ function main() {
             sleep 2
             rm -rf /data_shelter/files_sysbench
         fi
+
+        # rm ./files_sysbench/*.enc
     done
 }
 
