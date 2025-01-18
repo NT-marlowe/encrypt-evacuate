@@ -9,3 +9,4 @@ README
 .vscode/
 test/files_sysbench/
 test/files_sysbench
+test/old_files_sysbench/

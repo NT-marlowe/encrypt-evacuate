@@ -32,12 +32,14 @@ def calc_average(base_filename: str, metric: str, iter: int):
 
     res = []
     series_len = len(xticks)
+    print(f"series_len: {series_len}")
     for j in range(series_len):
         tmp = 0
         for i in range(iter):
             tmp += val_2d_array[i][j]
 
-        res.append(tmp / series_len)
+        # res.append(tmp / series_len)
+        res.append(tmp / iter)
 
     return res, xticks
 
@@ -50,10 +52,12 @@ def visualize_cpu_metric(metric: str, output_file: str):
     """
     data_dir = "../result/io_cpu"
     files = ["baseline.json", "encryption_load.json", "proposed_method_load.json"]
+    labels = ["(A) Baseline", "(B) Encryption w/o Fuga", "(C) Encryption w/ Fuga"]
     iter = 5
 
     plt.figure(figsize=(12, 6))
-    for file in files:
+    for i in range(len(files)):
+        file = files[i]
         base_path = f"{data_dir}/{file}"
         values, xticks = calc_average(base_path, metric, iter)
 
@@ -61,7 +65,8 @@ def visualize_cpu_metric(metric: str, output_file: str):
             xticks,
             values,
             marker="o",
-            label=file.split(".")[0],
+            # label=file.split(".")[0],
+            label=labels[i],
         )
         plt.xticks(xticks, xticks)
 
