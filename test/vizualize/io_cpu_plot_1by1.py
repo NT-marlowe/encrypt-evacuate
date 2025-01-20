@@ -90,7 +90,7 @@ def visualize_cpu_metric(metric: str, output_file: str):
 
 # 実行例
 # user + system の使用率をプロット
-# visualize_cpu_metric("user+system", "./img/cpu_usage.png")
+visualize_cpu_metric("user+system", "./img/cpu_usage.png")
 
 # iowait をプロット
 visualize_cpu_metric("iowait", "./img/iowait_usage.png")
