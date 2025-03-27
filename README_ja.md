@@ -52,9 +52,46 @@ go version go1.22.5 linux/amd64
 
 ## 実行方法
 上記の依存関係を満たしていることを前提とする．
+### quick start
 ```bash
 $ git clone [URL]
 $ cd encrypt-evacuate
+```
+したのち，
+```bash
+# ビルド + 実行
 $ make run
 ```
-`make run`実行時の処理は`Makefile`にコメントを残している．
+または
+```bash
+# ビルドのみ
+$ make build
+$ sudo ./ebpf-ssl [PARALLELISM]
+```
+`make`の処理は`Makefile`にコメントを残している．
+
+### memo
+- eBPFプログラムまたはユーザプログラムを変更した場合，変更を保存した後に再度ビルドを実行する．
+- Ctrl+Cで停止する．
+    - eBPFプログラムのunloading，Go channelのcloseなどが実行される．
+- Fuga実行中にフック対象の暗号化関数が呼ばれると，`/data_shelter`に平文ファイルが保存される．
+    - 平文ファイル保存先のパスは`main.go`にハードコードしてある．
+    - `test/my_simple_ransomware [FILENAME]`で当該の関数が呼ばれる．
+
+### 実行例
+```bash
+# ターミナル1
+# 並列度4でFugaを実行する．
+$ make run
+# 実行中...
+```
+
+```bash
+# ターミナル2
+# ランサムウェアを模したプログラムを実行する．
+$ ./test/my_simple_ransomware data.txt
+
+# data shelterに元のファイルが退避される．
+$ ls /data_shelter
+data.txt
+```

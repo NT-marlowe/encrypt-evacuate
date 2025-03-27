@@ -5,7 +5,7 @@ USER := $(shell whoami)
 
 GO_SRCS := $(shell find . -name '*.go')
 
-
+# 実行可能なシングルバイナリを作成する．このバイナリにはeBPFプログラムがバイトコードとして埋め込まれている．
 .PHONY: all
 all: ${GO_SRCS} gen
 	go build -o ${BIN} ./cmd/${NAME}
@@ -38,7 +38,9 @@ capture_plain.o: ebpf_src/capture_plain.c
 		-c capture_plain.c -o capture_plain.o
 
 
-
+# コマンドライン引数においてデコード処理の並列度を指定する．
+# バイナリは指定された数だけgoroutineを生成し，デコード処理を並列実行する．
+# makeに対してコマンドライン引数を指定できるようにするべきだったが，手間がかかりそうだったのでやらなかった．
 .PHONY: run
 run: all
 # if [ -f /data_shelter/${TMP_FILE_NAME} ]; then \
