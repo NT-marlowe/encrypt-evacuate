@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	// "time"
-
 	"github.com/cilium/ebpf"
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
@@ -65,16 +63,8 @@ func main() {
 	// Starts decoding goroutines and a writing goroutine.
 	startProcessingStages(recordCh, encDataEventCh, parallelism)
 
-	// var start time.Time
-	// var elapsed time.Duration
-	// for index := 0; ; index++ {
 	for {
-		// start = time.Now()
-
 		record, err := rd.Read()
-
-		// elapsed = time.Since(start)
-		// fmt.Printf("rd.Read: %v\n", elapsed)
 
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
