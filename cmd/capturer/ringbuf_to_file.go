@@ -3,13 +3,10 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
-
-	// "fmt"
 	"log"
 	"os"
 
 	"github.com/cilium/ebpf/ringbuf"
-	// "time"
 )
 
 // main goroutine
@@ -29,11 +26,8 @@ func startProcessingStages(irdCh <-chan ringbuf.Record, eventCh chan capture_pla
 func decodeIndexedRecord(irdCh <-chan ringbuf.Record, eventCh chan<- capture_plainEncDataEventT) {
 	var event capture_plainEncDataEventT
 
-	// var start time.Time
-	// var elapsed time.Duration
 	for {
 		rd, ok := <-irdCh
-		// start = time.Now()
 		if !ok {
 			log.Println("Record channel closed, exiting..")
 			return
@@ -43,10 +37,6 @@ func decodeIndexedRecord(irdCh <-chan ringbuf.Record, eventCh chan<- capture_pla
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
-
-		// log.Printf("offset = %d, filename = %s\n", event.Offset, bytesToString(event.Filename[:]))
-		// elapsed = time.Since(start)
-		// fmt.Printf("binary.Read: %v\n", elapsed)
 
 		eventCh <- event
 	}
@@ -120,7 +110,6 @@ func writeFileDataSequntial(eventCh <-chan indexedDataBlock, file *os.File) {
 			}
 			file.Write(db.dataBuf[:db.dataLen])
 			delete(m, currentIndex)
-			// measureTime(currentIndex, "writeFileData")
 
 			currentIndex++
 		}
