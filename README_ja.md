@@ -95,3 +95,14 @@ $ ./test/my_simple_ransomware data.txt
 $ ls /data_shelter
 data.txt
 ```
+
+## uprobeを使ってフックする暗号化関数の変更
+```c
+// ebpf_src/capture_plain.c
+SEC("uprobe/lib/x86_64-linux-gnu/"
+	"libcrypto.so.3:EVP_"
+	"EncryptUpdate")
+```
+
+
+
