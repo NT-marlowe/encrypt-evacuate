@@ -41,10 +41,10 @@ for file in files:
         )
 
 # グラフの設定
-plt.xlabel("Size of Original File [MB]", fontsize=16)
+plt.xlabel("Size of Original File [MB]", fontsize=18)
 plt.xscale("log", base=2)
 plt.xticks([2**x for x in range(8)], [str(2**x) for x in range(8)])
-plt.ylabel("Rate", fontsize=16)
+plt.ylabel("Match Rate", fontsize=18)
 plt.yticks(np.arange(0, 1.1, 0.2))
 # plt.title(
 #     f"Valiation of Match Rate for Different Ring Buffer Sizes (DoP = {parallelism})",

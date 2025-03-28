@@ -34,19 +34,21 @@ def plot_combined_data(data, title, metrics_type):
     for key, df in data.items():
         plt.plot(df["size"], df["value"], marker="o", label=int(key))
         print(key, end=" ")
-    plt.legend(title="parallelism")
+    plt.legend(title="Parallelism")
 
     print()
 
-    plt.xlabel("File Size [MB]")
+    plt.xlabel("File Size [MB]", fontsize=16)
     plt.xticks([i for i in range(1, 11, 1)])
     if metrics_type == MetricsType.RETEN:
-        plt.ylabel("Retention Rate \n (Higher is better)")
-        plt.title(f"Retention Rates Across Diffrent Degrees of Parallelism")
+        # plt.ylabel("Retention Rate \n (Higher is better)")
+        plt.ylabel("Retention Rate", fontsize=18)
+        # plt.title(f"Retention Rates Across Diffrent Degrees of Parallelism")
 
     elif metrics_type == MetricsType.MATCH:
-        plt.ylabel("Match Rate \n (Higher is better)")
-        plt.title(f"Match Rates Across Diffrent Degrees of Parallelism")
+        # plt.ylabel("Match Rate \n (Higher is better)")
+        plt.ylabel("Match Rate", fontsize=18)
+        # plt.title(f"Match Rates Across Diffrent Degrees of Parallelism")
 
     # plt.ylabel("Value")
     # plt.legend(title="p[数字]")
