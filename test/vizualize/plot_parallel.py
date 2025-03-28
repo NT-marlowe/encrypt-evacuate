@@ -38,7 +38,7 @@ def plot_combined_data(data, title, metrics_type):
 
     print()
 
-    plt.xlabel("File Size [MB]", fontsize=16)
+    plt.xlabel("Size of Orifinal File [MB]", fontsize=16)
     plt.xticks([i for i in range(1, 11, 1)])
     if metrics_type == MetricsType.RETEN:
         # plt.ylabel("Retention Rate \n (Higher is better)")
