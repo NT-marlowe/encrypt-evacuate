@@ -20,7 +20,7 @@ def read_data(filepath: str):
     return data
 
 
-parallelism = sys.argv[1]
+# parallelism = sys.argv[1]
 # ディレクトリとファイルの設定
 directory = "../result/buf_capability/journal"
 files = os.listdir(directory)
@@ -41,17 +41,17 @@ for file in files:
         )
 
 # グラフの設定
-plt.xlabel("Size of Original File [MB]", fontsize=16)
+plt.xlabel("Size of Original File [MB]", fontsize=18)
 plt.xscale("log", base=2)
 plt.xticks([2**x for x in range(8)], [str(2**x) for x in range(8)])
-plt.ylabel("Rate", fontsize=16)
+plt.ylabel("Match Rate", fontsize=18)
 plt.yticks(np.arange(0, 1.1, 0.2))
-plt.title(
-    f"Valiation of Match Rate for Different Ring Buffer Sizes (DoP = {parallelism})",
-    fontsize=16,
-)
+# plt.title(
+#     f"Valiation of Match Rate for Different Ring Buffer Sizes (DoP = {parallelism})",
+#     fontsize=16,
+# )
 
-plt.legend(title="Ring Buffer Size", fontsize=10)
+plt.legend(title="Ring Buffer Size", fontsize=12)
 plt.grid(True)
 plt.tight_layout()
 

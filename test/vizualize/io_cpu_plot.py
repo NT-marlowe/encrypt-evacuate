@@ -71,15 +71,18 @@ def visualize_cpu_metric(metric: str, output_file: str):
         plt.xticks(xticks, xticks)
 
     # ラベル設定
-    plt.xlabel("Timestamp")
+    plt.xlabel("Timestamp", fontsize=20)
     plt.ylabel(
-        f"{metric.capitalize()} [%]"
-        if metric != "user+system"
-        else "CPU Usage (user + system) [%]"
+        (
+            f"{metric.capitalize()} [%]"
+            if metric != "user+system"
+            else "CPU Usage (user + system) [%]"
+        ),
+        fontsize=20,
     )
-    plt.title(f"{metric.capitalize()} Over Time ({iter} times average)")
+    # plt.title(f"{metric.capitalize()} Over Time ({iter} times average)")
     plt.grid(axis="y")
-    plt.legend()
+    plt.legend(fontsize=16)
     plt.tight_layout()
 
     # グラフを保存

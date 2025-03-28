@@ -60,8 +60,10 @@ def plot_graph(metrics: str, file1, file2, parallelsim: int, size_type: str):
     width = 0.2
 
     fig, ax = plt.subplots()
-    ax.bar(x - width / 2, list1, width, label="Preliminary Exp.")
-    ax.bar(x + width / 2, list2, width, label="Main Exp.")
+    # ax.bar(x - width / 2, list1, width, label="Preliminary Exp.")
+    # ax.bar(x + width / 2, list2, width, label="Main Exp.")
+    ax.bar(x - width / 2, list1, width, label="Prior Work [15]")
+    ax.bar(x + width / 2, list2, width, label="Proposed")
     # ax.bar(x, values, width)
 
     # if metrics == "reten":
