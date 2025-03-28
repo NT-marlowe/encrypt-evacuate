@@ -95,3 +95,33 @@ $ ./test/my_simple_ransomware data.txt
 $ ls /data_shelter
 data.txt
 ```
+
+## uprobeを使ってフックする暗号化関数の変更
+少なくとも2ファイルを編集する必要がある．
+
+### `ebpf_src/capture_plain.c`
+```diff
+- SEC("uprobe/lib/x86_64-linux-gnu/libcrypto.so.3:EVP_EncryptUpdate")
++ SEC("uprobe/path-to-shared-object:function-symbol-name")
+int probe_entry_EVP_EncryptUpdate(struct pt_regs *ctx) {
+```
+フック対象の暗号化関数に渡される引数の中で，平文のポインタが4番目の引数ではない場合，以下の`PT_REGS_PARM4`も変更する必要あり．
+```c
+	// int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
+	//   int *outl, const unsigned char *in, int inl);
+	const char *plaintext_buf = (const char *)PT_REGS_PARM4(ctx);
+	if (plaintext_buf == NULL) {
+		return 0;
+	}
+```
+
+### `cmd/capturer/main.go`
+```diff
+const (
+-	sharedLibraryPath = "/lib/x86_64-linux-gnu/libcrypto.so.3"
+-	symbol            = "EVP_EncryptUpdate"
++	sharedLibraryPath = "path-to-object"
++	symbol            = "function-symbol-name"
+	dataShelterPath   = "/data_shelter"
+)
+```
